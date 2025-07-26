@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Geolocation API Example</title>
+    <title>Geolocation with Address</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -18,6 +18,7 @@
             border: 1px solid #ddd;
             border-radius: 5px;
             background-color: #f9f9f9;
+            text-align: left;
         }
         button {
             padding: 10px 20px;
@@ -34,16 +35,25 @@
         .error {
             color: red;
         }
+        .loading {
+            color: #666;
+            font-style: italic;
+        }
+        .address-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px dashed #ccc;
+        }
     </style>
 </head>
 <body>
-    <h1>Get Current Location</h1>
-    <p>Click the button below to get your current latitude and longitude.</p>
+    <h1>Get Current Location with Address</h1>
+    <p>Click the button below to get your current location coordinates and address.</p>
     
     <button onclick="getLocation()">Get My Location</button>
     
     <div id="locationResult">
-        <p>Your location will appear here.</p>
+        <p>Your location information will appear here.</p>
     </div>
 
     <script>
@@ -57,22 +67,43 @@
             }
             
             // Show loading message
-            locationResult.innerHTML = '<p>Loading location...</p>';
+            locationResult.innerHTML = '<p class="loading">Detecting your location...</p>';
             
-            // Get current position:
+            // Get current position
             navigator.geolocation.getCurrentPosition(
-                (position) => {
+                async (position) => {
                     // Success callback
                     const latitude = position.coords.latitude;
                     const longitude = position.coords.longitude;
                     const accuracy = position.coords.accuracy; // in meters
                     
+                    // Display coordinates first
                     locationResult.innerHTML = `
                         <p><strong>Latitude:</strong> ${latitude.toFixed(6)}</p>
                         <p><strong>Longitude:</strong> ${longitude.toFixed(6)}</p>
                         <p><strong>Accuracy:</strong> ±${Math.round(accuracy)} meters</p>
                         <p><a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank">View on Google Maps</a></p>
+                        <div class="address-section">
+                            <p class="loading">Looking up address...</p>
+                        </div>
                     `;
+                    
+                    try {
+                        // Perform reverse geocoding
+                        const address = await reverseGeocode(latitude, longitude);
+                        
+                        // Update the address section
+                        const addressSection = locationResult.querySelector('.address-section');
+                        addressSection.innerHTML = `
+                            <p><strong>Address:</strong></p>
+                            <p>${address.display_name || 'Address not available'}</p>
+                        `;
+                    } catch (error) {
+                        const addressSection = locationResult.querySelector('.address-section');
+                        addressSection.innerHTML = `
+                            <p class="error">Could not retrieve address: ${error.message}</p>
+                        `;
+                    }
                 },
                 (error) => {
                     // Error callback
@@ -100,6 +131,31 @@
                     maximumAge: 0 // Don't use a cached position
                 }
             );
+        }
+
+        // Reverse geocoding function using Nominatim API
+        async function reverseGeocode(latitude, longitude) {
+            const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+            
+            try {
+                const response = await fetch(url);
+                
+                if (!response.ok) {
+                    throw new Error(`Geocoding service error: ${response.status}`);
+                }
+                
+                const data = await response.json();
+                
+                // Check if we got a valid response
+                if (data.error) {
+                    throw new Error(data.error.message || 'Unknown geocoding error');
+                }
+                
+                return data;
+            } catch (error) {
+                console.error('Reverse geocoding error:', error);
+                throw error;
+            }
         }
     </script>
 </body>
