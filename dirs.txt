@@ -1,0 +1,86 @@
+[1;34m.[0m
+[1;90m├──[0m [1;34mapp[0m
+[1;90m│  ├──[0m [1;33mbuild.gradle.kts[0m
+[1;90m│  ├──[0m proguard-rules.pro
+[1;90m│  └──[0m [1;34msrc[0m
+[1;90m│     ├──[0m [1;34mandroidTest[0m
+[1;90m│     │  └──[0m [1;34mjava[0m
+[1;90m│     │     └──[0m [1;34mcom[0m
+[1;90m│     │        └──[0m [1;34mmpb[0m
+[1;90m│     │           └──[0m [1;34mguiaturstico[0m
+[1;90m│     │              ├──[0m [1;33mExampleInstrumentedTest.java[0m
+[1;90m│     │              └──[0m [1;33mMainActivity.java[0m
+[1;90m│     ├──[0m [1;34mmain[0m
+[1;90m│     │  ├──[0m AndroidManifest.xml
+[1;90m│     │  ├──[0m [1;34mjava[0m
+[1;90m│     │  │  └──[0m [1;34mcom[0m
+[1;90m│     │  │     └──[0m [1;34mmpb[0m
+[1;90m│     │  │        └──[0m [1;34mguiaturstico[0m
+[1;90m│     │  └──[0m [1;34mres[0m
+[1;90m│     │     ├──[0m [1;34mdrawable[0m
+[1;90m│     │     │  ├──[0m ic_launcher_background.xml
+[1;90m│     │     │  └──[0m ic_launcher_foreground.xml
+[1;90m│     │     ├──[0m [1;34mlayout[0m
+[1;90m│     │     │  ├──[0m activity_main.xml
+[1;90m│     │     │  └──[0m layout.xml
+[1;90m│     │     ├──[0m [1;34mmipmap-anydpi-v26[0m
+[1;90m│     │     │  ├──[0m ic_launcher.xml
+[1;90m│     │     │  └──[0m ic_launcher_round.xml
+[1;90m│     │     ├──[0m [1;34mmipmap-hdpi[0m
+[1;90m│     │     │  ├──[0m [1;35mic_launcher.webp[0m
+[1;90m│     │     │  └──[0m [1;35mic_launcher_round.webp[0m
+[1;90m│     │     ├──[0m [1;34mmipmap-mdpi[0m
+[1;90m│     │     │  ├──[0m [1;35mic_launcher.webp[0m
+[1;90m│     │     │  └──[0m [1;35mic_launcher_round.webp[0m
+[1;90m│     │     ├──[0m [1;34mmipmap-xhdpi[0m
+[1;90m│     │     │  ├──[0m [1;35mic_launcher.webp[0m
+[1;90m│     │     │  └──[0m [1;35mic_launcher_round.webp[0m
+[1;90m│     │     ├──[0m [1;34mmipmap-xxhdpi[0m
+[1;90m│     │     │  ├──[0m [1;35mic_launcher.webp[0m
+[1;90m│     │     │  └──[0m [1;35mic_launcher_round.webp[0m
+[1;90m│     │     ├──[0m [1;34mmipmap-xxxhdpi[0m
+[1;90m│     │     │  ├──[0m [1;35mic_launcher.webp[0m
+[1;90m│     │     │  └──[0m [1;35mic_launcher_round.webp[0m
+[1;90m│     │     ├──[0m [1;34mvalues[0m
+[1;90m│     │     │  ├──[0m colors.xml
+[1;90m│     │     │  ├──[0m strings.xml
+[1;90m│     │     │  └──[0m themes.xml
+[1;90m│     │     ├──[0m [1;34mvalues-night[0m
+[1;90m│     │     │  └──[0m themes.xml
+[1;90m│     │     └──[0m [1;34mxml[0m
+[1;90m│     │        ├──[0m backup_rules.xml
+[1;90m│     │        └──[0m data_extraction_rules.xml
+[1;90m│     └──[0m [1;34mtest[0m
+[1;90m│        └──[0m [1;34mjava[0m
+[1;90m│           └──[0m [1;34mcom[0m
+[1;90m│              └──[0m [1;34mmpb[0m
+[1;90m│                 └──[0m [1;34mguiaturstico[0m
+[1;90m│                    └──[0m [1;33mExampleUnitTest.java[0m
+[1;90m├──[0m [1;33mbuild.gradle.kts[0m
+[1;90m├──[0m dirs.txt
+[1;90m├──[0m [1;34mdocs[0m
+[1;90m│  └──[0m index.html
+[1;90m├──[0m [1;34mdocumentation[0m
+[1;90m│  └──[0m anotacoes.html
+[1;90m├──[0m [1;34mgradle[0m
+[1;90m│  ├──[0m libs.versions.toml
+[1;90m│  └──[0m [1;34mwrapper[0m
+[1;90m│     ├──[0m [1;31mgradle-wrapper.jar[0m
+[1;90m│     └──[0m gradle-wrapper.properties
+[1;90m├──[0m gradle.properties
+[1;90m├──[0m [1;32mgradlew[0m
+[1;90m├──[0m gradlew.bat
+[1;90m├──[0m [1;33mindex.js[0m
+[1;90m├──[0m local.properties
+[1;90m├──[0m [1;32mmy_run.sh[0m
+[1;90m├──[0m [1;4;33mREADME.md[0m
+[1;90m├──[0m [1;32mrun.sh[0m
+[1;90m├──[0m [1;33msettings.gradle.kts[0m
+[1;90m├──[0m [1;34mstudio-data[0m
+[1;90m│  ├──[0m [1;34mAndroid[0m
+[1;90m│  └──[0m [1;34mprofile[0m
+[1;90m│     ├──[0m [1;34mandroid[0m
+[1;90m│     ├──[0m [1;34mAndroidStudio2022.3.1.20[0m
+[1;90m│     ├──[0m [1;34mgradle[0m
+[1;90m│     └──[0m [1;34mjava[0m
+[1;90m└──[0m wrangler.jsonc
