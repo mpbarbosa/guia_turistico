@@ -62,22 +62,7 @@ function getLocation() {
 
 				// Update the address section
 				const addressSection = document.getElementById("addressSection");
-				addressSection.innerHTML = `
-                            <p><strong>Address:</strong></p>
-                            <p>${address.display_name || "Address not available"}</p>
-                            <p>${JSON.stringify(address)}</p>
-                            <p>Logradouro: ${address.address.road}, ${address.address.house_number}<br>
-                              Bairro: ${address.address.suburb}<br>
-                              Município/Cidade: ${address.address.city}<br>
-                              ${address.address.municipality}<br>
-                              ${address.address.county}<br>
-                              UF: ${address.address.state}<br>
-                              Região: ${address.address.region}<br>
-                              CEP: ${address.address.postcode}<br>
-                              País: ${address.address.country}<br>
-                              Código do país: ${address.address.country_code}<br>
-                              Boundingbox: ${address.boundingbox}
-                            </p>`;
+				addressSection.innerHTML = renderAddress(address);
 
 				// Enable city stats button if we have a city
 				if (
