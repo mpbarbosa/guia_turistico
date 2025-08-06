@@ -7,16 +7,11 @@ const cityStatsBtn = document.getElementById("cityStatsBtn");
 function getLocation() {
 	const locationResult = document.getElementById("locationResult");
 
-	// Check if geolocation is supported by the browser
-	if (!navigator.geolocation) {
-		locationResult.innerHTML =
-			'<p class="error">Geolocation is not supported by your browser.</p>';
-		return;
-	}
+	checkGeolocation(locationResult);
 
 	// Show loading message
 	locationResult.innerHTML =
-		'<p class="loading">Detecting your location...</p>';
+		'<p class="loading">Buscando a sua localização...</p>';
 	findRestaurantsBtn.disabled = true;
 	cityStatsBtn.disabled = true;
 	currentCoords = null;
@@ -28,19 +23,15 @@ function getLocation() {
 			// Success callback
 			const latitude = position.coords.latitude;
 			const longitude = position.coords.longitude;
-			const accuracy = position.coords.accuracy; // in meters
+			const precisao = position.coords.accuracy; // in meters
 
 			// Store coordinates
 			currentCoords = { latitude, longitude };
 
-			// Display coordinates first
-			locationResult.innerHTML = `
-                        <p><strong>Latitude:</strong> ${latitude.toFixed(6)}</p>
-                        <p><strong>Longitude:</strong> ${longitude.toFixed(6)}</p>
-                        <p><strong>Accuracy:</strong> ±${Math.round(accuracy)} meters</p>
-                        <p><a href="https://www.google.com/maps?q=${latitude},${longitude}" target="_blank">View on Google Maps</a></p>
-                        <div class="section" id="addressSection">
-                            <p class="loading">Looking up address...</p>
+			const coordsHtml = renderCoords(latitude, longitude, precisao);
+
+			const loc = `<div id="addressSection">
+        <p class="loading">Looking up address...</p>
                         </div>
                         <div class="section" id="restaurantsSection" style="display:none;">
                             <h3>Nearby Restaurants</h3>
@@ -51,6 +42,9 @@ function getLocation() {
                             <div id="cityStats"></div>
                         </div>
                     `;
+			// Display coordinates first
+			locationResult.innerHTML = coordsHtml + loc;
+			console.log(locationResult.innerHTML);
 
 			// Enable buttons
 			findRestaurantsBtn.disabled = false;
