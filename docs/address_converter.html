@@ -1,0 +1,202 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Lat/Long to Address Converter</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        line-height: 1.6;
+      }
+      h1 {
+        color: #2c3e50;
+        text-align: center;
+      }
+      .container {
+        background-color: #f9f9f9;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .input-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input[type="text"] {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        padding: 10px 15px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+      }
+      button:hover {
+        background-color: #2980b9;
+      }
+      #results {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        background-color: white;
+        min-height: 100px;
+      }
+      .error {
+        color: #e74c3c;
+        font-weight: bold;
+      }
+      .loading {
+        color: #7f8c8d;
+        font-style: italic;
+      }
+      .map-link {
+        margin-top: 10px;
+      }
+      .example {
+        font-size: 0.9em;
+        color: #7f8c8d;
+        margin-top: 5px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <h1>Latitude/Longitude to Address Converter</h1>
+
+      <div class="input-group">
+        <label for="latitude">Latitude:</label>
+        <input
+          type="text"
+          id="latitude"
+          placeholder="Enter latitude (e.g., 40.7128)"
+        />
+        <div class="example">Example: 40.7128 (New York City)</div>
+      </div>
+
+      <div class="input-group">
+        <label for="longitude">Longitude:</label>
+        <input
+          type="text"
+          id="longitude"
+          placeholder="Enter longitude (e.g., -74.0060)"
+        />
+        <div class="example">Example: -74.0060 (New York City)</div>
+      </div>
+
+      <button id="fetchButton">Get Address</button>
+
+      <div id="results">
+        <p>
+          Enter coordinates and click "Get Address" to see the location
+          information.
+        </p>
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const fetchButton = document.getElementById("fetchButton");
+        const latitudeInput = document.getElementById("latitude");
+        const longitudeInput = document.getElementById("longitude");
+        const resultsDiv = document.getElementById("results");
+
+        fetchButton.addEventListener("click", fetchAddress);
+
+        // Also allow pressing Enter in either input field
+        latitudeInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") fetchAddress();
+        });
+
+        longitudeInput.addEventListener("keypress", function (e) {
+          if (e.key === "Enter") fetchAddress();
+        });
+
+        function fetchAddress() {
+          const latitude = latitudeInput.value.trim();
+          const longitude = longitudeInput.value.trim();
+
+          // Basic validation
+          if (!latitude || !longitude) {
+            showError("Please enter both latitude and longitude");
+            return;
+          }
+
+          if (isNaN(latitude) || isNaN(longitude)) {
+            showError("Latitude and longitude must be numbers");
+            return;
+          }
+
+          // Show loading message
+          resultsDiv.innerHTML =
+            '<p class="loading">Fetching address information...</p>';
+
+          // Use Nominatim API from OpenStreetMap
+          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
+
+          fetch(url)
+            .then((response) => {
+              if (!response.ok) {
+                throw new Error("Network response was not ok");
+              }
+              return response.json();
+            })
+            .then((data) => {
+              if (data.error) {
+                showError(data.error);
+              } else {
+                displayResults(data);
+              }
+            })
+            .catch((error) => {
+              showError("Error fetching address: " + error.message);
+              console.error("Error:", error);
+            });
+        }
+
+        function displayResults(data) {
+          let html = "<h3>Location Information</h3>";
+
+          if (data.display_name) {
+            html += `<p><strong>Address:</strong> ${data.display_name}</p>`;
+          }
+
+          if (data.address) {
+            html += "<p><strong>Address Details:</strong></p><ul>";
+            for (const [key, value] of Object.entries(data.address)) {
+              html += `<li><strong>${key}:</strong> ${value}</li>`;
+            }
+            html += "</ul>";
+          }
+
+          // Add link to open in Google Maps
+          html += `<div class="map-link"><a href="https://www.google.com/maps?q=${data.lat},${data.lon}" target="_blank">Open in Google Maps</a></div>`;
+
+          // Add raw JSON data (useful for debugging)
+          html += `<details><summary>Raw Data</summary><pre>${JSON.stringify(data, null, 2)}</pre></details>`;
+
+          resultsDiv.innerHTML = html;
+        }
+
+        function showError(message) {
+          resultsDiv.innerHTML = `<p class="error">${message}</p>`;
+        }
+      });
+    </script>
+  </body>
+</html>
