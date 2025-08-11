@@ -1,0 +1,335 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="refresh" content="60" />
+    <title>Geolocation with City Stats</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+        text-align: center;
+      }
+      #text-input {
+        width: 100%;
+        height: 150px;
+        margin: 15px 0;
+        padding: 10px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+      }
+      .controls {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 10px;
+        margin-bottom: 20px;
+      }
+      #locationResult {
+        margin-top: 20px;
+        padding: 15px;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        text-align: left;
+      }
+      button {
+        padding: 10px 20px;
+        background-color: #4caf50;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        margin: 5px;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+      button:disabled {
+        background-color: #cccccc;
+        cursor: not-allowed;
+      }
+      .error {
+        color: red;
+      }
+      .loading {
+        color: #666;
+        font-style: italic;
+      }
+      .section {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px dashed #ccc;
+      }
+      #restaurantsList {
+        margin-top: 10px;
+      }
+      .restaurant {
+        padding: 10px;
+        margin: 5px 0;
+        background-color: #f0f0f0;
+        border-radius: 4px;
+      }
+      .restaurant h4 {
+        margin: 0 0 5px 0;
+      }
+      .restaurant p {
+        margin: 2px 0;
+        font-size: 14px;
+      }
+      .stats-grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+        margin-top: 10px;
+      }
+      .stat-item {
+        background-color: #e9f7ef;
+        padding: 8px;
+        border-radius: 4px;
+      }
+      .stat-item h4 {
+        margin: 0 0 5px 0;
+        color: #2e7d32;
+      }
+      .wikipedia-link {
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Location Explorer</h1>
+    <p>
+      Get your location and discover nearby restaurants and city statistics.
+    </p>
+
+    <div id="locationResult">
+      <p>Your location information will appear here.</p>
+    </div>
+
+    <h1>Multi-Language Text-to-Speech</h1>
+
+    <div class="language-selector">
+      <label for="language">Select Language:</label>
+      <select id="language">
+        <option value="pt-BR">Brazilian Portuguese</option>
+        <option value="en-US">English (US)</option>
+        <option value="en-GB">English (UK)</option>
+        <option value="es-ES">Spanish (Spain)</option>
+        <option value="es-MX">Spanish (Mexico)</option>
+        <option value="fr-FR">French</option>
+        <option value="de-DE">German</option>
+        <option value="it-IT">Italian</option>
+      </select>
+    </div>
+
+    <textarea id="text-input" placeholder="Enter text to speak..."></textarea>
+
+    <div class="voice-selector">
+      <label for="voice-select">Select Voice:</label>
+      <select id="voice-select"></select>
+    </div>
+
+    <div class="controls">
+      <button id="speak-btn">Speak</button>
+      <button id="pause-btn" disabled>Pause</button>
+      <button id="resume-btn" disabled>Resume</button>
+      <button id="stop-btn" disabled>Stop</button>
+    </div>
+
+    <div class="controls">
+      <label for="rate">Speed:</label>
+      <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1" />
+      <span id="rate-value">1</span>
+
+      <label for="pitch">Pitch:</label>
+      <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1" />
+      <span id="pitch-value">1</span>
+    </div>
+
+    <script src="libs/guia_js/guia.js"></script>
+    <script src="andarilho.js"></script>
+    <script>
+      // DOM elements
+      const textInput = document.getElementById("text-input");
+      const speakBtn = document.getElementById("speak-btn");
+      const pauseBtn = document.getElementById("pause-btn");
+      const resumeBtn = document.getElementById("resume-btn");
+      const stopBtn = document.getElementById("stop-btn");
+      const voiceSelect = document.getElementById("voice-select");
+      const languageSelect = document.getElementById("language");
+      const rateInput = document.getElementById("rate");
+      const pitchInput = document.getElementById("pitch");
+      const rateValue = document.getElementById("rate-value");
+      const pitchValue = document.getElementById("pitch-value");
+
+      // Speech synthesis variables
+      let voices = [];
+      let filteredVoices = [];
+      let currentUtterance = null;
+
+      // Initialize the app
+      function init() {
+        loadVoices();
+
+        // Some browsers need this event to load voices
+        window.speechSynthesis.onvoiceschanged = loadVoices;
+
+        // Set up event listeners
+        speakBtn.addEventListener("click", speak);
+        pauseBtn.addEventListener("click", pauseSpeech);
+        resumeBtn.addEventListener("click", resumeSpeech);
+        stopBtn.addEventListener("click", stopSpeech);
+        languageSelect.addEventListener("change", loadVoices);
+        rateInput.addEventListener("input", updateRate);
+        pitchInput.addEventListener("input", updatePitch);
+
+        getLocation();
+      }
+
+      // Load available voices
+      function loadVoices() {
+        voices = window.speechSynthesis.getVoices();
+        console.log("Voices:", voices);
+        const selectedLanguage = languageSelect.value;
+
+        // Filter voices for the selected language
+        filteredVoices = voices.filter((voice) =>
+          voice.lang.startsWith(selectedLanguage),
+        );
+
+        // Populate voice dropdown
+        voiceSelect.innerHTML = "";
+
+        if (filteredVoices.length > 0) {
+          filteredVoices.forEach((voice, index) => {
+            const option = document.createElement("option");
+            option.value = index;
+            option.textContent = `${voice.name} (${voice.lang})`;
+            voiceSelect.appendChild(option);
+          });
+        } else {
+          const option = document.createElement("option");
+          option.textContent = "No voices available for selected language";
+          voiceSelect.appendChild(option);
+          console.warn("No voices available for language:", selectedLanguage);
+        }
+      }
+
+      // Speak function
+      function speak(textToBeSpoken, textAlert) {
+        var text = textInput.value.trim();
+        if (text === "") {
+          if (textAlert) {
+            alert("Please enter some text first");
+            return;
+          } else {
+            text = textToBeSpoken
+              ? textToBeSpoken
+              : text
+                ? text
+                : "Aguardando texto";
+          }
+        }
+
+        // Stop any current speech
+        if (currentUtterance) {
+          window.speechSynthesis.cancel();
+        }
+
+        currentUtterance = new SpeechSynthesisUtterance(text);
+        currentUtterance.lang = languageSelect.value;
+
+        // Set selected voice
+        const selectedVoiceIndex = voiceSelect.value;
+        console.log("selectedVoiceIndex:", selectedVoiceIndex);
+        console.log("voices:", filteredVoices);
+        if (selectedVoiceIndex && filteredVoices[selectedVoiceIndex]) {
+          console.log("voice:", filteredVoices[selectedVoiceIndex]);
+          currentUtterance.voice = filteredVoices[selectedVoiceIndex];
+        }
+
+        // Set speech parameters
+        currentUtterance.rate = parseFloat(rateInput.value);
+        currentUtterance.pitch = parseFloat(pitchInput.value);
+        currentUtterance.volume = 1;
+
+        // Event listeners
+        currentUtterance.onstart = function () {
+          speakBtn.disabled = true;
+          pauseBtn.disabled = false;
+          stopBtn.disabled = false;
+        };
+
+        currentUtterance.onend = function () {
+          speakBtn.disabled = false;
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = true;
+          stopBtn.disabled = true;
+          currentUtterance = null;
+        };
+
+        currentUtterance.onpause = function () {
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = false;
+        };
+
+        currentUtterance.onresume = function () {
+          pauseBtn.disabled = false;
+          resumeBtn.disabled = true;
+        };
+
+        currentUtterance.onerror = function (event) {
+          console.error("Speech error:", event.error);
+          speakBtn.disabled = false;
+          pauseBtn.disabled = true;
+          resumeBtn.disabled = true;
+          stopBtn.disabled = true;
+          currentUtterance = null;
+        };
+
+        console.log("language:", currentUtterance.lang);
+        console.log("voice:", currentUtterance.voice);
+        console.log("rate:", currentUtterance.rate);
+        console.log("pitch:", currentUtterance.pitch);
+
+        window.speechSynthesis.cancel();
+        window.speechSynthesis.speak(currentUtterance);
+      }
+
+      // Control functions
+      function pauseSpeech() {
+        if (window.speechSynthesis.speaking) {
+          window.speechSynthesis.pause();
+        }
+      }
+
+      function resumeSpeech() {
+        if (window.speechSynthesis.paused) {
+          window.speechSynthesis.resume();
+        }
+      }
+
+      function stopSpeech() {
+        window.speechSynthesis.cancel();
+      }
+
+      // Update rate display
+      function updateRate() {
+        rateValue.textContent = rateInput.value;
+      }
+
+      // Update pitch display
+      function updatePitch() {
+        pitchValue.textContent = pitchInput.value;
+      }
+
+      // Initialize the application
+      window.addEventListener("load", init);
+    </script>
+  </body>
+</html>

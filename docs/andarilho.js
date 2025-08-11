@@ -6,29 +6,46 @@ const cityStatsBtn = document.getElementById("cityStatsBtn");
 
 function getLocation() {
 	const locationResult = document.getElementById("locationResult");
-
 	checkGeolocation(locationResult);
 
 	// Show loading message
 	locationResult.innerHTML =
 		'<p class="loading">Buscando a sua localização...</p>';
-	findRestaurantsBtn.disabled = true;
-	cityStatsBtn.disabled = true;
+	if (findRestaurantsBtn) {
+		findRestaurantsBtn.disabled = true;
+	}
+	if (cityStatsBtn) {
+		cityStatsBtn.disabled = true;
+	}
 	currentCoords = null;
 	currentAddress = null;
 
+	console.log(
+		"andarilho.js>>getLocation>>navigator.geolocation.getCurrentPosition",
+	);
 	// Get current position
 	navigator.geolocation.getCurrentPosition(
 		async (position) => {
 			// Success callback
 			const latitude = position.coords.latitude;
 			const longitude = position.coords.longitude;
+			const altitude = position.coords.altitude;
 			const precisao = position.coords.accuracy; // in meters
+			const precisaoAltitude = position.coords.altitudeAccuracy;
 
+			console.log(
+				"Inside the navigator.geolocation.getCurrentPosition callback",
+			);
 			// Store coordinates
-			currentCoords = { latitude, longitude };
+			currentCoords = { latitude, longitude, altitude };
 
-			const coordsHtml = renderCoords(latitude, longitude, precisao);
+			const coordsHtml = renderHtmlCoords(
+				latitude,
+				longitude,
+				altitude,
+				precisao,
+				precisaoAltitude,
+			);
 
 			const loc = `<div id="addressSection">
         <p class="loading">Looking up address...</p>
@@ -44,10 +61,11 @@ function getLocation() {
                     `;
 			// Display coordinates first
 			locationResult.innerHTML = coordsHtml + loc;
-			console.log(locationResult.innerHTML);
 
 			// Enable buttons
-			findRestaurantsBtn.disabled = false;
+			if (findRestaurantsBtn) {
+				findRestaurantsBtn.disabled = false;
+			}
 
 			try {
 				// Perform reverse geocoding
@@ -65,7 +83,17 @@ function getLocation() {
 						address.address.town ||
 						address.address.village)
 				) {
-					cityStatsBtn.disabled = false;
+					if (cityStatsBtn) {
+						cityStatsBtn.disabled = false;
+					}
+				}
+
+				const text_input = document.getElementById("text-input");
+				if (text_input) {
+					tts = buildTextToSpeech(address.address);
+					text_input.value = tts;
+					console.log("tts:", tts);
+					speak(tts);
 				}
 			} catch (error) {
 				const addressSection = document.getElementById("addressSection");
@@ -170,7 +198,6 @@ async function getCityStats() {
 			currentAddress.address.city ||
 			currentAddress.address.town ||
 			currentAddress.address.village;
-		console.log("city name:" + `${cityName}`);
 		const state = currentAddress.address.state || "";
 		const country = currentAddress.address.country || "";
 

@@ -176,14 +176,7 @@
             html += `<p><strong>Address:</strong> ${data.display_name}</p>`;
           }
 
-          if (data.address) {
-            html += "<p><strong>Address Details:</strong></p><ul>";
-            for (const [key, value] of Object.entries(data.address)) {
-              html += `<li><strong>${key}:</strong> ${value}</li>`;
-            }
-            html += "</ul>";
-          }
-
+          html += renderAddress(data);
           // Add link to open in Google Maps
           html += `<div class="map-link"><a href="https://www.google.com/maps?q=${data.lat},${data.lon}" target="_blank">Open in Google Maps</a></div>`;
 
@@ -198,5 +191,7 @@
         }
       });
     </script>
+    <script src="libs/guia_js/guia.js"></script>
+    <script src="andarilho.js"></script>
   </body>
 </html>
