@@ -86,13 +86,12 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="initialize()">
     <h1>Location Explorer</h1>
     <p>
       Get your location and discover nearby restaurants and city statistics.
     </p>
 
-    <button onclick="getSingleLocationUpdate()">Get My Location</button>
     <button id="findRestaurantsBtn" onclick="findNearbyRestaurants()" disabled>
       Find Nearby Restaurants
     </button>
@@ -107,5 +106,10 @@
     </div>
     <script src="libs/guia_js/guia.js"></script>
     <script src="andarilho.js"></script>
+    <script>
+      function initialize() {
+        getSingleLocationUpdate();
+      }
+    </script>
   </body>
 </html>

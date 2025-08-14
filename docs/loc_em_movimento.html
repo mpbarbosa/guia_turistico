@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="refresh" content="60" />
     <title>Geolocation with City Stats</title>
     <style>
       body {
@@ -174,10 +173,10 @@
 
       // Initialize the app
       function init() {
-        loadVoices();
+        //loadVoices();
 
         // Some browsers need this event to load voices
-        window.speechSynthesis.onvoiceschanged = loadVoices;
+        //window.speechSynthesis.onvoiceschanged = loadVoices;
 
         // Set up event listeners
         speakBtn.addEventListener("click", speak);
@@ -188,17 +187,18 @@
         rateInput.addEventListener("input", updateRate);
         pitchInput.addEventListener("input", updatePitch);
 
-        getSingleLocationUpdate();
+        startTracking();
       }
 
       // Load available voices
       function loadVoices() {
-        voices = window.speechSynthesis.getVoices();
-        console.log("Voices:", voices);
+        const voices = window.speechSynthesis.getVoices();
+        console.log("Voices: ", voices);
         const selectedLanguage = languageSelect.value;
 
         // Filter voices for the selected language
-        filteredVoices = voices.filter((voice) =>
+        console.log("Selected language: ", selectedLanguage);
+        const filteredVoices = voices.filter((voice) =>
           voice.lang.startsWith(selectedLanguage),
         );
 
@@ -247,7 +247,7 @@
         // Set selected voice
         const selectedVoiceIndex = voiceSelect.value;
         console.log("selectedVoiceIndex:", selectedVoiceIndex);
-        console.log("voices:", filteredVoices);
+        console.log("voices: ", filteredVoices);
         if (selectedVoiceIndex && filteredVoices[selectedVoiceIndex]) {
           console.log("voice:", filteredVoices[selectedVoiceIndex]);
           currentUtterance.voice = filteredVoices[selectedVoiceIndex];

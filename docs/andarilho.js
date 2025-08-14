@@ -9,69 +9,15 @@ function getLocation() {
 	checkGeolocation(locationResult);
 
 	// Show loading message
-	locationResult.innerHTML =
-		'<p class="loading">Buscando a sua localização...</p>';
-	if (findRestaurantsBtn) {
-		findRestaurantsBtn.disabled = true;
-	}
-	if (cityStatsBtn) {
-		cityStatsBtn.disabled = true;
-	}
+	//locationResult.innerHTML =
+	//	'<p class="loading">Buscando a sua localização...</p>';
 	currentCoords = null;
 	currentAddress = null;
 
-	console.log(
-		"andarilho.js>>getLocation>>navigator.geolocation.getCurrentPosition",
-	);
 	// Get current position
 	navigator.geolocation.getCurrentPosition(
 		async (position) => {
-			// Success callback
-			const latitude = position.coords.latitude;
-			const longitude = position.coords.longitude;
-			const altitude = position.coords.altitude;
-			const precisao = position.coords.accuracy; // in meters
-			const precisaoAltitude = position.coords.altitudeAccuracy;
-
-			console.log(
-				"Inside the navigator.geolocation.getCurrentPosition callback",
-			);
-			// Store coordinates
-			currentCoords = { latitude, longitude, altitude };
-
-			const coordsHtml = renderHtmlCoords(
-				latitude,
-				longitude,
-				altitude,
-				precisao,
-				precisaoAltitude,
-			);
-
-			const loc = `<div id="addressSection">
-        <p class="loading">Looking up address...</p>
-                        </div>
-                        <div class="section" id="restaurantsSection" style="display:none;">
-                            <h3>Nearby Restaurants</h3>
-                            <div id="restaurantsList"></div>
-                        </div>
-                        <div class="section" id="cityStatsSection" style="display:none;">
-                            <h3>City Statistics</h3>
-                            <div id="cityStats"></div>
-                        </div>
-                    `;
-			// Display coordinates first
-			locationResult.innerHTML = coordsHtml + loc;
-
-			// Enable buttons
-			if (findRestaurantsBtn) {
-				findRestaurantsBtn.disabled = false;
-			}
-
 			try {
-				// Perform reverse geocoding
-				const address = await reverseGeocode(latitude, longitude);
-				currentAddress = address;
-
 				// Update the address section
 				const addressSection = document.getElementById("addressSection");
 				addressSection.innerHTML = renderAddress(address);
@@ -272,31 +218,6 @@ async function getCityStats() {
 	}
 }
 
-// Reverse geocoding function using Nominatim API
-async function reverseGeocode(latitude, longitude) {
-	const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
-
-	try {
-		const response = await fetch(url);
-
-		if (!response.ok) {
-			throw new Error(`Geocoding service error: ${response.status}`);
-		}
-
-		const data = await response.json();
-
-		// Check if we got a valid response
-		if (data.error) {
-			throw new Error(data.error.message || "Unknown geocoding error");
-		}
-
-		return data;
-	} catch (error) {
-		console.error("Reverse geocoding error:", error);
-		throw error;
-	}
-}
-
 // Function to get nearby restaurants using Overpass API
 async function getNearbyRestaurants(lat, lon, radius) {
 	// Overpass QL query to find restaurants within radius
@@ -446,20 +367,4 @@ function extractCityStats(wikiData) {
 	});
 
 	return result;
-}
-
-// Haversine distance calculation between two coordinates
-function calculateDistance(lat1, lon1, lat2, lon2) {
-	const R = 6371e3; // Earth radius in meters
-	const φ1 = (lat1 * Math.PI) / 180;
-	const φ2 = (lat2 * Math.PI) / 180;
-	const Δφ = ((lat2 - lat1) * Math.PI) / 180;
-	const Δλ = ((lon2 - lon1) * Math.PI) / 180;
-
-	const a =
-		Math.sin(Δφ / 2) * Math.sin(Δφ / 2) +
-		Math.cos(φ1) * Math.cos(φ2) * Math.sin(Δλ / 2) * Math.sin(Δλ / 2);
-	const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-
-	return R * c;
 }
