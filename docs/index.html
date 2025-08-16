@@ -108,7 +108,11 @@
     <script src="andarilho.js"></script>
     <script>
       function initialize() {
-        getSingleLocationUpdate();
+        var locationResult = document.getElementById("locationResult");
+        var geolocationService = new GeolocationService(locationResult);
+        var positionDisplayer = new HTMLPositionDisplayer(locationResult);
+        geolocationService.subscribe(positionDisplayer);
+        geolocationService.getSingleLocationUpdate();
       }
     </script>
   </body>
