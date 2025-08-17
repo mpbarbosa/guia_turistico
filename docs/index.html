@@ -111,7 +111,9 @@
         var locationResult = document.getElementById("locationResult");
         var geolocationService = new GeolocationService(locationResult);
         var positionDisplayer = new HTMLPositionDisplayer(locationResult);
+        var addressDisplayer = new HTMLAddressDisplayer(locationResult);
         geolocationService.subscribe(positionDisplayer);
+        geolocationService.subscribe(addressDisplayer);
         geolocationService.getSingleLocationUpdate();
       }
     </script>
