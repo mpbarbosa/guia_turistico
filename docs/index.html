@@ -108,6 +108,7 @@
     <script src="andarilho.js"></script>
     <script>
       function initialize() {
+        console.log("Initializing application...");
         var locationResult = document.getElementById("locationResult");
         var geolocationService = new GeolocationService(locationResult);
         var positionDisplayer = new HTMLPositionDisplayer(locationResult);
