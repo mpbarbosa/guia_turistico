@@ -75,7 +75,7 @@
       }
     </style>
   </head>
-  <body>
+  <body onload="init()">
     <div class="container">
       <h1>Latitude/Longitude to Address Converter</h1>
 
@@ -110,7 +110,8 @@
     </div>
 
     <script>
-      document.addEventListener("DOMContentLoaded", function () {
+      function init() {
+        console.log("Initializing application...");
         const fetchButton = document.getElementById("fetchButton");
         const latitudeInput = document.getElementById("latitude");
         const longitudeInput = document.getElementById("longitude");
@@ -126,70 +127,47 @@
         longitudeInput.addEventListener("keypress", function (e) {
           if (e.key === "Enter") fetchAddress();
         });
+      }
 
-        function fetchAddress() {
-          const latitude = latitudeInput.value.trim();
-          const longitude = longitudeInput.value.trim();
+      function fetchAddress() {
+        console.log("Fetching address...");
+        const latitude = document.getElementById("latitude").value.trim();
+        const longitude = document.getElementById("longitude").value.trim();
+        const resultsDiv = document.getElementById("results");
 
-          // Basic validation
-          if (!latitude || !longitude) {
-            showError("Please enter both latitude and longitude");
-            return;
-          }
-
-          if (isNaN(latitude) || isNaN(longitude)) {
-            showError("Latitude and longitude must be numbers");
-            return;
-          }
-
-          // Show loading message
-          resultsDiv.innerHTML =
-            '<p class="loading">Fetching address information...</p>';
-
-          // Use Nominatim API from OpenStreetMap
-          const url = `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&addressdetails=1`;
-
-          fetch(url)
-            .then((response) => {
-              if (!response.ok) {
-                throw new Error("Network response was not ok");
-              }
-              return response.json();
-            })
-            .then((data) => {
-              if (data.error) {
-                showError(data.error);
-              } else {
-                displayResults(data);
-              }
-            })
-            .catch((error) => {
-              showError("Error fetching address: " + error.message);
-              console.error("Error:", error);
-            });
+        if (!latitude || !longitude) {
+          showError("Please enter both latitude and longitude.");
+          return;
         }
 
-        function displayResults(data) {
-          let html = "<h3>Location Information</h3>";
-
-          if (data.display_name) {
-            html += `<p><strong>Address:</strong> ${data.display_name}</p>`;
-          }
-
-          html += renderAddress(data);
-          // Add link to open in Google Maps
-          html += `<div class="map-link"><a href="https://www.google.com/maps?q=${data.lat},${data.lon}" target="_blank">Open in Google Maps</a></div>`;
-
-          // Add raw JSON data (useful for debugging)
-          html += `<details><summary>Raw Data</summary><pre>${JSON.stringify(data, null, 2)}</pre></details>`;
-
-          resultsDiv.innerHTML = html;
+        // Validate latitude and longitude
+        if (
+          isNaN(latitude) ||
+          isNaN(longitude) ||
+          latitude < -90 ||
+          latitude > 90 ||
+          longitude < -180 ||
+          longitude > 180
+        ) {
+          showError("Invalid latitude or longitude values.");
+          return;
         }
 
-        function showError(message) {
-          resultsDiv.innerHTML = `<p class="error">${message}</p>`;
-        }
-      });
+        resultsDiv.innerHTML = '<p class="loading">Loading...</p>';
+
+        var reverseGeocoder = new ReverseGeocoder(latitude, longitude);
+        var htmlDisplayer = new HTMLAddressDisplayer(resultsDiv);
+        reverseGeocoder.subscribe(htmlDisplayer);
+
+        reverseGeocoder.reverseGeocode().then((data) => {
+          console.log("Address fetched:", data);
+          reverseGeocoder.notifyObservers();
+        });
+      }
+
+      function showError(message) {
+        results.innerHTML = `<p class="error">${message}</p>`;
+      }
     </script>
     <script src="libs/guia_js/guia.js"></script>
     <script src="andarilho.js"></script>
