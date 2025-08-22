@@ -156,30 +156,9 @@
       function init() {
         console.log("Initializing application...");
         var locationResult = document.getElementById("locationResult");
-        var geolocationService = new GeolocationService(locationResult);
-        var positionDisplayer = new HTMLPositionDisplayer(locationResult);
-        var addressDisplayer = new HTMLAddressDisplayer(locationResult);
-        geolocationService.subscribe(positionDisplayer);
-        geolocationService.subscribe(addressDisplayer);
-        // Initialize elements
-        var htmlSpeechSynthesisDisplayer = new HtmlSpeechSynthesisDisplayer(
-          {
-            languageSelectId: "language",
-            voiceSelectId: "voice-select",
-            textInputId: "text-input",
-            speakBtnId: "speak-btn",
-            pauseBtnId: "pause-btn",
-            resumeBtnId: "resume-btn",
-            stopBtnId: "stop-btn",
-            rateInputId: "rate",
-            rateValueId: "rate-value",
-            pitchInputId: "pitch",
-            pitchValueId: "pitch-value",
-          },
-          document,
-        );
-        geolocationService.subscribe(htmlSpeechSynthesisDisplayer);
-        geolocationService.startTracking();
+        var manager = new WebGeocodingManager(locationResult);
+
+        manager.startTracking(document);
       }
     </script>
   </body>

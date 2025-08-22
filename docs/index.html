@@ -86,7 +86,7 @@
       }
     </style>
   </head>
-  <body onload="initialize()">
+  <body onload="init()">
     <h1>Guia</h1>
     <p>
       v 0.1.1 <br>2025-08-19</b>
@@ -108,15 +108,11 @@
     <script src="libs/guia_js/guia.js"></script>
     <script src="andarilho.js"></script>
     <script>
-      function initialize() {
+      function init() {
         console.log("Initializing application...");
         var locationResult = document.getElementById("locationResult");
-        var geolocationService = new GeolocationService(locationResult);
-        var positionDisplayer = new HTMLPositionDisplayer(locationResult);
-        var addressDisplayer = new HTMLAddressDisplayer(locationResult);
-        geolocationService.subscribe(positionDisplayer);
-        geolocationService.subscribe(addressDisplayer);
-        geolocationService.getSingleLocationUpdate();
+        var manager = new WebGeocodingManager(locationResult);
+        manager.getSingleLocationUpdate();
       }
     </script>
   </body>
