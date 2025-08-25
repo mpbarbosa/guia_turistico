@@ -106,12 +106,13 @@
       <p>Your location information will appear here.</p>
     </div>
     <script src="libs/guia_js/guia.js"></script>
-    <script src="andarilho.js"></script>
     <script>
       function init() {
-        console.log("Initializing application...");
+        console.log("(index) Initializing application...");
         var locationResult = document.getElementById("locationResult");
-        var manager = new WebGeocodingManager(locationResult);
+        console.log("(index) locationResult:", locationResult);
+        console.log("(index) Creating WebGeocodingManager...");
+        var manager = new WebGeocodingManager(document, locationResult);
         manager.getSingleLocationUpdate();
       }
     </script>
