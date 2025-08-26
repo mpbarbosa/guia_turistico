@@ -157,9 +157,9 @@
         console.log("Initializing application...");
         var locationResult = document.getElementById("locationResult");
         console.log("(loc_em_movimento) locationResult:", locationResult);
-        var manager = new WebGeocodingManager(locationResult);
+        var manager = new WebGeocodingManager(document, locationResult);
 
-        manager.startTracking(document);
+        manager.startTracking();
       }
     </script>
   </body>
