@@ -101,11 +101,14 @@
     </button>
     <a href="address_converter.html">Address converter</a> | |
     <a href="loc_em_movimento.html">Localização em movimento</a>
-
+    <div class="section" id="dadosSidra"> 
+      <h2>Location Information</h2>
+    </div>
     <div id="locationResult">
       <p>Your location information will appear here.</p>
     </div>
     <script src="libs/guia_js/guia.js"></script>
+    <script src="libs/sidra/sidra.js"></script>
     <script>
       function init() {
         console.log("(index) Initializing application...");
@@ -114,6 +117,8 @@
         console.log("(index) Creating WebGeocodingManager...");
         var manager = new WebGeocodingManager(document, locationResult);
         manager.getSingleLocationUpdate();
+        //display_sidra_dados(null, null, null, null, null, null, null, null, null);
+        display_sidra_dados(document.getElementById("dadosSidra"), 6579, 6, "3550308");
       }
     </script>
   </body>
