@@ -106,6 +106,9 @@
       v 0.1.0 <br>2025-08-18</b>
     </p>
 <div id="chronometer"> </div>
+    <div class="section" id="dadosSidra"> 
+      <h2>Location Information</h2>
+    </div>
 <div id="tsPosCapture"> </div>
     <div id="locationResult">
       <p>Your location information will appear here.</p>
@@ -127,7 +130,7 @@
       </select>
     </div>
 
-    <textarea id="text-input" placeholder="Enter text to speak..."></textarea>
+    <textarea id="text-input" placeholder="Enter text to speak..." onchange="updateTextInput()"></textarea>
 
     <div class="voice-selector">
       <label for="voice-select">Select Voice:</label>
@@ -152,15 +155,25 @@
     </div>
 
     <script src="libs/guia_js/guia.js"></script>
-    <script src="andarilho.js"></script>
+    <script src="libs/sidra/sidra.js"></script>
     <script>
       function init() {
         console.log("Initializing application...");
         var locationResult = document.getElementById("locationResult");
         console.log("(loc_em_movimento) locationResult:", locationResult);
         var manager = new WebGeocodingManager(document, locationResult);
-
+        manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
+          console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
+          var dadosSidraDiv = document.getElementById("dadosSidra");
+          displaySidraDadosParams(dadosSidraDiv, "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
+        });
         manager.startTracking();
+      }
+
+      function updateTextInput() {
+        var textInput = document.getElementById("text-input");
+        var dadosSidraDiv = document.getElementById("dadosSidra");
+        textInput.value += "." + dadosSidraDiv.innerText;
       }
     </script>
   </body>
