@@ -116,9 +116,20 @@
         console.log("(index) locationResult:", locationResult);
         console.log("(index) Creating WebGeocodingManager...");
         var manager = new WebGeocodingManager(document, locationResult);
+        console.log("(index) manager:", manager);
+        manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
+          console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
+          displaySidraDadosParams(document.getElementById("dadosSidra"), "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
+        });
+        // Wait for location to be obtained
         manager.getSingleLocationUpdate();
+        // Enable buttons after location is obtained
+        setTimeout(() => {
+          document.getElementById("findRestaurantsBtn").disabled = false;
+          document.getElementById("cityStatsBtn").disabled = false;
+        }, 2000); // Simulate delay for demo purposes
         //display_sidra_dados(null, null, null, null, null, null, null, null, null);
-        display_sidra_dados(document.getElementById("dadosSidra"), 6579, 6, "3550308");
+        //display_sidra_dados(document.getElementById("dadosSidra"), 6579, 6, "3550308");
       }
     </script>
   </body>
