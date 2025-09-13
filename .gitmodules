@@ -1,6 +1,6 @@
 [submodule "docs/libs/guia_js"]
-	path = docs/libs/guia_js
+	path = src/libs/guia_js
 	url = https://github.com/mpbarbosa/guia_js.git
 [submodule "docs/libs/sidra"]
-	path = docs/libs/sidra
+	path = src/libs/sidra
 	url = git@github.com:mpbarbosa/sidra.js.git
