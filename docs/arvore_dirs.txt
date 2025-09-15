@@ -1,0 +1,34 @@
+project-root/
+├── src/                    # Source files
+│   ├── assets/            # All static assets
+│   │   ├── images/        # Image files
+│   │   │   ├── icons/     # Icon files
+│   │   │   ├── logos/     # Logo files
+│   │   │   └── content/   # Content images
+│   │   ├── fonts/         # Web fonts
+│   │   ├── videos/        # Video files
+│   │   └── documents/     # PDFs, Word docs, etc.
+│   ├── styles/            # CSS/Stylesheets
+│   │   ├── base/          # Base styles (reset, variables, etc.)
+│   │   ├── components/    # Component-specific styles
+│   │   ├── layouts/       # Layout styles
+│   │   └── pages/         # Page-specific styles
+│   ├── scripts/           # JavaScript files
+│   │   ├── vendors/       # Third-party libraries
+│   │   ├── components/    # Reusable components
+│   │   ├── modules/       # Feature modules
+│   │   └── utils/         # Helper functions
+│   ├── content/           # Content files (for CMS or static site generators)
+│   └── templates/         # HTML templates (if using a template system)
+├── dist/                  # Built/compiled files (auto-generated)
+├── docs/                  # Project documentation
+├── tests/                 # Test files
+│   ├── unit/              # Unit tests
+│   └── integration/       # Integration tests
+├── node_modules/          # Node.js dependencies (auto-generated)
+├── .github/               # GitHub configuration (workflows, issue templates)
+├── .vscode/               # VS Code specific settings
+├── public/                # Publicly accessible files (favicon, robots.txt)
+├── package.json           # Project dependencies and scripts
+├── README.md              # Project documentation
+└── .gitignore            # Git ignore rules
