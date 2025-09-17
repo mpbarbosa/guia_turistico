@@ -6,3 +6,5 @@ De tempos em tempos, informa o clima da cidade destino e a situação do caminho
 Cenário 2: Policias em perseguição precisam informar por quais ruas estão passando.
 
 Cenário 3: Chego no shopping e sou informado dos filmes em exibição. 
+
+Cenário 4: grupo de amigos marca encontro ou ponto de encontro. Todos podem se ver. Quando chega ao local, compartilhamento é 
