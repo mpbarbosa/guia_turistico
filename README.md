@@ -7,4 +7,5 @@ Cenário 2: Policias em perseguição precisam informar por quais ruas estão pa
 
 Cenário 3: Chego no shopping e sou informado dos filmes em exibição. 
 
-Cenário 4: grupo de amigos marca encontro ou ponto de encontro. Todos podem se ver. Quando chega ao local, compartilhamento é 
+Cenário 4: grupo de amigos marca encontro ou ponto de encontro. Todos podem se ver. Quando chega ao local, compartilhamento é encerrado. 
+Social medias and LBS go hand in hand. 
