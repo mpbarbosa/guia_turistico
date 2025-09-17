@@ -1,93 +1,169 @@
+/* Mobile-first base styles */
 body {
-  font-family: Arial, sans-serif;
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
-  text-align: center;
+  margin: 0;
+  font-family: 'Segoe UI', Arial, sans-serif;
+  background: #fff;
+  color: #222;
+  min-height: 100vh;
+  padding-bottom: 120px; /* space for bottom textarea */
 }
-#text-input {
-  width: 100%;
-  height: 150px;
-  margin: 15px 0;
-  padding: 10px;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+
+h1 {
+  font-size: 1.5rem;
+  margin: 1rem 0 0.5rem 0;
 }
+
+h2 {
+  font-size: 1.2rem;
+  margin: 1rem 0 0.5rem 0;
+}
+
+.section {
+  margin-top: 1rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #ccc;
+}
+
+#guia-version {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  background: #fff;
+  color: #222;
+  padding: 8px 16px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px #ccc;
+  font-weight: bold;
+  z-index: 1000;
+  text-align: left;
+  font-size: 0.95rem;
+  max-width: 90vw;
+  word-break: break-word;
+}
+
+#chronometer,
+#tsPosCapture,
+#locationResult {
+  margin: 1rem 0;
+  padding: 0.5rem;
+  background: #f9f9f9;
+  border-radius: 6px;
+  box-shadow: 0 1px 4px #eee;
+}
+
+.language-selector,
+.voice-selector,
 .controls {
+  margin: 1rem 0;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
-  margin-bottom: 20px;
+  gap: 0.5rem;
+  align-items: center;
 }
-#locationResult {
-  margin-top: 20px;
-  padding: 15px;
+
+textarea#text-input {
+  width: 100%;
+  min-height: 100px;
+  margin: 1rem 0;
+  padding: 10px;
   border: 1px solid #ddd;
-  border-radius: 5px;
-  background-color: #f9f9f9;
-  text-align: left;
+  border-radius: 6px;
+  font-size: 1rem;
+  resize: vertical;
+  box-sizing: border-box;
 }
+
 button {
-  padding: 10px 20px;
+  padding: 10px 18px;
   background-color: #4caf50;
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 6px;
   cursor: pointer;
-  font-size: 16px;
-  margin: 5px;
+  font-size: 1rem;
+  margin: 2px 0;
+  transition: background 0.2s;
 }
+
 button:hover {
   background-color: #45a049;
 }
+
 button:disabled {
   background-color: #cccccc;
   cursor: not-allowed;
 }
-.error {
-  color: red;
+
+input[type="range"] {
+  width: 100px;
 }
-.loading {
-  color: #666;
-  font-style: italic;
+
+#rate-value,
+#pitch-value {
+  min-width: 2em;
+  display: inline-block;
+  text-align: center;
 }
-.section {
-  margin-top: 15px;
-  padding-top: 15px;
-  border-top: 1px dashed #ccc;
-}
-#restaurantsList {
-  margin-top: 10px;
-}
-.restaurant {
-  padding: 10px;
-  margin: 5px 0;
-  background-color: #f0f0f0;
-  border-radius: 4px;
-}
-.restaurant h4 {
-  margin: 0 0 5px 0;
-}
-.restaurant p {
-  margin: 2px 0;
-  font-size: 14px;
-}
-.stats-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 10px;
-  margin-top: 10px;
-}
-.stat-item {
-  background-color: #e9f7ef;
+
+#bottom-scroll-textarea {
+  width: 98%;
+  margin: 1%;
+  resize: vertical;
+  overflow-y: scroll;
+  border: none;
+  border-top: 1px solid #ccc;
+  background: #fff;
+  font-size: 1rem;
   padding: 8px;
-  border-radius: 4px;
+  border-radius: 0 0 8px 8px;
+  box-sizing: border-box;
 }
-.stat-item h4 {
-  margin: 0 0 5px 0;
-  color: #2e7d32;
+
+div[style*="position:fixed"][style*="bottom:0"] {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: #fff;
+  border-top: 1px solid #ccc;
+  box-shadow: 0 -2px 8px #ccc;
+  z-index: 999;
 }
-.wikipedia-link {
-  margin-top: 10px;
-  font-size: 14px;
+
+/* Responsive adjustments for tablets and up */
+@media (min-width: 600px) {
+  h1 {
+    font-size: 2rem;
+  }
+  h2 {
+    font-size: 1.5rem;
+  }
+  #guia-version {
+    font-size: 1.1rem;
+    max-width: 400px;
+  }
+  textarea#text-input {
+    min-height: 120px;
+    font-size: 1.1rem;
+  }
+  #bottom-scroll-textarea {
+    font-size: 1.1rem;
+  }
+}
+
+/* Responsive adjustments for desktops */
+@media (min-width: 900px) {
+  body {
+    padding-left: 10vw;
+    padding-right: 10vw;
+  }
+  #guia-version {
+    right: 40px;
+    top: 20px;
+    max-width: 350px;
+  }
+  div[style*="position:fixed"][style*="bottom:0"] {
+    left: 10vw;
+    width: 80vw;
+  }
 }
