@@ -7,10 +7,10 @@
     <link rel="stylesheet" href="loc_em_movimento.css">
   </head>
   <body onload="init()">
+    <div id="guia-version" style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left;">
+      <!-- Version will be rendered here -->
+    </div>
     <h1>Guia de caminho</h1>
-    <p>
-      v 0.1.0 <br>2025-08-18</b>
-    </p>
 <div id="chronometer"> </div>
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
@@ -85,6 +85,27 @@
         var dadosSidraDiv = document.getElementById("dadosSidra");
         textInput.value += "." + dadosSidraDiv.innerText;
       }
+
+      // Render both guia.js and HTML page versioning numbering and status in guia-version div
+      window.addEventListener('DOMContentLoaded', function() {
+        // HTML page version object
+        const pageVersion = {
+          major: 0,
+          minor: 1,
+          patch: 0,
+          prerelease: 'alpha',
+          status: 'unstable, pre-release',
+          toString: function() {
+            return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
+          }
+        };
+        let guiaVerStr = '';
+        if (guiaVersion && typeof guiaVersion.toString === 'function') {
+          guiaVerStr = 'guia.js ' + guiaVersion.toString();
+        }
+        document.getElementById('guia-version').innerHTML =
+          `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
+      });
     </script>
   </body>
 </html>
