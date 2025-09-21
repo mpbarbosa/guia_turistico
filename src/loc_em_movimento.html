@@ -7,7 +7,7 @@
     <link rel="stylesheet" href="loc_em_movimento.css">
   </head>
   <body onload="init()">
-    <div id="guia-version" style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left;">
+    <div id="guia-version" class="versioning-numbering" style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
       <!-- Version will be rendered here -->
     </div>
     <h1>Guia de caminho</h1>
@@ -20,45 +20,7 @@
       <p>Your location information will appear here.</p>
     </div>
 
-    <h1>Multi-Language Text-to-Speech</h1>
-
-    <div class="language-selector">
-      <label for="language">Select Language:</label>
-      <select id="language">
-        <option value="pt-BR">Brazilian Portuguese</option>
-        <option value="en-US">English (US)</option>
-        <option value="en-GB">English (UK)</option>
-        <option value="es-ES">Spanish (Spain)</option>
-        <option value="es-MX">Spanish (Mexico)</option>
-        <option value="fr-FR">French</option>
-        <option value="de-DE">German</option>
-        <option value="it-IT">Italian</option>
-      </select>
-    </div>
-
     <textarea id="text-input" placeholder="Enter text to speak..." onchange="updateTextInput()"></textarea>
-
-    <div class="voice-selector">
-      <label for="voice-select">Select Voice:</label>
-      <select id="voice-select"></select>
-    </div>
-
-    <div class="controls">
-      <button id="speak-btn">Speak</button>
-      <button id="pause-btn" disabled>Pause</button>
-      <button id="resume-btn" disabled>Resume</button>
-      <button id="stop-btn" disabled>Stop</button>
-    </div>
-
-    <div class="controls">
-      <label for="rate">Speed:</label>
-      <input type="range" id="rate" min="0.5" max="2" step="0.1" value="1" />
-      <span id="rate-value">1</span>
-
-      <label for="pitch">Pitch:</label>
-      <input type="range" id="pitch" min="0.5" max="2" step="0.1" value="1" />
-      <span id="pitch-value">1</span>
-    </div>
 
     <div style="width:100%; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #ccc; box-shadow:0 -2px 8px #ccc;">
       <textarea id="bottom-scroll-textarea" rows="4" style="width:98%; margin:1%; resize:vertical; overflow-y:scroll;" placeholder="Type or paste text here..." readonly></textarea>
@@ -91,7 +53,7 @@
         // HTML page version object
         const pageVersion = {
           major: 0,
-          minor: 2,
+          minor: 3,
           patch: 0,
           prerelease: 'alpha',
           status: 'unstable, pre-release',
