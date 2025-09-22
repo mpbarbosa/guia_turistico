@@ -1,0 +1,99 @@
+/* Material 3 Expressive - Guia Turístico
+   Referência: https://m3.material.io/styles/expressive
+*/
+
+:root {
+  /* Paleta Expressive - Exemplo */
+  --md-primary: #6750A4;
+  --md-on-primary: #FFFFFF;
+  --md-secondary: #625B71;
+  --md-on-secondary: #FFFFFF;
+  --md-background: #F5F5F5;
+  --md-surface: #FFFFFF;
+  --md-error: #B3261E;
+  --md-on-error: #FFFFFF;
+  --md-outline: #79747E;
+  --md-card: #EADDFF;
+  --md-card-text: #381E72;
+}
+
+body {
+  background: var(--md-background);
+  color: var(--md-secondary);
+  font-family: "Roboto", "Arial", sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: "Roboto", "Arial", sans-serif;
+  font-weight: 700;
+  color: var(--md-primary);
+  margin-top: 1.5rem;
+}
+
+button, .md-button {
+  background: var(--md-primary);
+  color: var(--md-on-primary);
+  border: none;
+  border-radius: 24px;
+  padding: 0.75em 2em;
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 8px rgba(103,80,164,0.08);
+  transition: background 0.2s;
+}
+button:hover, .md-button:hover {
+  background: #7F67BE;
+}
+
+.card, .md-card {
+  background: var(--md-card);
+  color: var(--md-card-text);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(103,80,164,0.08);
+  padding: 1.5em;
+  margin: 1em 0;
+}
+
+input, textarea, select {
+  font-family: inherit;
+  font-size: 1em;
+  border: 1px solid var(--md-outline);
+  border-radius: 12px;
+  padding: 0.5em 1em;
+  margin: 0.5em 0;
+  background: var(--md-surface);
+  color: var(--md-secondary);
+}
+
+/* Expressive spacing */
+section, .md-section {
+  margin: 2em 0;
+  padding: 2em 1em;
+  background: var(--md-surface);
+  border-radius: 24px;
+}
+
+/* Links */
+a {
+  color: var(--md-primary);
+  text-decoration: none;
+  font-weight: 500;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+/* Responsivo básico */
+@media (max-width: 600px) {
+  .card, .md-card, section, .md-section {
+    padding: 1em;
+    margin: 0.5em 0;
+  }
+  button, .md-button {
+    padding: 0.5em 1em;
+    font-size: 0.95em;
+  }
+}
