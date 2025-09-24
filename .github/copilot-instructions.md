@@ -100,6 +100,13 @@ tests/               # Test files (Selenium tests for web UI)
 
 ## Development Guidelines
 
+### Code Change Rules
+- Make **minimal changes** to achieve the desired functionality
+- Preserve existing working code and patterns unless specifically required to change
+- Focus on surgical, precise modifications rather than broad refactoring
+- Always validate changes don't break existing functionality
+- Test changes thoroughly before finalizing
+
 ### When Adding New Features
 1. Focus on web application implementation
 2. Test geolocation functionality across different browsers
@@ -139,6 +146,12 @@ tests/               # Test files (Selenium tests for web UI)
 - Focus on web deployment since Android support has been removed
 - No Docker setup required (legacy Android development files have been removed)
 
+### Debugging and Troubleshooting
+- Use browser developer tools for debugging web components
+- Console logging should use meaningful prefixes (e.g., `(index)`, `(manager)`)
+- Test geolocation functionality with different browser permissions
+- Validate API responses and handle edge cases gracefully
+
 ## Common Issues and Solutions
 
 ### Geolocation Problems
@@ -170,5 +183,22 @@ This is a Brazilian application, so:
 - Consider local data formats (dates, numbers)
 - Respect cultural context in user interface design
 
+## Development Workflow
+- Always analyze the issue thoroughly before making changes
+- Run existing functionality tests when possible
+- Make incremental changes and test frequently
+- Use git best practices for commits and branches
+- Document significant changes in comments when necessary
+
+## Repository-Specific Notes
+- Libraries in `src/libs/` are git submodules (guia_js and sidra)
+- The project uses Cloudflare Workers for deployment
+- Android development files (run.sh, my_run.sh) are legacy and should be ignored
+- Version numbers should be updated consistently across HTML files
+- Focus on web-based geolocation and mapping functionality
+
 ## Tool Calling
 You have the capability to call multiple tools in a single response. For maximum efficiency, whenever you need to perform multiple independent operations, ALWAYS invoke all relevant tools simultaneously rather than sequentially. Especially when exploring repository, reading files, viewing directories, validating changes or replying to comments.
+<tool_calling>
+You have the capability to call multiple tools in a single response. For maximum efficiency, whenever you need to perform multiple independent operations, ALWAYS invoke all relevant tools simultaneously rather than sequentially. Especially when exploring repository, reading files, viewing directories, validating changes or replying to comments.
+</tool_calling>
