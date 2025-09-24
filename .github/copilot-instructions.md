@@ -136,6 +136,7 @@ tests/               # Test files (Selenium tests for web UI)
 - Cloudflare Workers configuration in `wrangler.jsonc`
 - Test locally before deploying changes
 - Focus on web deployment since Android support has been removed
+- No Docker setup required (legacy Android development files have been removed)
 
 ## Common Issues and Solutions
 
