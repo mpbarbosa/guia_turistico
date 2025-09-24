@@ -11,8 +11,6 @@ Guia Turístico is a tourist guide application that provides location-based info
 
 ## Architecture
 
-This is a hybrid project with two main components:
-
 ### Web Application (`src/` directory)
 - **Primary interface**: HTML5 web application with geolocation capabilities
 - **Main files**:
@@ -24,9 +22,6 @@ This is a hybrid project with two main components:
 - **Styling**: CSS with mobile-first responsive design
 - **Libraries**: Custom JavaScript libraries in `src/libs/` (guia_js, sidra)
 
-### Android Application (discontinued)
-- **Note**: Android components have been removed from this repository
-- **Focus**: Web application is the primary platform
 
 ## Key Technologies and APIs
 
@@ -71,6 +66,7 @@ tests/               # Test files (Selenium tests for web UI)
 
 ### HTML
 - Use semantic HTML5 elements
+- Ensure mobile first design principles
 - Ensure mobile responsiveness with proper viewport meta tags
 - Include accessibility attributes (ARIA labels, alt text)
 - Progressive enhancement approach
@@ -80,10 +76,6 @@ tests/               # Test files (Selenium tests for web UI)
 - Use CSS Grid and Flexbox for layouts
 - Consistent naming conventions for classes
 - Avoid inline styles except for dynamic positioning
-
-### Android (discontinued)
-- Android development support has been removed from this project
-- Focus is now exclusively on the web application
 
 ## Common Patterns
 
@@ -167,6 +159,7 @@ The project uses semantic versioning displayed in the UI. Update version numbers
 - HTML files (inline version displays)
 - JavaScript version objects
 - Android app version codes
+- Increment versioning numbering at every commit in main branch.
 
 ## Portuguese Language Context
 This is a Brazilian application, so:
