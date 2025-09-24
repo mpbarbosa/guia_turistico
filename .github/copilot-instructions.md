@@ -70,6 +70,7 @@ tests/               # Test files (Selenium tests for web UI)
 - Ensure mobile responsiveness with proper viewport meta tags
 - Include accessibility attributes (ARIA labels, alt text)
 - Progressive enhancement approach
+- Ensure HTML5 Boilerplate compliance
 
 ### CSS
 - **Mobile-first responsive design**
