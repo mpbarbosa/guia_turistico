@@ -11,7 +11,7 @@ Guia Turístico is a tourist guide application that provides location-based info
 
 ## Architecture
 
-This is a hybrid project with two main components:
+This is a web-based application built with modern HTML5 technologies:
 
 ### Web Application (`src/` directory)
 - **Primary interface**: HTML5 web application with geolocation capabilities
@@ -23,11 +23,6 @@ This is a hybrid project with two main components:
 - **JavaScript**: Uses vanilla JavaScript with geolocation APIs
 - **Styling**: CSS with mobile-first responsive design
 - **Libraries**: Custom JavaScript libraries in `src/libs/` (guia_js, sidra)
-
-### Android Application (`app/` directory)
-- **Build system**: Gradle with Kotlin DSL
-- **Package**: `com.mpb.guiaturstico`
-- **Target**: Android mobile devices
 
 ## Key Technologies and APIs
 
@@ -54,11 +49,6 @@ src/
 ├── libs/            # Custom JavaScript libraries
 │   ├── guia_js/     # Core geolocation and mapping utilities
 │   └── sidra/       # IBGE/SIDRA API integration
-app/
-├── src/
-│   ├── main/        # Android main source
-│   ├── test/        # Unit tests
-│   └── androidTest/ # Android instrumentation tests
 ibge_data/           # IBGE statistical data cache
 docs/                # Project documentation
 utils/               # Utility scripts
@@ -86,12 +76,6 @@ utils/               # Utility scripts
 - Consistent naming conventions for classes
 - Avoid inline styles except for dynamic positioning
 
-### Android (when working on app/)
-- Follow Android development best practices
-- Use Kotlin for new features
-- Follow Material Design guidelines
-- Proper activity lifecycle management
-
 ## Common Patterns
 
 ### Geolocation Management
@@ -115,11 +99,10 @@ utils/               # Utility scripts
 ## Development Guidelines
 
 ### When Adding New Features
-1. Consider both web and Android implementations
-2. Test geolocation functionality across different browsers
-3. Ensure mobile responsiveness
-4. Add proper error handling for network failures
-5. Update version numbers in relevant files
+1. Test geolocation functionality across different browsers
+2. Ensure mobile responsiveness
+3. Add proper error handling for network failures
+4. Update version numbers in relevant files
 
 ### API Keys and Security
 - Never commit API keys or sensitive data
@@ -127,10 +110,8 @@ utils/               # Utility scripts
 - Implement proper CORS handling for web APIs
 
 ### Dependency Management
-- This project uses Gradle for Android dependencies
 - Web components use vanilla JavaScript without package managers
 - Custom libraries are in `src/libs/` directory
-- Update Android dependencies in `app/build.gradle.kts`
 - Consider compatibility when updating library versions
 
 ### Testing Approach
@@ -139,7 +120,6 @@ utils/               # Utility scripts
 - Test responsive design on multiple screen sizes
 - Validate accessibility features
 - Selenium tests available in `tests/` directory for web UI testing
-- Android instrumentation tests in `app/src/androidTest/`
 - Use appropriate testing strategy for each component
 
 ### Performance Considerations
@@ -149,11 +129,9 @@ utils/               # Utility scripts
 - Use progressive loading for large datasets
 
 ### Build and Deployment
-- Android: Use Gradle build system with `gradlew` commands
 - Web: Static files served directly from `src/` directory
 - Cloudflare Workers configuration in `wrangler.jsonc`
 - Test locally before deploying changes
-- Consider both Android and web deployments for feature changes
 
 ## Common Issues and Solutions
 
@@ -176,7 +154,6 @@ utils/               # Utility scripts
 The project uses semantic versioning displayed in the UI. Update version numbers in:
 - HTML files (inline version displays)
 - JavaScript version objects
-- Android app version codes
 
 ## Portuguese Language Context
 This is a Brazilian application, so:
