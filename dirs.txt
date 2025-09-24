@@ -25,7 +25,6 @@
 │       └── sp_ibge.geojson
 ├── index.js
 ├── my_run.sh
-├── run.sh
 ├── src
 │   ├── address_converter.html
 │   ├── andarilho.js
