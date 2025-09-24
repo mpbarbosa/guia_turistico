@@ -24,10 +24,9 @@ This is a hybrid project with two main components:
 - **Styling**: CSS with mobile-first responsive design
 - **Libraries**: Custom JavaScript libraries in `src/libs/` (guia_js, sidra)
 
-### Android Application (`app/` directory)
-- **Build system**: Gradle with Kotlin DSL
-- **Package**: `com.mpb.guiaturstico`
-- **Target**: Android mobile devices
+### Android Application (discontinued)
+- **Note**: Android components have been removed from this repository
+- **Focus**: Web application is the primary platform
 
 ## Key Technologies and APIs
 
@@ -54,14 +53,10 @@ src/
 ├── libs/            # Custom JavaScript libraries
 │   ├── guia_js/     # Core geolocation and mapping utilities
 │   └── sidra/       # IBGE/SIDRA API integration
-app/
-├── src/
-│   ├── main/        # Android main source
-│   ├── test/        # Unit tests
-│   └── androidTest/ # Android instrumentation tests
 ibge_data/           # IBGE statistical data cache
 docs/                # Project documentation
 utils/               # Utility scripts
+tests/               # Test files (Selenium tests for web UI)
 ```
 
 ## Coding Standards and Patterns
@@ -86,11 +81,9 @@ utils/               # Utility scripts
 - Consistent naming conventions for classes
 - Avoid inline styles except for dynamic positioning
 
-### Android (when working on app/)
-- Follow Android development best practices
-- Use Kotlin for new features
-- Follow Material Design guidelines
-- Proper activity lifecycle management
+### Android (discontinued)
+- Android development support has been removed from this project
+- Focus is now exclusively on the web application
 
 ## Common Patterns
 
@@ -115,7 +108,7 @@ utils/               # Utility scripts
 ## Development Guidelines
 
 ### When Adding New Features
-1. Consider both web and Android implementations
+1. Focus on web application implementation
 2. Test geolocation functionality across different browsers
 3. Ensure mobile responsiveness
 4. Add proper error handling for network failures
@@ -127,10 +120,9 @@ utils/               # Utility scripts
 - Implement proper CORS handling for web APIs
 
 ### Dependency Management
-- This project uses Gradle for Android dependencies
 - Web components use vanilla JavaScript without package managers
 - Custom libraries are in `src/libs/` directory
-- Update Android dependencies in `app/build.gradle.kts`
+- No Android dependencies since Android support has been removed
 - Consider compatibility when updating library versions
 
 ### Testing Approach
@@ -139,8 +131,7 @@ utils/               # Utility scripts
 - Test responsive design on multiple screen sizes
 - Validate accessibility features
 - Selenium tests available in `tests/` directory for web UI testing
-- Android instrumentation tests in `app/src/androidTest/`
-- Use appropriate testing strategy for each component
+- Use appropriate testing strategy for web components
 
 ### Performance Considerations
 - Minimize geolocation API calls
@@ -149,11 +140,10 @@ utils/               # Utility scripts
 - Use progressive loading for large datasets
 
 ### Build and Deployment
-- Android: Use Gradle build system with `gradlew` commands
 - Web: Static files served directly from `src/` directory
 - Cloudflare Workers configuration in `wrangler.jsonc`
 - Test locally before deploying changes
-- Consider both Android and web deployments for feature changes
+- Focus on web deployment since Android support has been removed
 
 ## Common Issues and Solutions
 

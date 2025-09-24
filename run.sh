@@ -20,7 +20,6 @@ fi
 #Make sure prerequisite directories exist in studio-data dir
 mkdir -p studio-data/profile/AndroidStudio2022.3.1.20
 mkdir -p studio-data/profile/android
-mkdir -p studio-data/profile/gradle
 mkdir -p studio-data/profile/java
 sudo docker volume create --name=android_studio
 sudo docker run --name android-studio -i $AOSP_ARGS -v $(pwd)/studio-data:/studio-data -v android_studio:/androidstudio-data --privileged --group-add plugdev deadolus/android-studio $@
