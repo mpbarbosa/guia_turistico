@@ -38,6 +38,12 @@ This is a hybrid project with two main components:
 - **Overpass API**: OpenStreetMap data for nearby locations
 - **Web Speech API**: Text-to-speech functionality
 
+### Custom Libraries
+- **guia_js**: Core geolocation and mapping utilities (`src/libs/guia_js/`)
+- **sidra**: IBGE/SIDRA API integration (`src/libs/sidra/`)
+- These libraries provide the main functionality for the application
+- Follow existing patterns when extending these libraries
+
 ## File Structure Conventions
 
 ```
@@ -120,17 +126,34 @@ utils/               # Utility scripts
 - Use environment variables for configuration
 - Implement proper CORS handling for web APIs
 
+### Dependency Management
+- This project uses Gradle for Android dependencies
+- Web components use vanilla JavaScript without package managers
+- Custom libraries are in `src/libs/` directory
+- Update Android dependencies in `app/build.gradle.kts`
+- Consider compatibility when updating library versions
+
 ### Testing Approach
 - Test geolocation with various permission scenarios
 - Verify API integrations with different response formats
 - Test responsive design on multiple screen sizes
 - Validate accessibility features
+- Selenium tests available in `tests/` directory for web UI testing
+- Android instrumentation tests in `app/src/androidTest/`
+- Use appropriate testing strategy for each component
 
 ### Performance Considerations
 - Minimize geolocation API calls
 - Implement proper caching for statistical data
 - Optimize for mobile network conditions
 - Use progressive loading for large datasets
+
+### Build and Deployment
+- Android: Use Gradle build system with `gradlew` commands
+- Web: Static files served directly from `src/` directory
+- Cloudflare Workers configuration in `wrangler.jsonc`
+- Test locally before deploying changes
+- Consider both Android and web deployments for feature changes
 
 ## Common Issues and Solutions
 
@@ -161,3 +184,6 @@ This is a Brazilian application, so:
 - Use Brazilian geographic and administrative terms
 - Consider local data formats (dates, numbers)
 - Respect cultural context in user interface design
+
+## Tool Calling
+You have the capability to call multiple tools in a single response. For maximum efficiency, whenever you need to perform multiple independent operations, ALWAYS invoke all relevant tools simultaneously rather than sequentially. Especially when exploring repository, reading files, viewing directories, validating changes or replying to comments.
