@@ -31,14 +31,11 @@
     <script src="libs/sidra/sidra.js"></script>
     <script>
       function init() {
-        console.log("Initializing application...");
         const insertPositionButton = document.getElementById("insertPositionButton");
         insertPositionButton.addEventListener("click", insertPosition);
         const locationResult = document.getElementById("locationResult");
-        console.log("(loc_em_movimento) locationResult:", locationResult);
         const manager = new WebGeocodingManager(document, locationResult);
         manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
-          console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
           const dadosSidraDiv = document.getElementById("dadosSidra");
           displaySidraDadosParams(dadosSidraDiv, "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
         });
@@ -46,7 +43,6 @@
       }
 
       function insertPosition() {
-        console.log("Insert position button clicked.");
         const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308}, "timestamp": Date.now()}; // Default to São Paulo coordinates
         PositionManager.getInstance(position);
         const tsPosCaptureDiv = document.getElementById("tsPosCapture");
