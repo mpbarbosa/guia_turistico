@@ -11,11 +11,10 @@
       <!-- Version will be rendered here -->
     </div>
     <h1>Guia de caminho</h1>
-<div id="chronometer"> </div>
+<p>Tempo decorrido: <span id="chronometer"> </span></p>
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
     </div>
-<div id="tsPosCapture"> </div>
     <div id="locationResult">
       <p>Your location information will appear here.</p>
     </div>
@@ -45,8 +44,6 @@
       function insertPosition() {
         const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308}, "timestamp": Date.now()}; // Default to São Paulo coordinates
         PositionManager.getInstance(position);
-        const tsPosCaptureDiv = document.getElementById("tsPosCapture");
-        tsPosCaptureDiv.innerText = `Position captured at: ${new Date(position.timestamp).toLocaleString()}`;
         const locationResult = document.getElementById("locationResult");
         locationResult.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
       }
