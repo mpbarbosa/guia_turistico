@@ -20,6 +20,7 @@
       <p>Your location information will appear here.</p>
     </div>
 
+    <button id="insertPositionButton">Insert position</button>
     <textarea id="text-input" placeholder="Enter text to speak..." onchange="updateTextInput()"></textarea>
 
     <div style="width:100%; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #ccc; box-shadow:0 -2px 8px #ccc;">
@@ -31,20 +32,32 @@
     <script>
       function init() {
         console.log("Initializing application...");
-        var locationResult = document.getElementById("locationResult");
+        const insertPositionButton = document.getElementById("insertPositionButton");
+        insertPositionButton.addEventListener("click", insertPosition);
+        const locationResult = document.getElementById("locationResult");
         console.log("(loc_em_movimento) locationResult:", locationResult);
-        var manager = new WebGeocodingManager(document, locationResult);
+        const manager = new WebGeocodingManager(document, locationResult);
         manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
           console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
-          var dadosSidraDiv = document.getElementById("dadosSidra");
+          const dadosSidraDiv = document.getElementById("dadosSidra");
           displaySidraDadosParams(dadosSidraDiv, "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
         });
         manager.startTracking();
       }
 
+      function insertPosition() {
+        console.log("Insert position button clicked.");
+        const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308}, "timestamp": Date.now()}; // Default to São Paulo coordinates
+        PositionManager.getInstance(position);
+        const tsPosCaptureDiv = document.getElementById("tsPosCapture");
+        tsPosCaptureDiv.innerText = `Position captured at: ${new Date(position.timestamp).toLocaleString()}`;
+        const locationResult = document.getElementById("locationResult");
+        locationResult.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+      }
+
       function updateTextInput() {
-        var textInput = document.getElementById("text-input");
-        var dadosSidraDiv = document.getElementById("dadosSidra");
+        const textInput = document.getElementById("text-input");
+        const  dadosSidraDiv = document.getElementById("dadosSidra");
         textInput.value += "." + dadosSidraDiv.innerText;
       }
 
