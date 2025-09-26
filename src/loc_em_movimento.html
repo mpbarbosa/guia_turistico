@@ -11,7 +11,8 @@
       <!-- Version will be rendered here -->
     </div>
     <h1>Guia de caminho</h1>
-<p>Tempo decorrido: <span id="chronometer"> </span></p>
+    <p>Tempo decorrido: <span id="chronometer"> </span>; Tam fila fala: <span id="tam-fila-fala"> </span></p>
+
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
     </div>
@@ -39,10 +40,13 @@
           displaySidraDadosParams(dadosSidraDiv, "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
         });
         manager.startTracking();
+        manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction( queue => {
+          document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
+        });
       }
 
       function insertPosition() {
-        const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308}, "timestamp": Date.now()}; // Default to São Paulo coordinates
+        const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308, "accuracy": 1}, "timestamp": Date.now()}; // Default to São Paulo coordinates
         PositionManager.getInstance(position);
         const locationResult = document.getElementById("locationResult");
         locationResult.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
