@@ -37,7 +37,9 @@
         const manager = new WebGeocodingManager(document, locationResult);
         manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
           const dadosSidraDiv = document.getElementById("dadosSidra");
-          displaySidraDadosParams(dadosSidraDiv, "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
+          if (enderecoPadronizado) {
+            displaySidraDadosParams(dadosSidraDiv, "PopEst", {"municipio": enderecoPadronizado.municipio, "siglaUf": enderecoPadronizado.siglaUf});
+          }
         });
         manager.startTracking();
         manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction( queue => {
