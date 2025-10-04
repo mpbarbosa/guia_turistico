@@ -75,6 +75,27 @@ Use este template para reportar problemas ou solicitar funcionalidades relaciona
 
 ---
 
+### 🎨 [Graphic Web UI Issue](graphic_web_ui.md)
+Use este template para reportar problemas visuais ou sugerir melhorias na interface gráfica da aplicação web.
+
+**Quando usar:**
+- Bugs visuais (layout, alinhamento, espaçamento, cores)
+- Problemas de design responsivo (mobile/tablet/desktop)
+- Questões de acessibilidade (ARIA, contraste, navegação por teclado)
+- Melhorias de UX (experiência do usuário, fluxo de interação)
+- Problemas de CSS/estilização
+- Sugestões de design de componentes
+- Problemas de animação/transição
+
+**Informações necessárias:**
+- Tipo de issue (visual bug, responsivo, acessibilidade, etc.)
+- Páginas/componentes afetados
+- Comportamento atual vs. esperado (com screenshots)
+- Informações de dispositivo e browser
+- Design considerations (mobile-first, acessibilidade, etc.)
+
+---
+
 ## Como Usar
 
 1. **Acesse a página de Issues**: Vá para [Issues](https://github.com/mpbarbosa/guia_turistico/issues)
@@ -116,6 +137,7 @@ Use este template para reportar problemas ou solicitar funcionalidades relaciona
 - `enhancement`: Novas funcionalidades ou melhorias
 - `documentation`: Melhorias na documentação
 - `copilot`: Relacionado ao GitHub Copilot
+- `ui/ux`: Problemas ou melhorias relacionadas à interface gráfica e experiência do usuário
 - `triage`: Issues que precisam ser revisadas e categorizadas
 - `good first issue`: Boas para contribuidores iniciantes
 - `help wanted`: Issues onde ajuda externa é bem-vinda
