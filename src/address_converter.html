@@ -78,6 +78,8 @@
   <body onload="init()">
     <div class="container">
       <h1>Latitude/Longitude to Address Converter</h1>
+      
+      <p>Tam cache: <span id="tam-cache">0</span></p>
 
       <div class="input-group">
         <label for="latitude">Latitude:</label>
@@ -110,6 +112,8 @@
     </div>
 
     <script>
+      let addressCache = null;
+      
       function init() {
         console.log("Initializing application...");
         const fetchButton = document.getElementById("fetchButton");
@@ -158,6 +162,16 @@
         var reverseGeocoder = new ReverseGeocoder(latitude, longitude);
         var htmlDisplayer = new HTMLAddressDisplayer(resultsDiv);
         reverseGeocoder.subscribe(htmlDisplayer);
+
+        // Subscribe to address cache size changes if not already subscribed
+        if (!addressCache && reverseGeocoder.addressCache) {
+          addressCache = reverseGeocoder.addressCache;
+          if (addressCache.subscribeFunction) {
+            addressCache.subscribeFunction( cache => {
+              document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
+            });
+          }
+        }
 
         reverseGeocoder.reverseGeocode().then((data) => {
           console.log("Address fetched:", data);
