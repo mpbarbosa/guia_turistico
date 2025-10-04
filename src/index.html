@@ -89,7 +89,7 @@
   <body onload="init()">
     <h1>Guia</h1>
     <p>
-      v 0.1.2 <br>2025-08-19</b>
+      v 0.1.3 <br>2025-01-17</b>
      Get your location and discover nearby restaurants and city statistics.
     </p>
     <p>Tam cache: <span id="tam-cache">0</span></p>
@@ -102,6 +102,11 @@
     </button>
     <a href="address_converter.html">Address converter</a> | |
     <a href="loc_em_movimento.html">Localização em movimento</a>
+    
+    <div id="coordinates" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #e8f5e9;">
+      <p style="margin: 0;"><strong>Coordinates:</strong> <span id="lat-long-display">Waiting for location...</span></p>
+    </div>
+
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
     </div>
@@ -120,6 +125,13 @@
         console.log("(index) manager:", manager);
         manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
           console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
+          // Update coordinates display
+          if (currentPosition && currentPosition.coords) {
+            const latLongDisplay = document.getElementById("lat-long-display");
+            if (latLongDisplay) {
+              latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+            }
+          }
           displaySidraDadosParams(document.getElementById("dadosSidra"), "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
         });
         // Subscribe to address cache size changes
