@@ -89,9 +89,10 @@
   <body onload="init()">
     <h1>Guia</h1>
     <p>
-      v 0.1.1 <br>2025-08-19</b>
+      v 0.1.2 <br>2025-08-19</b>
      Get your location and discover nearby restaurants and city statistics.
     </p>
+    <p>Tam cache: <span id="tam-cache">0</span></p>
 
     <button id="findRestaurantsBtn" onclick="findNearbyRestaurants()" disabled>
       Find Nearby Restaurants
@@ -121,6 +122,20 @@
           console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
           displaySidraDadosParams(document.getElementById("dadosSidra"), "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
         });
+        // Subscribe to address cache size changes
+        if (manager.addressCache && manager.addressCache.subscribeFunction) {
+          manager.addressCache.subscribeFunction( cache => {
+            document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
+          });
+        } else if (manager.reverseGeocoder && manager.reverseGeocoder.addressCache) {
+          // Alternative path if cache is in reverseGeocoder
+          const cache = manager.reverseGeocoder.addressCache;
+          if (cache.subscribeFunction) {
+            cache.subscribeFunction( cacheData => {
+              document.getElementById("tam-cache").innerHTML = `${cacheData.size || cacheData.length || 0}`;
+            });
+          }
+        }
         // Wait for location to be obtained
         manager.getSingleLocationUpdate();
         // Enable buttons after location is obtained
