@@ -11,7 +11,7 @@
       <!-- Version will be rendered here -->
     </div>
     <h1>Guia de caminho</h1>
-    <p>Tempo decorrido: <span id="chronometer"> </span>; Tam fila fala: <span id="tam-fila-fala"> </span></p>
+    <p>Tempo decorrido: <span id="chronometer"> </span>; Tam fila fala: <span id="tam-fila-fala"> </span>; Tam cache: <span id="tam-cache"> </span></p>
 
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
@@ -45,6 +45,20 @@
         manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction( queue => {
           document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
         });
+        // Subscribe to address cache size changes
+        if (manager.addressCache && manager.addressCache.subscribeFunction) {
+          manager.addressCache.subscribeFunction( cache => {
+            document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
+          });
+        } else if (manager.reverseGeocoder && manager.reverseGeocoder.addressCache) {
+          // Alternative path if cache is in reverseGeocoder
+          const cache = manager.reverseGeocoder.addressCache;
+          if (cache.subscribeFunction) {
+            cache.subscribeFunction( cacheData => {
+              document.getElementById("tam-cache").innerHTML = `${cacheData.size || cacheData.length || 0}`;
+            });
+          }
+        }
       }
 
       function insertPosition() {
@@ -66,7 +80,7 @@
         const pageVersion = {
           major: 0,
           minor: 4,
-          patch: 0,
+          patch: 1,
           prerelease: 'alpha',
           status: 'unstable, pre-release',
           toString: function() {
