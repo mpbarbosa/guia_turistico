@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📚 Documentação
+    url: https://github.com/mpbarbosa/guia_turistico/tree/main/docs
+    about: Consulte a documentação completa do projeto, incluindo diagramas UML e arquitetura
+  - name: 💬 Discussões
+    url: https://github.com/mpbarbosa/guia_turistico/discussions
+    about: Participe de discussões sobre o projeto, tire dúvidas ou compartilhe ideias
