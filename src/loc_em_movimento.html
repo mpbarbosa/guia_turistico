@@ -17,6 +17,10 @@
       <p><strong>Coordinates:</strong> <span id="lat-long-display">Waiting for location...</span></p>
     </div>
 
+    <div id="standardized-address">
+      <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display">Waiting for location...</span></p>
+    </div>
+
     <div class="section" id="dadosSidra"> 
       <h2>Location Information</h2>
     </div>
@@ -45,6 +49,13 @@
             const latLongDisplay = document.getElementById("lat-long-display");
             if (latLongDisplay) {
               latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+            }
+          }
+          // Update standardized address display
+          if (enderecoPadronizado) {
+            const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
+            if (enderecoPadronizadoDisplay) {
+              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
             }
           }
           const dadosSidraDiv = document.getElementById("dadosSidra");
@@ -91,7 +102,7 @@
         const pageVersion = {
           major: 0,
           minor: 4,
-          patch: 3,
+          patch: 4,
           prerelease: 'alpha',
           status: 'unstable, pre-release',
           toString: function() {

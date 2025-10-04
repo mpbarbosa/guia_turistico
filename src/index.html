@@ -89,7 +89,7 @@
   <body onload="init()">
     <h1>Guia</h1>
     <p>
-      v 0.1.3 <br>2025-01-17</b>
+      v 0.1.4 <br>2025-01-24</b>
      Get your location and discover nearby restaurants and city statistics.
     </p>
     <p>Tam cache: <span id="tam-cache">0</span></p>
@@ -105,6 +105,10 @@
     
     <div id="coordinates" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #e8f5e9;">
       <p style="margin: 0;"><strong>Coordinates:</strong> <span id="lat-long-display">Waiting for location...</span></p>
+    </div>
+
+    <div id="standardized-address" style="margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #e3f2fd;">
+      <p style="margin: 0;"><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display">Waiting for location...</span></p>
     </div>
 
     <div class="section" id="dadosSidra"> 
@@ -130,6 +134,13 @@
             const latLongDisplay = document.getElementById("lat-long-display");
             if (latLongDisplay) {
               latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+            }
+          }
+          // Update standardized address display
+          if (enderecoPadronizado) {
+            const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
+            if (enderecoPadronizadoDisplay) {
+              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
             }
           }
           displaySidraDadosParams(document.getElementById("dadosSidra"), "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
