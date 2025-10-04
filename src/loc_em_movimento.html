@@ -55,7 +55,7 @@
           if (enderecoPadronizado) {
             const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
             if (enderecoPadronizadoDisplay) {
-              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
+              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.enderecoCompleto() || ''}`;
             }
           }
           const dadosSidraDiv = document.getElementById("dadosSidra");
