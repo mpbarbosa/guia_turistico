@@ -1,26 +1,51 @@
 <!doctype html>
-<html lang="en">
+<html lang="pt-BR">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Lat/Long to Address Converter</title>
+    <title>Conversor de Coordenadas para Endereço</title>
     <style>
+      /* Material Design 3 Color System */
+      :root {
+        --md-sys-color-primary: #1976d2;
+        --md-sys-color-on-primary: #ffffff;
+        --md-sys-color-secondary: #4caf50;
+        --md-sys-color-on-secondary: #ffffff;
+        --md-sys-color-surface: #ffffff;
+        --md-sys-color-on-surface: #1c1b1f;
+        --md-sys-color-surface-variant: #f9f9f9;
+        --md-sys-color-error: #ba1a1a;
+        --md-sys-elevation-level1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+        --md-sys-elevation-level2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+      }
+
+      /* Reduced motion support */
+      @media (prefers-reduced-motion: reduce) {
+        * {
+          animation-duration: 0.01ms !important;
+          animation-iteration-count: 1 !important;
+          transition-duration: 0.01ms !important;
+        }
+      }
+
       body {
-        font-family: Arial, sans-serif;
+        font-family: 'Segoe UI', Arial, sans-serif;
         max-width: 800px;
         margin: 0 auto;
         padding: 20px;
         line-height: 1.6;
+        background: var(--md-sys-color-surface);
+        color: var(--md-sys-color-on-surface);
       }
       h1 {
-        color: #2c3e50;
+        color: var(--md-sys-color-primary);
         text-align: center;
       }
       .container {
-        background-color: #f9f9f9;
-        border-radius: 8px;
+        background-color: var(--md-sys-color-surface-variant);
+        border-radius: 12px;
         padding: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        box-shadow: var(--md-sys-elevation-level1);
       }
       .input-group {
         margin-bottom: 15px;
@@ -32,34 +57,62 @@
       }
       input[type="text"] {
         width: 100%;
-        padding: 8px;
+        min-height: 48px;
+        padding: 12px;
         border: 1px solid #ddd;
-        border-radius: 4px;
+        border-radius: 8px;
         box-sizing: border-box;
-      }
-      button {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        padding: 10px 15px;
-        border-radius: 4px;
-        cursor: pointer;
         font-size: 16px;
       }
+      input[type="text"]:focus-visible {
+        outline: 2px solid var(--md-sys-color-primary);
+        outline-offset: 2px;
+      }
+      button {
+        min-width: 48px;
+        min-height: 48px;
+        background-color: var(--md-sys-color-secondary);
+        color: var(--md-sys-color-on-secondary);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
       button:hover {
-        background-color: #2980b9;
+        background-color: #45a049;
+        box-shadow: var(--md-sys-elevation-level1);
+      }
+      button:focus-visible {
+        outline: 2px solid var(--md-sys-color-primary);
+        outline-offset: 2px;
       }
       #results {
         margin-top: 20px;
-        padding: 15px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        background-color: white;
+        padding: 16px;
+        border-radius: 12px;
+        background-color: var(--md-sys-color-surface);
+        box-shadow: var(--md-sys-elevation-level1);
         min-height: 100px;
       }
       .error {
-        color: #e74c3c;
+        color: var(--md-sys-color-error);
         font-weight: bold;
+      }
+      
+      /* Screen reader only text */
+      .sr-only {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        margin: -1px;
+        overflow: hidden;
+        clip: rect(0, 0, 0, 0);
+        white-space: nowrap;
+        border-width: 0;
       }
       .loading {
         color: #7f8c8d;
@@ -76,40 +129,46 @@
     </style>
   </head>
   <body onload="init()">
-    <div class="container">
-      <h1>Latitude/Longitude to Address Converter</h1>
-      
-      <p>Tam cache: <span id="tam-cache">0</span></p>
+    <main class="container">
+      <header>
+        <h1>Conversor de Latitude/Longitude para Endereço</h1>
+        <p>Tam cache: <span id="tam-cache" aria-live="polite">0</span></p>
+      </header>
 
-      <div class="input-group">
-        <label for="latitude">Latitude:</label>
-        <input
-          type="text"
-          id="latitude"
-          placeholder="Enter latitude (e.g., 40.7128)"
-        />
-        <div class="example">Example: 40.7128 (New York City)</div>
-      </div>
+      <form onsubmit="return false;">
+        <div class="input-group">
+          <label for="latitude">Latitude:</label>
+          <input
+            type="text"
+            id="latitude"
+            placeholder="Digite a latitude (ex: -23.5505)"
+            aria-describedby="latitude-example"
+            aria-required="true"
+          />
+          <div id="latitude-example" class="example">Exemplo: -23.5505 (São Paulo)</div>
+        </div>
 
-      <div class="input-group">
-        <label for="longitude">Longitude:</label>
-        <input
-          type="text"
-          id="longitude"
-          placeholder="Enter longitude (e.g., -74.0060)"
-        />
-        <div class="example">Example: -74.0060 (New York City)</div>
-      </div>
+        <div class="input-group">
+          <label for="longitude">Longitude:</label>
+          <input
+            type="text"
+            id="longitude"
+            placeholder="Digite a longitude (ex: -46.6333)"
+            aria-describedby="longitude-example"
+            aria-required="true"
+          />
+          <div id="longitude-example" class="example">Exemplo: -46.6333 (São Paulo)</div>
+        </div>
 
-      <button id="fetchButton">Get Address</button>
+        <button id="fetchButton" type="submit" aria-label="Obter endereço a partir das coordenadas">Obter Endereço</button>
+      </form>
 
-      <div id="results">
+      <section id="results" role="region" aria-live="polite" aria-label="Resultados da conversão">
         <p>
-          Enter coordinates and click "Get Address" to see the location
-          information.
+          Digite as coordenadas e clique em "Obter Endereço" para ver as informações de localização.
         </p>
-      </div>
-    </div>
+      </section>
+    </main>
 
     <script>
       let addressCache = null;
