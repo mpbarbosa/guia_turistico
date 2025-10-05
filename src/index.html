@@ -154,6 +154,30 @@
         text-align: left;
       }
 
+      /* Material Design 3 Card for reference place */
+      #reference-place {
+        margin-top: 20px;
+        padding: 16px;
+        background: var(--md-sys-color-surface);
+        border-radius: 12px;
+        box-shadow: var(--md-sys-elevation-level1);
+        text-align: left;
+        transition: box-shadow 0.2s ease-in-out;
+      }
+      #reference-place:hover {
+        box-shadow: var(--md-sys-elevation-level2);
+      }
+      #reference-place p {
+        margin: 0;
+        line-height: 1.5;
+      }
+      #reference-place strong {
+        color: var(--md-sys-color-primary);
+        font-weight: 500;
+        display: block;
+        margin-bottom: 8px;
+      }
+
       /* Screen reader only text */
       .sr-only {
         position: absolute;
@@ -172,7 +196,7 @@
     <header>
       <h1>Guia Turístico</h1>
       <p>
-        v 0.1.6 <br>2025-01-24
+        v 0.1.7 <br>2025-01-24
       </p>
       <p>Descubra sua localização e encontre restaurantes e estatísticas da cidade próximos.</p>
       <p>Tam cache: <span id="tam-cache" aria-live="polite">0</span></p>
@@ -193,6 +217,11 @@
       <section id="coordinates" aria-labelledby="coordinates-heading">
         <h2 id="coordinates-heading" class="sr-only">Coordenadas</h2>
         <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span></p>
+      </section>
+
+      <section id="reference-place" aria-labelledby="reference-place-heading">
+        <h2 id="reference-place-heading" class="sr-only">Local de Referência</h2>
+        <p><strong>Local de referência:</strong> <span id="reference-place-display" aria-live="polite">Aguardando localização...</span></p>
       </section>
 
       <section id="standardized-address" aria-labelledby="address-heading">
@@ -225,6 +254,15 @@
             const latLongDisplay = document.getElementById("lat-long-display");
             if (latLongDisplay) {
               latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+            }
+          }
+          // Update reference place display
+          if (newAddress) {
+            const referencePlaceDisplay = document.getElementById("reference-place-display");
+            if (referencePlaceDisplay) {
+              // Check if newAddress has a display_name or use the object directly
+              const displayText = newAddress.display_name || newAddress.displayName || (typeof newAddress === 'string' ? newAddress : JSON.stringify(newAddress));
+              referencePlaceDisplay.innerText = displayText;
             }
           }
           // Update standardized address display

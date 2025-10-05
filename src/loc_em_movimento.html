@@ -26,6 +26,11 @@
       <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span></p>
     </section>
 
+    <section id="reference-place" aria-labelledby="reference-place-heading">
+      <h2 id="reference-place-heading" class="sr-only">Local de Referência</h2>
+      <p><strong>Local de referência:</strong> <span id="reference-place-display" aria-live="polite">Aguardando localização...</span></p>
+    </section>
+
     <section id="standardized-address" aria-labelledby="address-heading">
       <h2 id="address-heading" class="sr-only">Endereço Padronizado</h2>
       <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display" aria-live="polite">Aguardando localização...</span></p>
@@ -67,6 +72,15 @@
           const latLongDisplay = document.getElementById("lat-long-display");
           if (latLongDisplay) {
             latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+          }
+        }
+        // Update reference place display
+        if (newAddress) {
+          const referencePlaceDisplay = document.getElementById("reference-place-display");
+          if (referencePlaceDisplay) {
+            // Check if newAddress has a display_name or use the object directly
+            const displayText = newAddress.display_name || newAddress.displayName || (typeof newAddress === 'string' ? newAddress : JSON.stringify(newAddress));
+            referencePlaceDisplay.innerText = displayText;
           }
         }
         // Update standardized address display
@@ -120,7 +134,7 @@
       const pageVersion = {
         major: 0,
         minor: 4,
-        patch: 6,
+        patch: 7,
         prerelease: 'alpha',
         status: 'unstable, pre-release',
         toString: function () {
