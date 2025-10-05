@@ -1,121 +1,130 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Geolocation with City Stats</title>
-    <link rel="stylesheet" href="loc_em_movimento.css">
-  </head>
-  <body onload="init()">
-    <div id="guia-version" class="versioning-numbering" style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
-      <!-- Version will be rendered here -->
-    </div>
-    <h1>Guia de caminho</h1>
-    <p>Tempo decorrido: <span id="chronometer"> </span>; Tam fila fala: <span id="tam-fila-fala"> </span>; Tam cache: <span id="tam-cache"> </span></p>
 
-    <div id="coordinates">
-      <p><strong>Coordinates:</strong> <span id="lat-long-display">Waiting for location...</span></p>
-    </div>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Geolocation with City Stats</title>
+  <link rel="stylesheet" href="loc_em_movimento.css">
+</head>
 
-    <div id="standardized-address">
-      <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display">Waiting for location...</span></p>
-    </div>
+<body onload="init()">
+  <div id="guia-version" class="versioning-numbering"
+    style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
+    <!-- Version will be rendered here -->
+  </div>
+  <h1>Guia de caminho</h1>
+  <p>Tempo decorrido: <span id="chronometer"> </span>; Tam fila fala: <span id="tam-fila-fala"> </span>; Tam cache:
+    <span id="tam-cache"> </span></p>
 
-    <div class="section" id="dadosSidra"> 
-      <h2>Location Information</h2>
-    </div>
-    <div id="locationResult">
-      <p>Your location information will appear here.</p>
-    </div>
+  <div id="coordinates">
+    <p><strong>Coordinates:</strong> <span id="lat-long-display">Waiting for location...</span></p>
+  </div>
 
-    <button id="insertPositionButton">Insert position</button>
-    <textarea id="text-input" placeholder="Enter text to speak..." onchange="updateTextInput()"></textarea>
+  <div id="standardized-address">
+    <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display">Waiting for location...</span></p>
+  </div>
 
-    <div style="width:100%; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #ccc; box-shadow:0 -2px 8px #ccc;">
-      <textarea id="bottom-scroll-textarea" rows="4" style="width:98%; margin:1%; resize:vertical; overflow-y:scroll;" placeholder="Type or paste text here..." readonly></textarea>
-    </div>
+  <div class="section" id="dadosSidra">
+    <h2>Location Information</h2>
+  </div>
+  <div id="locationResult">
+    <p>Your location information will appear here.</p>
+  </div>
 
-    <script src="libs/guia_js/src/guia.js"></script>
-    <script src="libs/sidra/sidra.js"></script>
-    <script>
-      function init() {
-        const insertPositionButton = document.getElementById("insertPositionButton");
-        insertPositionButton.addEventListener("click", insertPosition);
-        const locationResult = document.getElementById("locationResult");
-        const manager = new WebGeocodingManager(document, locationResult);
-        manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
-          // Update coordinates display
-          if (currentPosition && currentPosition.coords) {
-            const latLongDisplay = document.getElementById("lat-long-display");
-            if (latLongDisplay) {
-              latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
-            }
-          }
-          // Update standardized address display
-          if (enderecoPadronizado) {
-            const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
-            if (enderecoPadronizadoDisplay) {
-              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.enderecoCompleto() || ''}`;
-            }
-          }
-          const dadosSidraDiv = document.getElementById("dadosSidra");
-          if (enderecoPadronizado) {
-            displaySidraDadosParams(dadosSidraDiv, "PopEst", {"municipio": enderecoPadronizado.municipio, "siglaUf": enderecoPadronizado.siglaUf});
-          }
-        });
-        manager.startTracking();
-        manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction( queue => {
-          document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
-        });
-        // Subscribe to address cache size changes
-        if (manager.addressCache && manager.addressCache.subscribeFunction) {
-          manager.addressCache.subscribeFunction( cache => {
-            document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
-          });
-        } else if (manager.reverseGeocoder && manager.reverseGeocoder.addressCache) {
-          // Alternative path if cache is in reverseGeocoder
-          const cache = manager.reverseGeocoder.addressCache;
-          if (cache.subscribeFunction) {
-            cache.subscribeFunction( cacheData => {
-              document.getElementById("tam-cache").innerHTML = `${cacheData.size || cacheData.length || 0}`;
-            });
+  <button id="insertPositionButton">Insert position</button>
+  <textarea id="text-input" placeholder="Enter text to speak..." onchange="updateTextInput()"></textarea>
+
+  <div
+    style="width:100%; position:fixed; bottom:0; left:0; background:#fff; border-top:1px solid #ccc; box-shadow:0 -2px 8px #ccc;">
+    <textarea id="bottom-scroll-textarea" rows="4" style="width:98%; margin:1%; resize:vertical; overflow-y:scroll;"
+      placeholder="Type or paste text here..." readonly></textarea>
+  </div>
+
+  <script src="libs/guia_js/src/guia.js"></script>
+  <script src="libs/sidra/sidra.js"></script>
+  <script>
+    function init() {
+      const insertPositionButton = document.getElementById("insertPositionButton");
+      insertPositionButton.addEventListener("click", insertPosition);
+      const locationResult = document.getElementById("locationResult");
+      const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
+      const params = { "locationResult": locationResult, "enderecoPadronizadoDisplay": enderecoPadronizadoDisplay };
+      const manager = new WebGeocodingManager(document, params);
+      manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
+        // Update coordinates display
+        if (currentPosition && currentPosition.coords) {
+          const latLongDisplay = document.getElementById("lat-long-display");
+          if (latLongDisplay) {
+            latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
           }
         }
-      }
-
-      function insertPosition() {
-        const position = {"coords": {"latitude": -23.55052, "longitude": -46.633308, "accuracy": 1}, "timestamp": Date.now()}; // Default to São Paulo coordinates
-        PositionManager.getInstance(position);
-        const latLongDisplay = document.getElementById("lat-long-display");
-        latLongDisplay.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
-      }
-
-      function updateTextInput() {
-        const textInput = document.getElementById("text-input");
-        const  dadosSidraDiv = document.getElementById("dadosSidra");
-        textInput.value += "." + dadosSidraDiv.innerText;
-      }
-
-      // Render both guia.js and HTML page versioning numbering and status in guia-version div
-      window.addEventListener('DOMContentLoaded', function() {
-        // HTML page version object
-        const pageVersion = {
-          major: 0,
-          minor: 4,
-          patch: 5,
-          prerelease: 'alpha',
-          status: 'unstable, pre-release',
-          toString: function() {
-            return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
+        // Update standardized address display
+        if (enderecoPadronizado) {
+          const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
+          if (enderecoPadronizadoDisplay) {
+            enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.enderecoCompleto() || ''}`;
           }
-        };
-        let guiaVerStr = '';
-        if (guiaVersion && typeof guiaVersion.toString === 'function') {
-          guiaVerStr = 'guia.js ' + guiaVersion.toString();
         }
-        document.getElementById('guia-version').innerHTML =
-          `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
+        const dadosSidraDiv = document.getElementById("dadosSidra");
+        if (enderecoPadronizado) {
+          displaySidraDadosParams(dadosSidraDiv, "PopEst", { "municipio": enderecoPadronizado.municipio, "siglaUf": enderecoPadronizado.siglaUf });
+        }
       });
-    </script>
-  </body>
+      manager.startTracking();
+      manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction(queue => {
+        document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
+      });
+      // Subscribe to address cache size changes
+      if (manager.addressCache && manager.addressCache.subscribeFunction) {
+        manager.addressCache.subscribeFunction(cache => {
+          document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
+        });
+      } else if (manager.reverseGeocoder && manager.reverseGeocoder.addressCache) {
+        // Alternative path if cache is in reverseGeocoder
+        const cache = manager.reverseGeocoder.addressCache;
+        if (cache.subscribeFunction) {
+          cache.subscribeFunction(cacheData => {
+            document.getElementById("tam-cache").innerHTML = `${cacheData.size || cacheData.length || 0}`;
+          });
+        }
+      }
+    }
+
+    function insertPosition() {
+      const position = { "coords": { "latitude": -23.55052, "longitude": -46.633308, "accuracy": 1 }, "timestamp": Date.now() }; // Default to São Paulo coordinates
+      PositionManager.getInstance(position);
+      const latLongDisplay = document.getElementById("lat-long-display");
+      latLongDisplay.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+    }
+
+    function updateTextInput() {
+      const textInput = document.getElementById("text-input");
+      const dadosSidraDiv = document.getElementById("dadosSidra");
+      textInput.value += "." + dadosSidraDiv.innerText;
+    }
+
+    // Render both guia.js and HTML page versioning numbering and status in guia-version div
+    window.addEventListener('DOMContentLoaded', function () {
+      // HTML page version object
+      const pageVersion = {
+        major: 0,
+        minor: 4,
+        patch: 5,
+        prerelease: 'alpha',
+        status: 'unstable, pre-release',
+        toString: function () {
+          return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
+        }
+      };
+      let guiaVerStr = '';
+      if (guiaVersion && typeof guiaVersion.toString === 'function') {
+        guiaVerStr = 'guia.js ' + guiaVersion.toString();
+      }
+      document.getElementById('guia-version').innerHTML =
+        `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
+    });
+  </script>
+</body>
+
 </html>
