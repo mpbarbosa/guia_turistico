@@ -13,40 +13,46 @@
     style="position:fixed; top:10px; right:20px; background:#fff; color:#222; padding:8px 16px; border-radius:8px; box-shadow:0 2px 8px #ccc; font-weight:bold; z-index:1000; text-align:left; font-size:0.8rem;">
     <!-- Version will be rendered here -->
   </div>
-  
+
   <header>
     <h1>Guia de Caminho</h1>
-    <p>Tempo decorrido: <span id="chronometer" aria-live="polite"> </span>; Tam fila fala: <span id="tam-fila-fala" aria-live="polite"> </span>; Tam cache:
-      <span id="tam-cache" aria-live="polite"> </span></p>
+    <p>Tempo decorrido: <span id="chronometer" aria-live="polite"> </span>; Tam fila fala: <span id="tam-fila-fala"
+        aria-live="polite"> </span>; Tam cache:
+      <span id="tam-cache" aria-live="polite"> </span>
+    </p>
   </header>
 
   <main>
     <section id="coordinates" aria-labelledby="coordinates-heading">
       <h2 id="coordinates-heading" class="sr-only">Coordenadas</h2>
-      <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span></p>
+      <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span>
+      </p>
     </section>
 
     <section id="reference-place" aria-labelledby="reference-place-heading">
-      <h2 id="reference-place-heading" class="sr-only">Local de Referência</h2>
-      <p><strong>Local de referência:</strong> <span id="reference-place-display" aria-live="polite">Aguardando localização...</span></p>
+      <h2 id="reference-place-heading" class="sr-only">Referência</h2>
+      <p><strong>Referência:</strong> <span id="reference-place-display" aria-live="polite">Aguardando
+          localização...</span></p>
     </section>
 
     <section id="standardized-address" aria-labelledby="address-heading">
       <h2 id="address-heading" class="sr-only">Endereço Padronizado</h2>
-      <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display" aria-live="polite">Aguardando localização...</span></p>
+      <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display" aria-live="polite">Aguardando
+          localização...</span></p>
     </section>
 
     <section class="section" id="dadosSidra" aria-labelledby="location-info-heading">
       <h2 id="location-info-heading">Informações da Localização</h2>
     </section>
-    
+
     <section id="locationResult" aria-live="polite" aria-label="Resultado da localização">
       <p>As informações da sua localização aparecerão aqui.</p>
     </section>
 
     <button id="insertPositionButton" aria-label="Inserir posição de teste">Inserir posição</button>
     <label for="text-input" class="sr-only">Digite o texto para falar</label>
-    <textarea id="text-input" placeholder="Digite o texto para falar..." onchange="updateTextInput()" aria-label="Texto para síntese de voz"></textarea>
+    <textarea id="text-input" placeholder="Digite o texto para falar..." onchange="updateTextInput()"
+      aria-label="Texto para síntese de voz"></textarea>
   </main>
 
   <footer
@@ -64,7 +70,12 @@
       insertPositionButton.addEventListener("click", insertPosition);
       const locationResult = document.getElementById("locationResult");
       const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
-      const params = { "locationResult": locationResult, "enderecoPadronizadoDisplay": enderecoPadronizadoDisplay };
+      const referencePlaceDisplay = document.getElementById("reference-place-display");
+      const params = {
+        "locationResult": locationResult,
+        "enderecoPadronizadoDisplay": enderecoPadronizadoDisplay,
+        "referencePlaceDisplay": referencePlaceDisplay
+      };
       const manager = new WebGeocodingManager(document, params);
       manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
         // Update coordinates display
@@ -72,15 +83,6 @@
           const latLongDisplay = document.getElementById("lat-long-display");
           if (latLongDisplay) {
             latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
-          }
-        }
-        // Update reference place display
-        if (newAddress) {
-          const referencePlaceDisplay = document.getElementById("reference-place-display");
-          if (referencePlaceDisplay) {
-            // Check if newAddress has a display_name or use the object directly
-            const displayText = newAddress.display_name || newAddress.displayName || (typeof newAddress === 'string' ? newAddress : JSON.stringify(newAddress));
-            referencePlaceDisplay.innerText = displayText;
           }
         }
         // Update standardized address display
