@@ -178,6 +178,57 @@
         margin-bottom: 8px;
       }
 
+      /* Material Design 3 Highlight Cards for Municipio and Bairro */
+      .location-highlights {
+        display: grid;
+        grid-template-columns: 1fr;
+        gap: 1rem;
+        margin: 1.5rem 0;
+      }
+
+      @media (min-width: 600px) {
+        .location-highlights {
+          grid-template-columns: 1fr 1fr;
+        }
+      }
+
+      .highlight-card {
+        padding: 1rem;
+        background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1565c0 100%);
+        color: var(--md-sys-color-on-primary);
+        border-radius: 12px;
+        box-shadow: var(--md-sys-elevation-level1);
+        transition: box-shadow 0.2s ease-in-out, transform 0.2s ease-in-out;
+        text-align: center;
+      }
+
+      .highlight-card:hover {
+        box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+        transform: translateY(-2px);
+      }
+
+      .highlight-card-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+        opacity: 0.9;
+        margin-bottom: 0.5rem;
+      }
+
+      .highlight-card-value {
+        font-size: 1.5rem;
+        font-weight: 600;
+        line-height: 1.2;
+        word-break: break-word;
+      }
+
+      @media (min-width: 600px) {
+        .highlight-card-value {
+          font-size: 1.75rem;
+        }
+      }
+
       /* Screen reader only text */
       .sr-only {
         position: absolute;
@@ -196,7 +247,7 @@
     <header>
       <h1>Guia Turístico</h1>
       <p>
-        v 0.1.7 <br>2025-01-24
+        v 0.1.8 <br>2025-01-24
       </p>
       <p>Descubra sua localização e encontre restaurantes e estatísticas da cidade próximos.</p>
       <p>Tam cache: <span id="tam-cache" aria-live="polite">0</span></p>
@@ -214,6 +265,18 @@
     </nav>
     
     <main>
+      <!-- Location Highlight Cards -->
+      <section class="location-highlights" aria-label="Destaques de localização">
+        <div class="highlight-card" role="region" aria-labelledby="municipio-label">
+          <div id="municipio-label" class="highlight-card-label">Município</div>
+          <div id="municipio-value" class="highlight-card-value" aria-live="polite">—</div>
+        </div>
+        <div class="highlight-card" role="region" aria-labelledby="bairro-label">
+          <div id="bairro-label" class="highlight-card-label">Bairro</div>
+          <div id="bairro-value" class="highlight-card-value" aria-live="polite">—</div>
+        </div>
+      </section>
+
       <section id="coordinates" aria-labelledby="coordinates-heading">
         <h2 id="coordinates-heading" class="sr-only">Coordenadas</h2>
         <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span></p>
@@ -264,12 +327,23 @@
               const displayText = newAddress.display_name || newAddress.displayName || (typeof newAddress === 'string' ? newAddress : JSON.stringify(newAddress));
               referencePlaceDisplay.innerText = displayText;
             }
+            // Update Bairro highlight card
+            const bairroValue = document.getElementById("bairro-value");
+            if (bairroValue) {
+              const bairro = newAddress.suburb || newAddress.neighbourhood || newAddress.quarter || newAddress.residential || newAddress.address?.suburb || newAddress.address?.neighbourhood || newAddress.address?.quarter || newAddress.address?.residential;
+              bairroValue.innerText = bairro || "Não disponível";
+            }
           }
           // Update standardized address display
           if (enderecoPadronizado) {
             const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
             if (enderecoPadronizadoDisplay) {
               enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
+            }
+            // Update Municipio highlight card
+            const municipioValue = document.getElementById("municipio-value");
+            if (municipioValue) {
+              municipioValue.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
             }
           }
           displaySidraDadosParams(document.getElementById("dadosSidra"), "PopEst", {municipio: enderecoPadronizado.municipio, siglaUf: enderecoPadronizado.siglaUf});
