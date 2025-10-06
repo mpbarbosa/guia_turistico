@@ -120,18 +120,35 @@
         console.warn("(loc_em_movimento) speechQueue not available - will not update tam-fila-fala");
       }
       // Subscribe to address cache size changes
-      if (manager.addressCache && manager.addressCache.subscribeFunction) {
+      if (manager.addressCache && typeof manager.addressCache.subscribeFunction === 'function') {
         manager.addressCache.subscribeFunction(cache => {
           document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
         });
       } else if (manager.reverseGeocoder && manager.reverseGeocoder.addressCache) {
         // Alternative path if cache is in reverseGeocoder
         const cache = manager.reverseGeocoder.addressCache;
-        if (cache.subscribeFunction) {
+        if (typeof cache.subscribeFunction === 'function') {
           cache.subscribeFunction(cacheData => {
             document.getElementById("tam-cache").innerHTML = `${cacheData.size || cacheData.length || 0}`;
           });
+        } else {
+          // Fallback: periodically check cache size
+          console.warn("(loc_em_movimento) addressCache.subscribeFunction not available - using polling fallback");
+          setInterval(() => {
+            const cacheSize = cache.size || cache.length || Object.keys(cache).length || 0;
+            document.getElementById("tam-cache").innerHTML = `${cacheSize}`;
+          }, 500); // Check every 500ms
         }
+      } else if (manager.addressCache) {
+        // Fallback: periodically check cache size if subscribeFunction doesn't exist
+        console.warn("(loc_em_movimento) addressCache.subscribeFunction not available - using polling fallback");
+        setInterval(() => {
+          const cache = manager.addressCache;
+          const cacheSize = cache.size || cache.length || Object.keys(cache).length || 0;
+          document.getElementById("tam-cache").innerHTML = `${cacheSize}`;
+        }, 500); // Check every 500ms
+      } else {
+        console.warn("(loc_em_movimento) addressCache not available - will not update tam-cache");
       }
     }
 
@@ -154,7 +171,7 @@
       const pageVersion = {
         major: 0,
         minor: 4,
-        patch: 8,
+        patch: 9,
         prerelease: 'alpha',
         status: 'unstable, pre-release',
         toString: function () {
