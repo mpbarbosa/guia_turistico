@@ -23,6 +23,18 @@
   </header>
 
   <main>
+    <!-- Location Highlight Cards -->
+    <section class="location-highlights" aria-label="Destaques de localização">
+      <div class="highlight-card" role="region" aria-labelledby="municipio-label">
+        <div id="municipio-label" class="highlight-card-label">Município</div>
+        <div id="municipio-value" class="highlight-card-value" aria-live="polite">—</div>
+      </div>
+      <div class="highlight-card" role="region" aria-labelledby="bairro-label">
+        <div id="bairro-label" class="highlight-card-label">Bairro</div>
+        <div id="bairro-value" class="highlight-card-value" aria-live="polite">—</div>
+      </div>
+    </section>
+
     <section id="coordinates" aria-labelledby="coordinates-heading">
       <h2 id="coordinates-heading" class="sr-only">Coordenadas</h2>
       <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span>
@@ -85,11 +97,24 @@
             latLongDisplay.innerText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
           }
         }
+        // Update Bairro highlight card
+        if (newAddress) {
+          const bairroValue = document.getElementById("bairro-value");
+          if (bairroValue) {
+            const bairro = newAddress.suburb || newAddress.neighbourhood || newAddress.quarter || newAddress.residential || newAddress.address?.suburb || newAddress.address?.neighbourhood || newAddress.address?.quarter || newAddress.address?.residential;
+            bairroValue.innerText = bairro || "Não disponível";
+          }
+        }
         // Update standardized address display
         if (enderecoPadronizado) {
           const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
           if (enderecoPadronizadoDisplay) {
             enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.enderecoCompleto() || ''}`;
+          }
+          // Update Municipio highlight card
+          const municipioValue = document.getElementById("municipio-value");
+          if (municipioValue) {
+            municipioValue.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
           }
         }
         const dadosSidraDiv = document.getElementById("dadosSidra");
@@ -186,7 +211,7 @@
       const pageVersion = {
         major: 0,
         minor: 4,
-        patch: 9,
+        patch: 10,
         prerelease: 'alpha',
         status: 'unstable, pre-release',
         toString: function () {
