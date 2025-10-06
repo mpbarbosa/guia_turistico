@@ -98,9 +98,27 @@
         }
       });
       manager.startTracking();
-      manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue.subscribeFunction(queue => {
-        document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
-      });
+      // Subscribe to speech queue size changes
+      if (manager.htmlSpeechSynthesisDisplayer && 
+          manager.htmlSpeechSynthesisDisplayer.speechManager && 
+          manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue) {
+        const speechQueue = manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue;
+        // Try to subscribe if the method exists
+        if (typeof speechQueue.subscribeFunction === 'function') {
+          speechQueue.subscribeFunction(queue => {
+            document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
+          });
+        } else {
+          // Fallback: periodically check queue length
+          console.warn("(loc_em_movimento) speechQueue.subscribeFunction not available - using polling fallback");
+          setInterval(() => {
+            const queueLength = speechQueue.length || (Array.isArray(speechQueue.queue) ? speechQueue.queue.length : 0);
+            document.getElementById("tam-fila-fala").innerHTML = `${queueLength}`;
+          }, 500); // Check every 500ms
+        }
+      } else {
+        console.warn("(loc_em_movimento) speechQueue not available - will not update tam-fila-fala");
+      }
       // Subscribe to address cache size changes
       if (manager.addressCache && manager.addressCache.subscribeFunction) {
         manager.addressCache.subscribeFunction(cache => {
@@ -136,7 +154,7 @@
       const pageVersion = {
         major: 0,
         minor: 4,
-        patch: 7,
+        patch: 8,
         prerelease: 'alpha',
         status: 'unstable, pre-release',
         toString: function () {
