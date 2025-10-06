@@ -16,7 +16,7 @@
 
   <header>
     <h1>Guia de Caminho</h1>
-    <p>Tempo decorrido: <span id="chronometer" aria-live="polite"> </span>; Tam fila fala: <span id="tam-fila-fala"
+    <p>Tempo decorrido: <span id="chronometer" aria-live="polite"> </span>; Fila fala: <span id="tam-fila-fala"
         aria-live="polite"> </span>; Tam cache:
       <span id="tam-cache" aria-live="polite"> </span>
     </p>
@@ -104,9 +104,24 @@
           manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue) {
         const speechQueue = manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue;
         // Try to subscribe if the method exists
+        // Runtime type check to verify that the speech queue object has subscription capability
+        // This guard clause prevents runtime errors if the speech queue is not properly initialized
+        // or lacks the expected observer pattern functionality
         if (typeof speechQueue.subscribeFunction === 'function') {
+          // Register a callback that receives the current queue state as a parameter
+          // This implements the observer pattern for real-time queue monitoring
           speechQueue.subscribeFunction(queue => {
-            document.getElementById("tam-fila-fala").innerHTML = `${queue.length}`;
+            // Sophisticated size calculation strategy using logical OR operator to handle different queue implementations
+            // First attempt: Call dedicated queue.size() method (preferred approach for proper queue data structures)
+            // Fallback: Check if queue.queue is an array and use its length property
+            // Default: Return 0 if neither approach yields a valid result
+            const size = queue.size() || (Array.isArray(queue.queue) ? queue.queue.length : 0);
+            
+            // Update DOM element with ID "tam-fila-fala" (Portuguese: "speech queue size")
+            // Creates live counter showing pending speech announcements to users
+            // Particularly valuable in tourist guide applications where location updates and
+            // announcements might queue up rapidly as users move through different areas
+            document.getElementById("tam-fila-fala").innerHTML = `${size}`;
           });
         } else {
           // Fallback: periodically check queue length
