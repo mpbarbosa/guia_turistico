@@ -114,7 +114,9 @@
           // Update Municipio highlight card
           const municipioValue = document.getElementById("municipio-value");
           if (municipioValue) {
-            municipioValue.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
+            const municipio = enderecoPadronizado.municipio || "Não disponível";
+            const siglaUf = enderecoPadronizado.siglaUf;
+            municipioValue.innerText = siglaUf ? `${municipio}, ${siglaUf}` : municipio;
           }
         }
         const dadosSidraDiv = document.getElementById("dadosSidra");
@@ -190,7 +192,7 @@
       const pageVersion = {
         major: 0,
         minor: 4,
-        patch: 12,
+        patch: 13,
         prerelease: 'alpha',
         status: 'unstable, pre-release',
         toString: function () {
