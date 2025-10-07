@@ -376,7 +376,9 @@
           if (enderecoPadronizado) {
             const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
             if (enderecoPadronizadoDisplay) {
-              enderecoPadronizadoDisplay.innerText = `${enderecoPadronizado.municipio}, ${enderecoPadronizado.siglaUf}`;
+              const municipio = enderecoPadronizado.municipio || "Não disponível";
+              const siglaUf = enderecoPadronizado.siglaUf;
+              enderecoPadronizadoDisplay.innerText = siglaUf ? `${municipio}, ${siglaUf}` : municipio;
             }
             // Update Municipio highlight card
             const municipioValue = document.getElementById("municipio-value");
