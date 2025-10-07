@@ -136,12 +136,6 @@ h2 {
   margin: 1rem 0;
 }
 
-@media (min-width: 600px) {
-  .location-highlights {
-    grid-template-columns: 2fr 1fr; /* Município takes more space */
-  }
-}
-
 .highlight-card {
   padding: 1rem;
   background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1565c0 100%);
