@@ -128,6 +128,7 @@ h2 {
 }
 
 /* Material Design 3 Highlight Cards for Municipio and Bairro */
+/* Município has higher information hierarchy than Bairro */
 .location-highlights {
   display: grid;
   grid-template-columns: 1fr;
@@ -137,7 +138,7 @@ h2 {
 
 @media (min-width: 600px) {
   .location-highlights {
-    grid-template-columns: 1fr 1fr;
+    grid-template-columns: 2fr 1fr; /* Município takes more space */
   }
 }
 
@@ -156,6 +157,18 @@ h2 {
   transform: translateY(-2px);
 }
 
+/* Município card - primary emphasis */
+.highlight-card:first-child {
+  background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1565c0 100%);
+  box-shadow: 0 2px 4px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+}
+
+/* Bairro card - secondary emphasis */
+.highlight-card:last-child {
+  background: linear-gradient(135deg, #64b5f6 0%, #42a5f5 100%);
+  opacity: 0.95;
+}
+
 .highlight-card-label {
   font-size: 0.875rem;
   font-weight: 500;
@@ -165,6 +178,12 @@ h2 {
   margin-bottom: 0.5rem;
 }
 
+/* Município label - enhanced */
+.highlight-card:first-child .highlight-card-label {
+  font-size: 1rem;
+  font-weight: 600;
+}
+
 .highlight-card-value {
   font-size: 1.5rem;
   font-weight: 600;
@@ -172,9 +191,28 @@ h2 {
   word-break: break-word;
 }
 
+/* Município value - larger and bolder */
+.highlight-card:first-child .highlight-card-value {
+  font-size: 1.75rem;
+  font-weight: 700;
+}
+
+/* Bairro value - smaller */
+.highlight-card:last-child .highlight-card-value {
+  font-size: 1.25rem;
+}
+
 @media (min-width: 600px) {
   .highlight-card-value {
     font-size: 1.75rem;
+  }
+
+  .highlight-card:first-child .highlight-card-value {
+    font-size: 2.25rem;
+  }
+
+  .highlight-card:last-child .highlight-card-value {
+    font-size: 1.5rem;
   }
 }
 
