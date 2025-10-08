@@ -115,13 +115,13 @@
           const municipioValue = document.getElementById("municipio-value");
           if (municipioValue) {
             const municipio = enderecoPadronizado.municipio || "Não disponível";
-            const siglaUf = enderecoPadronizado.siglaUf;
+            const siglaUf = enderecoPadronizado.siglaUF;
             municipioValue.innerText = siglaUf ? `${municipio}, ${siglaUf}` : municipio;
           }
         }
         const dadosSidraDiv = document.getElementById("dadosSidra");
         if (enderecoPadronizado) {
-          displaySidraDadosParams(dadosSidraDiv, "PopEst", { "municipio": enderecoPadronizado.municipio, "siglaUf": enderecoPadronizado.siglaUf });
+          displaySidraDadosParams(dadosSidraDiv, "PopEst", { "municipio": enderecoPadronizado.municipio, "siglaUf": enderecoPadronizado.siglaUF });
         }
       });
       manager.startTracking();
