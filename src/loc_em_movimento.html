@@ -74,10 +74,26 @@
       placeholder="Digite ou cole o texto aqui..." readonly aria-label="Histórico de texto gerado"></textarea>
   </footer>
 
-  <script src="libs/guia_js/src/guia.js"></script>
-  <script src="libs/sidra/sidra.js"></script>
+  <script src="./libs/sidra/sidra.js"></script>
+  <script src="./libs/guia_js/src/guia.js"></script>
   <script>
-    function init() {
+
+    async function init() {
+
+      let retries = 0;
+      const maxRetries = 50; // Maximum number of retries
+      const retryDelay = 100; // Delay between retries in milliseconds
+      while ((typeof WebGeocodingManager === 'undefined' || typeof PositionManager === 'undefined' || typeof AddressCache === 'undefined') && retries < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        retries++;
+      }
+      if (retries === maxRetries) {
+        console.error("Failed to load required classes after multiple retries.");
+        return;
+      }
+
+      log("(guia_turistico) guia.js loaded successfully.");
+
       const insertPositionButton = document.getElementById("insertPositionButton");
       insertPositionButton.addEventListener("click", insertPosition);
       const locationResult = document.getElementById("locationResult");
@@ -88,7 +104,8 @@
         "enderecoPadronizadoDisplay": enderecoPadronizadoDisplay,
         "referencePlaceDisplay": referencePlaceDisplay
       };
-      const manager = new WebGeocodingManager(document, params);
+      // Wait for Ibira.js to load before creating the manager
+      const manager = await WebGeocodingManager.createAsync(document, params);
       manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
         // Update coordinates display
         if (currentPosition && currentPosition.coords) {
@@ -172,6 +189,8 @@
         console.warn("(loc_em_movimento) addressCache not available - will not update tam-cache");
       }
     }
+    
+    window.init = init;
 
     function insertPosition() {
       const position = { "coords": { "latitude": -23.55052, "longitude": -46.633308, "accuracy": 1 }, "timestamp": Date.now() }; // Default to São Paulo coordinates
@@ -206,6 +225,8 @@
       document.getElementById('guia-version').innerHTML =
         `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
     });
+
+    // Add event listener instead of using onload attribute
   </script>
 </body>
 
