@@ -206,7 +206,7 @@
     }
 
     // Render both guia.js and HTML page versioning numbering and status in guia-version div
-    window.addEventListener('DOMContentLoaded', function () {
+    async function displayVersionInfo() {
       // HTML page version object
       const pageVersion = {
         major: 0,
@@ -218,13 +218,28 @@
           return `v${this.major}.${this.minor}.${this.patch}-${this.prerelease} (${this.status})`;
         }
       };
+
+      // Wait for guiaVersion to be available
+      let retries = 0;
+      const maxRetries = 50;
+      const retryDelay = 100;
+      while (typeof guiaVersion === 'undefined' && retries < maxRetries) {
+        await new Promise(resolve => setTimeout(resolve, retryDelay));
+        retries++;
+      }
+
       let guiaVerStr = '';
-      if (guiaVersion && typeof guiaVersion.toString === 'function') {
+      if (typeof guiaVersion !== 'undefined' && typeof guiaVersion.toString === 'function') {
         guiaVerStr = 'guia.js ' + guiaVersion.toString();
       }
-      document.getElementById('guia-version').innerHTML =
-        `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
-    });
+      
+      const versionElement = document.getElementById('guia-version');
+      if (versionElement) {
+        versionElement.innerHTML = `${guiaVerStr}<br>HTML page ${pageVersion.toString()}`;
+      }
+    }
+
+    window.addEventListener('DOMContentLoaded', displayVersionInfo);
 
     // Add event listener instead of using onload attribute
   </script>
