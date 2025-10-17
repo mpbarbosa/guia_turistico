@@ -346,7 +346,9 @@
         var locationResult = document.getElementById("locationResult");
         console.log("(index) locationResult:", locationResult);
         console.log("(index) Creating WebGeocodingManager...");
-        var manager = new WebGeocodingManager(document, locationResult);
+        var manager = new WebGeocodingManager(document, {
+          locationResult: locationResult.id
+        });
         console.log("(index) manager:", manager);
         manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
           console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
