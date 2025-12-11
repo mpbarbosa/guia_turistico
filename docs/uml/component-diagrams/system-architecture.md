@@ -59,9 +59,9 @@ Este diagrama mostra os componentes internos da aplicação web e suas interaç�
 @startuml
 package "Web Application Layer" {
     [index.html] as IndexPage
-    [loc_em_movimento.html] as TrackingPage  
-    [address_converter.html] as ConverterPage
-    [guia_turistico.html] as TouristPage
+    [loc-em-movimento.html] as TrackingPage  
+    [address-converter.html] as ConverterPage
+    [guia-turistico.html] as TouristPage
 }
 
 package "JavaScript Core Layer" {

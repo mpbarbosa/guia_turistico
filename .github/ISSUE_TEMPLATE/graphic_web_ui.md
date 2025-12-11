@@ -29,10 +29,10 @@ assignees: ''
 <!-- Check all pages or components affected by this issue -->
 
 - [ ] index.html (Main tourist guide)
-- [ ] loc_em_movimento.html (Location tracking)
-- [ ] address_converter.html (Address converter)
-- [ ] guia_turistico.html
-- [ ] CSS: loc_em_movimento.css
+- [ ] loc-em-movimento.html (Location tracking)
+- [ ] address-converter.html (Address converter)
+- [ ] guia-turistico.html
+- [ ] CSS: loc-em-movimento.css
 - [ ] Other: <!-- Specify component or element -->
 
 ## Current Behavior

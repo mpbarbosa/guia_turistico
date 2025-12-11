@@ -15,9 +15,9 @@ Guia Turístico is a tourist guide application that provides location-based info
 - **Primary interface**: HTML5 web application with geolocation capabilities
 - **Main files**:
   - `index.html` - Main tourist guide interface
-  - `loc_em_movimento.html` - Location tracking while moving
-  - `address_converter.html` - Address conversion utility
-  - `guia_turistico.html` - Tourist guide specific page
+  - `loc-em-movimento.html` - Location tracking while moving
+  - `address-converter.html` - Address conversion utility
+  - `guia-turistico.html` - Tourist guide specific page
 - **JavaScript**: Uses vanilla JavaScript with geolocation APIs
 - **Styling**: CSS with mobile-first responsive design
 - **Libraries**: Custom JavaScript libraries in `src/libs/` (guia_js, sidra)

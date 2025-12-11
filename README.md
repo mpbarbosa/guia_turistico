@@ -55,8 +55,8 @@ A documentação completa do projeto, incluindo diagramas UML e especificações
 
 ### Acesso Web
 - **Página Principal**: `src/index.html` - Interface principal com funcionalidades básicas
-- **Rastreamento**: `src/loc_em_movimento.html` - Rastreamento contínuo durante viagem
-- **Conversor**: `src/address_converter.html` - Conversão de coordenadas em endereços
+- **Rastreamento**: `src/loc-em-movimento.html` - Rastreamento contínuo durante viagem
+- **Conversor**: `src/address-converter.html` - Conversão de coordenadas em endereços
 
 ### Desenvolvimento Local
 ```bash

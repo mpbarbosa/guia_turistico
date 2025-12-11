@@ -251,7 +251,7 @@ Este diagrama mostra o fluxo da página de conversão de coordenadas.
 ```
 @startuml
 participant "Usuário" as User
-participant "address_converter.html" as UI
+participant "address-converter.html" as UI
 participant "ReverseGeocoder" as RG
 participant "HTMLAddressDisplayer" as HAD
 participant "Nominatim API" as API

@@ -34,7 +34,7 @@ assignees: ''
 - **Device**: <!-- e.g., Desktop, Mobile (iOS/Android), Tablet -->
 - **Browser**: <!-- e.g., Chrome 120, Firefox 115, Safari 17, Edge -->
 - **Operating System**: <!-- e.g., Windows 11, macOS Sonoma, Ubuntu 22.04, iOS 17, Android 14 -->
-- **Page/Feature**: <!-- e.g., index.html, loc_em_movimento.html, address_converter.html -->
+- **Page/Feature**: <!-- e.g., index.html, loc-em-movimento.html, address-converter.html -->
 - **Location Permission**: <!-- e.g., Granted, Denied, Prompt -->
 - **Connection**: <!-- e.g., WiFi, Mobile Data, Offline -->
 

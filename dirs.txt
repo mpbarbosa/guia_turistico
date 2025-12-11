@@ -1,44 +1,34 @@
 .
-├── .github
-│   └── copilot-instructions.md
-├── .gitignore
-├── .gitmodules
-├── .idea
-│   ├── .gitignore
-│   ├── .name
-│   ├── AndroidProjectSystem.xml
-│   ├── compiler.xml
-│   ├── deploymentTargetSelector.xml
-│   ├── gradle.xml
-│   ├── migrations.xml
-│   ├── misc.xml
-│   ├── runConfigurations.xml
-│   └── vcs.xml
-├── README.md
 ├── dirs.txt
 ├── docs
-│   └── arvore_dirs.txt
+│   ├── arvore_dirs.txt
+│   ├── README.md
+│   └── uml
+│       ├── class-diagrams
+│       ├── component-diagrams
+│       ├── README.md
+│       ├── sequence-diagrams
+│       └── use-case-diagrams
 ├── documentation
 │   └── anotacoes.html
 ├── ibge_data
 │   └── input
 │       └── sp_ibge.geojson
-├── index.js
-├── my_run.sh
+├── README.md
 ├── src
-│   ├── address_converter.html
+│   ├── address-converter.html
 │   ├── andarilho.js
-│   ├── guia_turistico.html -> index.html
+│   ├── guia-turistico.html
 │   ├── index.html
 │   ├── libs
 │   │   ├── guia_js
 │   │   └── sidra
-│   ├── loc_em_movimento.css
-│   └── loc_em_movimento.html
+│   ├── loc-em-movimento.css
+│   └── loc-em-movimento.html
 ├── tests
 │   └── index.py
 ├── utils
 │   └── download_dados_ibge.py
 └── wrangler.jsonc
 
-13 directories, 30 files
+16 directories, 16 files
