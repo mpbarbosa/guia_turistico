@@ -1,0 +1,28 @@
+{
+  "name": "guia_turistico",
+  "version": "1.0.0",
+  "description": "Uma aplicação web de geolocalização que oferece informações contextuais baseadas na localização do usuário, incluindo dados estatísticos municipais, informações históricas e serviços próximos.",
+  "main": "index.js",
+  "directories": {
+    "doc": "docs",
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mpbarbosa/guia_turistico.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/mpbarbosa/guia_turistico/issues"
+  },
+  "homepage": "https://github.com/mpbarbosa/guia_turistico#readme",
+  "dependencies": {
+    "guia_js": "github:mpbarbosa/guia.js"
+  }
+}
