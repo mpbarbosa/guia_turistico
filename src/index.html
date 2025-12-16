@@ -281,7 +281,7 @@
       }
     </style>
   </head>
-  <body onload="init()">
+  <body>
     <header>
       <h1>Guia Turístico</h1>
       <p>
@@ -338,9 +338,17 @@
         <p>As informações da sua localização aparecerão aqui.</p>
       </section>
     </main>
-    <script type="module" src="https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js"></script>
     <script src="https://cdn.jsdelivr.net/gh/mpbarbosa/sidra.js@main/sidra.js"></script>
-    <script>
+    <script type="module">
+      import { WebGeocodingManager } from 'https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js';
+      
+      // Wait for DOM to be ready
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+      
       function init() {
         console.log("(index) Initializing application...");
         var locationResult = document.getElementById("locationResult");
