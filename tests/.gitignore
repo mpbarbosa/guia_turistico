@@ -1,0 +1,17 @@
+# Test reports
+integration/test_reports/
+*.pyc
+__pycache__/
+.pytest_cache/
+
+# Screenshots from failed tests
+failure_*.png
+
+# Coverage reports
+htmlcov/
+.coverage
+coverage.xml
+
+# IDE
+.vscode/
+.idea/

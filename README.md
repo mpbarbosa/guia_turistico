@@ -51,6 +51,12 @@ A documentação completa do projeto, incluindo diagramas UML e especificações
 - **[Sequência](docs/uml/sequence-diagrams/location-tracking-flow.md)** - Fluxos de interação
 - **[Componentes](docs/uml/component-diagrams/system-architecture.md)** - Arquitetura do sistema
 
+### Guias de Desenvolvimento
+- **[Transparência Referencial](.github/REFERENTIAL_TRANSPARENCY.md)** - Princípios de funções puras e programação funcional
+- **[Separação HTML/CSS/JS](.github/HTML_CSS_JS_SEPARATION.md)** - Separação de camadas e responsabilidades
+- **[Alta Coesão](.github/HIGH_COHESION_GUIDE.md)** - Organização de código com alta coesão
+- **[Baixo Acoplamento](.github/LOW_COUPLING_GUIDE.md)** - Gerenciamento de dependências
+
 ## 🚀 Como Usar
 
 ### Acesso Web
@@ -63,8 +69,8 @@ A documentação completa do projeto, incluindo diagramas UML e especificações
 # Clone o repositório
 git clone https://github.com/mpbarbosa/guia_turistico.git
 
-# Inicialize os submódulos (bibliotecas customizadas)
-git submodule update --init --recursive
+# Instale as dependências
+npm install
 
 # Sirva os arquivos estaticamente (exemplo com Python)
 cd src && python -m http.server 8000
@@ -84,4 +90,40 @@ cd src && python -m http.server 8000
 - ✅ Navegadores modernos (Chrome, Firefox, Safari, Edge)
 - ✅ Dispositivos móveis (iOS, Android)
 - ✅ Desktop (Windows, macOS, Linux)
-- ⚠️ Requer HTTPS para Geolocation API 
+- ⚠️ Requer HTTPS para Geolocation API
+
+## 🧪 Testes
+
+O projeto possui suíte completa de testes automatizados:
+
+### Testes Unitários (Jest)
+```bash
+# Executar testes unitários
+npm run test:unit
+
+# Executar com watch mode
+npm run test:unit:watch
+
+# Gerar relatório de cobertura
+npm run test:unit:coverage
+```
+
+### Testes de Integração (Selenium)
+```bash
+# Executar testes de integração
+npm run test:integration
+
+# Ou manualmente
+cd tests/integration && ./run_tests.sh
+```
+
+### Documentação de Testes
+- **[Visão Geral dos Testes](tests/TEST_SUITE_OVERVIEW.md)** - Estatísticas e resumo da suíte de testes
+- **[Testes de Integração](INTEGRATION_TESTS.md)** - Guia completo dos testes Selenium
+- **[Testes Unitários](tests/unit/README.md)** - Documentação dos testes Jest
+
+**Cobertura de Testes:**
+- ✅ Testes unitários com Jest (jsdom)
+- ✅ Testes de integração com Selenium
+- ✅ CI/CD com GitHub Actions
+- ✅ Limite mínimo de cobertura: 70% 

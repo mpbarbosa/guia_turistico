@@ -8,7 +8,12 @@
     "test": "tests"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "npm run test:unit",
+    "test:unit": "jest",
+    "test:unit:watch": "jest --watch",
+    "test:unit:coverage": "jest --coverage",
+    "test:integration": "cd tests/integration && ./run_tests.sh",
+    "test:all": "npm run test:unit && npm run test:integration"
   },
   "repository": {
     "type": "git",
@@ -24,5 +29,9 @@
   "homepage": "https://github.com/mpbarbosa/guia_turistico#readme",
   "dependencies": {
     "guia_js": "github:mpbarbosa/guia.js"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-environment-jsdom": "^29.7.0"
   }
 }

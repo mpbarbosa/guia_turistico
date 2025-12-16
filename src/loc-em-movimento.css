@@ -350,3 +350,20 @@ div[style*="position:fixed"][style*="bottom:0"] {
     width: 80vw;
   }
 }
+/* Footer styling */
+footer {
+  width: 100%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  background: var(--md-sys-color-surface);
+  border-top: 1px solid #ccc;
+  box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+}
+
+#bottom-scroll-textarea {
+  width: 98%;
+  margin: 1%;
+  resize: vertical;
+  overflow-y: scroll;
+}
