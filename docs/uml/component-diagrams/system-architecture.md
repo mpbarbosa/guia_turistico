@@ -9,10 +9,10 @@ Este diagrama mostra a arquitetura de alto nível do sistema Guia Turístico.
 !include <C4/C4_Component>
 
 Container_Boundary(web, "Web Application") {
-    Component(ui, "User Interface", "HTML5/CSS3/JavaScript", "Interface web responsiva")
-    Component(core, "Core Application", "JavaScript", "Lógica principal da aplicação")
-    Component(guia_js, "Guia.js Library", "JavaScript", "Biblioteca de geolocalização customizada")
-    Component(sidra, "SIDRA Library", "JavaScript", "Biblioteca para integração com IBGE")
+    Component(ui, "User Interface", "HTML5/CSS3 (separated)", "Interface web responsiva - arquivos separados")
+    Component(core, "Core Application", "JavaScript (modular)", "Lógica principal da aplicação")
+    Component(business_logic, "Business Logic", "JavaScript (pure functions)", "Funções puras - testáveis com Jest")
+    Component(side_effects, "Side Effects", "JavaScript (impure functions)", "DOM, I/O, APIs - testáveis com Selenium")
 }
 
 Container_Boundary(browser, "Browser APIs") {
@@ -58,20 +58,48 @@ Este diagrama mostra os componentes internos da aplicação web e suas interaç�
 ```
 @startuml
 package "Web Application Layer" {
-    [index.html] as IndexPage
-    [loc-em-movimento.html] as TrackingPage  
+    [index.html + index.css + index.js] as IndexPage
+    [loc-em-movimento.html + .css + .js] as TrackingPage  
     [address-converter.html] as ConverterPage
     [guia-turistico.html] as TouristPage
+    
+    note right of IndexPage
+        HTML/CSS/JS separation:
+        Each page has separate files
+        for structure, style, and behavior
+    end note
 }
 
 package "JavaScript Core Layer" {
     [andarilho.js] as CoreLogic
-    [Location Service] as LocationSvc
-    [UI Controller] as UIController
-    [Text-to-Speech Manager] as TTSManager
+    [index.js] as IndexJS
+    [loc-em-movimento.js] as TrackingJS
+    [Pure Functions] as PureFuncs
+    [Impure Functions] as ImpureFuncs
+    
+    note right of PureFuncs
+        Business logic:
+        - Referentially transparent
+        - Testable with Jest unit tests
+        - No side effects
+    end note
+    
+    note right of ImpureFuncs
+        Side effects:
+        - DOM manipulation
+        - I/O operations
+        - API calls
+        - Testable with Selenium
+    end note
 }
 
-package "Custom Libraries" {
+package "Custom Libraries (External)" {
+    note right of guia_js
+        Libraries removed from repository.
+        Previously git submodules.
+        Now managed externally.
+    end note
+    
     component "guia_js" {
         [WebGeocodingManager] as WGM
         [ReverseGeocoder] as RG
@@ -99,17 +127,24 @@ package "Data Models" {
 }
 
 ' Conexões entre páginas e core
+IndexPage --> IndexJS
 IndexPage --> CoreLogic
-IndexPage --> LocationSvc
+TrackingPage --> TrackingJS
 TrackingPage --> WGM
 ConverterPage --> RG
 TouristPage --> CoreLogic
 
+' Core JavaScript architecture
+IndexJS --> PureFuncs
+IndexJS --> ImpureFuncs
+TrackingJS --> PureFuncs
+TrackingJS --> ImpureFuncs
+CoreLogic --> PureFuncs
+
 ' Core para bibliotecas customizadas
 CoreLogic --> WGM
 CoreLogic --> SidraAPI
-LocationSvc --> WGM
-UIController --> HAD
+ImpureFuncs --> WGM
 
 ' Bibliotecas para serviços externos
 WGM --> GeoSvc

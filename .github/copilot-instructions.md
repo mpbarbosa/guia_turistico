@@ -14,13 +14,15 @@ Guia Turístico is a tourist guide application that provides location-based info
 ### Web Application (`src/` directory)
 - **Primary interface**: HTML5 web application with geolocation capabilities
 - **Main files**:
-  - `index.html` - Main tourist guide interface
-  - `loc-em-movimento.html` - Location tracking while moving
+  - `index.html` + `index.js` + `index.css` - Main tourist guide interface
+  - `loc-em-movimento.html` + `loc-em-movimento.js` + `loc-em-movimento.css` - Location tracking while moving
   - `address-converter.html` - Address conversion utility
-  - `guia-turistico.html` - Tourist guide specific page
+  - `guia-turistico.html` - Tourist guide specific page (legacy, minimal content)
+  - `andarilho.js` - Core shared logic (legacy naming, contains impure functions)
+- **Architecture**: HTML/CSS/JS separation (separate files for structure/style/behavior)
 - **JavaScript**: Uses vanilla JavaScript with geolocation APIs
-- **Styling**: CSS with mobile-first responsive design
-- **Libraries**: Custom JavaScript libraries in `src/libs/` (guia_js, sidra)
+- **Styling**: CSS with mobile-first responsive design in separate .css files
+- **Libraries**: Custom JavaScript libraries were external (guia_js, sidra) - removed from repo
 
 
 ## Key Technologies and APIs
@@ -33,9 +35,10 @@ Guia Turístico is a tourist guide application that provides location-based info
 - **Web Speech API**: Text-to-speech functionality
 
 ### Custom Libraries
-- **guia_js**: Core geolocation and mapping utilities (`src/libs/guia_js/`)
-- **sidra**: IBGE/SIDRA API integration (`src/libs/sidra/`)
-- These libraries provide the main functionality for the application
+- **guia_js**: Core geolocation and mapping utilities (external submodule, removed from this repo)
+- **sidra**: IBGE/SIDRA API integration (external submodule, removed from this repo)
+- These libraries were previously git submodules but have been removed
+- The application uses their functionality when they're available
 - Follow existing patterns when extending these libraries
 
 ## File Structure Conventions
@@ -43,15 +46,15 @@ Guia Turístico is a tourist guide application that provides location-based info
 ```
 src/
 ├── *.html           # Web application pages
-├── *.css            # Stylesheets (mobile-first design)
-├── *.js             # Application logic
-├── libs/            # Custom JavaScript libraries
-│   ├── guia_js/     # Core geolocation and mapping utilities
-│   └── sidra/       # IBGE/SIDRA API integration
+├── *.css            # Stylesheets (mobile-first design, separated from HTML)
+├── *.js             # Application logic (separated from HTML)
+├── libs/            # Custom JavaScript libraries (removed from this repo)
 ibge_data/           # IBGE statistical data cache
 docs/                # Project documentation
 utils/               # Utility scripts
-tests/               # Test files (Selenium tests for web UI)
+tests/               # Test files
+│   ├── unit/        # Jest unit tests for pure functions
+│   └── integration/ # Selenium integration tests for web UI
 ```
 
 ## Coding Standards and Patterns
@@ -63,6 +66,10 @@ tests/               # Test files (Selenium tests for web UI)
 - Implement proper error handling for geolocation and API failures
 - Use descriptive variable names in Portuguese for domain-specific terms
 - Global variables should be minimal and clearly documented
+- **MUST be in separate .js files** (no inline scripts in HTML)
+- **Separate pure functions from impure functions** (see REFERENTIAL_TRANSPARENCY.md)
+- Pure functions (business logic) should be testable with Jest unit tests
+- Impure functions (DOM manipulation, I/O) tested with Selenium integration tests
 
 ### HTML
 - Use semantic HTML5 elements
@@ -71,12 +78,17 @@ tests/               # Test files (Selenium tests for web UI)
 - Include accessibility attributes (ARIA labels, alt text)
 - Progressive enhancement approach
 - Ensure HTML5 Boilerplate compliance
+- **CRITICAL**: Keep HTML, CSS, and JavaScript in SEPARATE files (see HTML_CSS_JS_SEPARATION.md)
+- **NO inline styles or inline scripts** (except for critical above-the-fold CSS)
+- Link external CSS with `<link>` and external JS with `<script src="">`
 
 ### CSS
 - **Mobile-first responsive design**
 - Use CSS Grid and Flexbox for layouts
 - Consistent naming conventions for classes
-- Avoid inline styles except for dynamic positioning
+- **MUST be in separate .css files** (no inline styles in HTML)
+- Follow Material Design 3 principles where applicable
+- Use CSS custom properties (CSS variables) for theming
 
 ## Common Patterns
 
@@ -109,10 +121,16 @@ tests/               # Test files (Selenium tests for web UI)
 
 ### When Adding New Features
 1. Focus on web application implementation
-2. Test geolocation functionality across different browsers
-3. Ensure mobile responsiveness
-4. Add proper error handling for network failures
-5. Update version numbers in relevant files
+2. **Separate HTML, CSS, and JavaScript** into different files
+3. Write **pure functions** for business logic (testable with Jest)
+4. Write **impure functions** for side effects (DOM, I/O, APIs)
+5. Add **unit tests** for pure functions (Jest)
+6. Add **integration tests** for user workflows (Selenium)
+7. Test geolocation functionality across different browsers
+8. Ensure mobile responsiveness
+9. Add proper error handling for network failures
+10. Update version numbers in relevant files
+11. Run test suite before committing: `npm run test:all`
 
 ### API Keys and Security
 - Never commit API keys or sensitive data
@@ -121,17 +139,25 @@ tests/               # Test files (Selenium tests for web UI)
 
 ### Dependency Management
 - Web components use vanilla JavaScript without package managers
-- Custom libraries are in `src/libs/` directory
+- Custom libraries (guia_js, sidra) are external (not in this repo)
 - No Android dependencies since Android support has been removed
-- Consider compatibility when updating library versions
+- Node.js dependencies managed with npm (see package.json)
+- Test dependencies: Jest (unit tests), Selenium (integration tests)
 
 ### Testing Approach
-- Test geolocation with various permission scenarios
-- Verify API integrations with different response formats
-- Test responsive design on multiple screen sizes
-- Validate accessibility features
-- Selenium tests available in `tests/` directory for web UI testing
-- Use appropriate testing strategy for web components
+- **Unit Tests (Jest)**: Test pure functions with `npm run test:unit`
+  - Located in `tests/unit/`
+  - Test referentially transparent functions only
+  - No mocking required for pure functions
+  - Target: 70% code coverage minimum
+- **Integration Tests (Selenium)**: Test user workflows with `npm run test:integration`
+  - Located in `tests/integration/`
+  - Test geolocation with various permission scenarios
+  - Verify API integrations with different response formats
+  - Test responsive design on multiple screen sizes
+  - Validate accessibility features
+- **CI/CD**: GitHub Actions workflow runs tests automatically
+- **Run all tests**: `npm run test:all` before committing
 
 ### Performance Considerations
 - Minimize geolocation API calls
@@ -191,11 +217,14 @@ This is a Brazilian application, so:
 - Document significant changes in comments when necessary
 
 ## Repository-Specific Notes
-- Libraries in `src/libs/` are git submodules (guia_js and sidra)
+- Libraries (guia_js and sidra) were previously git submodules but have been removed
 - The project uses Cloudflare Workers for deployment
 - Android development files (run.sh, my_run.sh) are legacy and should be ignored
 - Version numbers should be updated consistently across HTML files
 - Focus on web-based geolocation and mapping functionality
+- **NEW**: File naming convention uses hyphens (e.g., `loc-em-movimento.html`, not `loc_em_movimento.html`)
+- **NEW**: HTML, CSS, and JavaScript are in separate files for each page
+- **NEW**: Comprehensive test suite with Jest (unit) and Selenium (integration)
 
 ## Web UI Design Guidelines
 

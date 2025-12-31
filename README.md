@@ -32,11 +32,15 @@ Facilita encontros em grupo através de:
 
 ## 🏗️ Arquitetura
 
-- **Frontend**: HTML5, CSS3, JavaScript vanilla
+- **Frontend**: HTML5, CSS3, JavaScript vanilla (separação de camadas)
+- **Padrões de Design**: 
+  - HTML/CSS/JS em arquivos separados
+  - Funções puras para lógica de negócio (testáveis)
+  - Separação entre lógica pura e efeitos colaterais
 - **APIs Integradas**: Geolocation, IBGE/SIDRA, Wikipedia, Overpass (OpenStreetMap)
 - **Bibliotecas Customizadas**: 
-  - `guia_js` (geolocalização e geocodificação)
-  - `sidra` (integração com dados IBGE)
+  - `guia_js` (geolocalização e geocodificação - externa)
+  - `sidra` (integração com dados IBGE - externa)
 - **Deploy**: Cloudflare Workers
 
 ## 📚 Documentação
@@ -123,7 +127,10 @@ cd tests/integration && ./run_tests.sh
 - **[Testes Unitários](tests/unit/README.md)** - Documentação dos testes Jest
 
 **Cobertura de Testes:**
-- ✅ Testes unitários com Jest (jsdom)
-- ✅ Testes de integração com Selenium
-- ✅ CI/CD com GitHub Actions
-- ✅ Limite mínimo de cobertura: 70% 
+- ✅ Testes unitários com Jest (jsdom) - `tests/unit/`
+- ✅ Testes de integração com Selenium - `tests/integration/`
+- ✅ CI/CD com GitHub Actions (workflow automático)
+- ✅ Limite mínimo de cobertura: 70%
+- ✅ Teste de funções puras (referentially transparent)
+- ✅ Teste de fluxos de usuário end-to-end
+- ✅ Teste de performance e acessibilidade 

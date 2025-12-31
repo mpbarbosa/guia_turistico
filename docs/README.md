@@ -51,12 +51,17 @@ O **Guia Turístico** é uma aplicação web HTML5 que fornece informações bas
 ### Tecnologias Utilizadas
 
 - **Frontend**: HTML5, CSS3, JavaScript ES6+
+- **Padrões Arquiteturais**: 
+  - Separação HTML/CSS/JS (arquivos separados)
+  - Funções puras vs. impuras (transparência referencial)
+  - Alta coesão e baixo acoplamento
 - **APIs**: Geolocation, Web Speech, IBGE/SIDRA, Wikipedia, Overpass
 - **Bibliotecas Customizadas**: 
-  - `guia_js` (geolocalização e geocodificação)
-  - `sidra` (integração com dados IBGE)
+  - `guia_js` (geolocalização e geocodificação - externa)
+  - `sidra` (integração com dados IBGE - externa)
+- **Testes**: Jest (unit tests), Selenium (integration tests)
 - **Deploy**: Cloudflare Workers
-- **Versionamento**: Git com submódulos
+- **Versionamento**: Git (submódulos removidos)
 
 ## Como Usar Esta Documentação
 
@@ -74,6 +79,9 @@ O **Guia Turístico** é uma aplicação web HTML5 que fornece informações bas
 ### Para Testadores
 1. **[Fluxos de Teste](uml/sequence-diagrams/location-tracking-flow.md)** - Cenários de teste baseados em sequências
 2. **[Casos de Uso](uml/use-case-diagrams/main-use-cases.md)** - Critérios de aceitação por cenário
+3. **[Visão Geral dos Testes](../tests/TEST_SUITE_OVERVIEW.md)** - Estatísticas e resumo completo
+4. **[Testes Unitários](../tests/unit/README.md)** - Guia de testes Jest para funções puras
+5. **[Testes de Integração](../INTEGRATION_TESTS.md)** - Guia de testes Selenium
 
 ## Ferramentas para Visualização
 

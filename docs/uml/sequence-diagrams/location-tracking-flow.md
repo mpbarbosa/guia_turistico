@@ -8,7 +8,8 @@ Este diagrama mostra o fluxo quando o usuário acessa a aplicação e solicita s
 @startuml
 participant "Usuário" as User
 participant "index.html" as UI
-participant "LocationService" as LS
+participant "index.js" as JS
+participant "Pure Functions" as Pure
 participant "WebGeocodingManager" as WGM
 participant "Navigator.geolocation" as GPS
 participant "ReverseGeocoder" as RG
@@ -17,10 +18,13 @@ participant "Nominatim API" as API
 User -> UI: Acessa aplicação
 activate UI
 
-UI -> LS: init()
-activate LS
+UI -> JS: Carrega index.js
+activate JS
 
-LS -> WGM: new WebGeocodingManager(document, locationResult)
+JS -> Pure: Inicializa funções puras
+activate Pure
+
+JS -> WGM: new WebGeocodingManager(document, locationResult)
 activate WGM
 
 LS -> WGM: subscribeFunction(callback)

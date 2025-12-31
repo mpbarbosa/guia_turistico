@@ -1,0 +1,239 @@
+# AI Workflow Automation Configuration
+# Project: Guia Turístico
+# Generated: 2025-12-31
+# Version: 1.0.0
+
+# ============================================================================
+# PROJECT IDENTIFICATION
+# ============================================================================
+
+project:
+  kind: client_spa
+  name: "Guia Turístico"
+  description: "Geolocation-based web application with multiple HTML pages providing contextual location information"
+  version: "1.0.0"
+
+# ============================================================================
+# TECHNOLOGY STACK
+# ============================================================================
+
+tech_stack:
+  primary_language: javascript
+  language_version: "ES6+"
+  
+  frameworks:
+    - vanilla_js
+    - bootstrap
+  
+  libraries:
+    - guia_js  # Custom geolocation/geocoding library
+    - sidra.js # IBGE data integration library
+  
+  apis:
+    - geolocation_api
+    - web_speech_api
+    - ibge_sidra
+    - wikipedia
+    - openstreetmap_overpass
+  
+  testing_framework: jest
+  testing_environment: jsdom
+  e2e_testing: selenium
+  
+  build_tools:
+    - npm
+  
+  deployment:
+    platform: cloudflare_workers
+    type: static
+
+# ============================================================================
+# TESTING CONFIGURATION
+# ============================================================================
+
+testing:
+  unit:
+    enabled: true
+    command: "npm run test:unit"
+    framework: jest
+    directory: "tests/unit"
+    file_pattern: "*.test.js"
+    coverage_threshold: 70
+    coverage_command: "npm run test:unit:coverage"
+  
+  integration:
+    enabled: true
+    command: "npm run test:integration"
+    framework: selenium
+    directory: "tests/integration"
+    file_pattern: "test_*.py"
+    language: python
+  
+  e2e:
+    enabled: true
+    command: "npm run test:integration"
+    framework: selenium
+    browser_testing: true
+
+# ============================================================================
+# QUALITY STANDARDS
+# ============================================================================
+
+quality:
+  coverage_required: true
+  minimum_coverage: 70
+  
+  linting:
+    enabled: true
+    eslint:
+      enabled: true
+      command: "npx eslint"
+      file_pattern: "src/**/*.js"
+    htmlhint:
+      enabled: true
+      command: "npx htmlhint"
+      file_pattern: "src/**/*.html"
+    stylelint:
+      enabled: false  # No custom linting configured yet
+  
+  accessibility:
+    required: true
+    wcag_level: "AA"
+    aria_labels: true
+    semantic_html: true
+  
+  documentation:
+    readme_required: true
+    inline_comments: true
+    api_documentation: true
+    uml_diagrams: true
+
+# ============================================================================
+# PROJECT STRUCTURE
+# ============================================================================
+
+structure:
+  source_directory: "src"
+  test_directory: "tests"
+  docs_directory: "docs"
+  
+  entry_points:
+    - "src/index.html"
+    - "src/loc-em-movimento.html"
+    - "src/address-converter.html"
+    - "src/guia-turistico.html"
+  
+  javascript_modules:
+    - "src/index.js"
+    - "src/loc-em-movimento.js"
+    - "src/andarilho.js"
+
+# ============================================================================
+# WORKFLOW OPTIMIZATION
+# ============================================================================
+
+workflow:
+  smart_execution:
+    enabled: true
+    change_detection: true
+  
+  parallel_execution:
+    enabled: true
+  
+  ai_caching:
+    enabled: true
+    ttl: 86400  # 24 hours
+  
+  checkpoint_resume:
+    enabled: true
+  
+  auto_commit:
+    enabled: false  # User can enable with --auto-commit flag
+
+# ============================================================================
+# DEPENDENCIES
+# ============================================================================
+
+dependencies:
+  package_manager: npm
+  package_file: "package.json"
+  lock_file: "package-lock.json"
+  
+  security_audit:
+    enabled: true
+    command: "npm audit"
+
+# ============================================================================
+# BUILD CONFIGURATION
+# ============================================================================
+
+build:
+  required: false  # Static site, no build step needed
+  dev_server: "python3 -m http.server 8000"
+  serve_directory: "src"
+
+# ============================================================================
+# BEST PRACTICES & GUIDELINES
+# ============================================================================
+
+guidelines:
+  architectural_principles:
+    - "Referential transparency and pure functions"
+    - "Separation of concerns (HTML/CSS/JS)"
+    - "High cohesion within modules"
+    - "Low coupling between modules"
+  
+  coding_standards:
+    - "ES6+ module system (import/export)"
+    - "Async/await for asynchronous operations"
+    - "Semantic HTML5 elements"
+    - "ARIA attributes for accessibility"
+    - "Mobile-first responsive design"
+  
+  state_management:
+    - "localStorage with TTL for caching"
+    - "Event-driven architecture for updates"
+    - "Avoid global variables"
+  
+  api_integration:
+    - "Centralized API clients"
+    - "Proper error handling with user feedback"
+    - "Cache API responses with TTL"
+    - "Mock external services in tests"
+
+# ============================================================================
+# DOCUMENTATION REFERENCES
+# ============================================================================
+
+documentation:
+  architecture_docs:
+    - "docs/README.md"
+    - "docs/uml/README.md"
+  
+  design_principles:
+    - ".github/REFERENTIAL_TRANSPARENCY.md"
+    - ".github/HTML_CSS_JS_SEPARATION.md"
+    - ".github/HIGH_COHESION_GUIDE.md"
+    - ".github/LOW_COUPLING_GUIDE.md"
+  
+  testing_docs:
+    - "tests/TEST_SUITE_OVERVIEW.md"
+    - "tests/unit/README.md"
+    - "INTEGRATION_TESTS.md"
+  
+  uml_diagrams:
+    - "docs/uml/use-case-diagrams/main-use-cases.md"
+    - "docs/uml/class-diagrams/core-classes.md"
+    - "docs/uml/sequence-diagrams/location-tracking-flow.md"
+    - "docs/uml/component-diagrams/system-architecture.md"
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  config_version: "1.0.0"
+  workflow_automation_version: "2.6.0"
+  created_date: "2025-12-31"
+  last_updated: "2025-12-31"
+  maintainer: "Marcelo Pereira Barbosa"
