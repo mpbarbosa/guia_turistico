@@ -1,0 +1,108 @@
+/**
+ * Tooltip Component Styles
+ * Provides accessible tooltips for abbreviations and help text
+ * 
+ * Usage: <abbr title="Explanation">Term</abbr>
+ */
+
+/* Abbreviation base styling */
+abbr[title] {
+  text-decoration: none;
+  border-bottom: 1px dotted var(--md-sys-color-primary, #1976d2);
+  cursor: help;
+  color: var(--md-sys-color-primary, #1976d2);
+  font-weight: 500;
+  position: relative;
+  transition: border-bottom 0.2s;
+}
+
+abbr[title]:hover,
+abbr[title]:focus {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+}
+
+/* Touch device support - no hover tooltips */
+@media (hover: none) {
+  abbr[title] {
+    border-bottom-style: solid;
+  }
+}
+
+/* Tooltip appears on hover for devices that support it */
+@media (hover: hover) {
+  abbr[title]:hover::after {
+    content: attr(title);
+    position: absolute;
+    bottom: 150%;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--md-sys-color-on-surface, #1c1b1f);
+    color: var(--md-sys-color-surface, #ffffff);
+    padding: 8px 12px;
+    border-radius: 8px;
+    white-space: nowrap;
+    font-size: 0.875rem;
+    font-weight: 400;
+    line-height: 1.4;
+    z-index: 1000;
+    pointer-events: none;
+    box-shadow: var(--md-sys-elevation-level2, 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15));
+    animation: tooltipFadeIn 0.2s ease-in-out;
+  }
+  
+  /* Tooltip arrow */
+  abbr[title]:hover::before {
+    content: '';
+    position: absolute;
+    bottom: 130%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--md-sys-color-on-surface, #1c1b1f);
+    z-index: 1001;
+    animation: tooltipFadeIn 0.2s ease-in-out;
+  }
+}
+
+/* Tooltip fade-in animation */
+@keyframes tooltipFadeIn {
+  from {
+    opacity: 0;
+    transform: translateX(-50%) translateY(4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  abbr[title]:hover::after,
+  abbr[title]:hover::before {
+    animation: none;
+  }
+}
+
+/* Mobile adjustments */
+@media (max-width: 599px) {
+  abbr[title]:hover::after {
+    font-size: 0.8125rem;
+    padding: 6px 10px;
+    max-width: 200px;
+    white-space: normal;
+  }
+}
+
+/* Ensure tooltips don't overflow viewport */
+abbr[title]:first-child:hover::after {
+  left: 0;
+  transform: translateX(0);
+}
+
+abbr[title]:last-child:hover::after {
+  left: auto;
+  right: 0;
+  transform: translateX(0);
+}

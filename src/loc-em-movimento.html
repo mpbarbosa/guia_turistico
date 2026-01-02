@@ -5,23 +5,125 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Guia Turístico - Localização em Movimento</title>
+  <link rel="stylesheet" href="skip-link.css" />
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="reduced-motion.css" />
+  <link rel="stylesheet" href="loading-states.css" />
+  <link rel="stylesheet" href="touch-device-fixes.css" />
+  <link rel="stylesheet" href="navigation.css" />
+  <link rel="stylesheet" href="geolocation-banner.css" />
+  <link rel="stylesheet" href="version-display.css" />
+  <link rel="stylesheet" href="tooltip.css" />
+  <link rel="stylesheet" href="noscript.css" />
   <link rel="stylesheet" href="loc-em-movimento.css">
 </head>
 
 <body>
-  <div id="guia-version" class="versioning-numbering" role="status" aria-live="polite">
-    <!-- Version will be rendered here -->
+  <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+  
+  <!-- No JavaScript Fallback -->
+  <noscript>
+    <div class="noscript-banner" role="alert">
+      <h2>JavaScript Desabilitado</h2>
+      <p><strong>A Localização em Movimento requer JavaScript para funcionar.</strong></p>
+      <p>Esta ferramenta rastreia sua posição em tempo real e necessita JavaScript ativo.</p>
+    </div>
+    
+    <div class="noscript-instructions">
+      <h3>Como Habilitar JavaScript</h3>
+      
+      <div class="browser-help">
+        <h4>Google Chrome / Microsoft Edge</h4>
+        <ol>
+          <li>Clique no menu (três pontos) no canto superior direito</li>
+          <li>Selecione <strong>Configurações</strong></li>
+          <li>Vá para <strong>Privacidade e segurança</strong> → <strong>Configurações do site</strong></li>
+          <li>Clique em <strong>JavaScript</strong></li>
+          <li>Selecione <strong>Permitir que os sites usem JavaScript</strong></li>
+          <li>Recarregue esta página</li>
+        </ol>
+      </div>
+      
+      <div class="browser-help">
+        <h4>Mozilla Firefox</h4>
+        <ol>
+          <li>Digite <code>about:config</code> na barra de endereços</li>
+          <li>Clique em <strong>Aceitar o Risco e Continuar</strong></li>
+          <li>Pesquise por <code>javascript.enabled</code></li>
+          <li>Altere o valor para <strong>true</strong></li>
+          <li>Recarregue esta página</li>
+        </ol>
+      </div>
+      
+      <div class="browser-help">
+        <h4>Safari (macOS)</h4>
+        <ol>
+          <li>Abra <strong>Safari</strong> → <strong>Preferências</strong></li>
+          <li>Vá para a aba <strong>Segurança</strong></li>
+          <li>Marque a opção <strong>Ativar JavaScript</strong></li>
+          <li>Recarregue esta página</li>
+        </ol>
+      </div>
+    </div>
+    
+    <div class="noscript-alternatives">
+      <h4>Aplicativos de Navegação Alternativos</h4>
+      <ul>
+        <li>
+          <strong>Google Maps:</strong> 
+          <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">
+            maps.google.com
+          </a> - Navegação em tempo real e rastreamento de localização
+        </li>
+        <li>
+          <strong>Waze:</strong> 
+          <a href="https://www.waze.com" target="_blank" rel="noopener noreferrer">
+            waze.com
+          </a> - Navegação colaborativa com alertas de trânsito
+        </li>
+        <li>
+          <strong>OpenStreetMap:</strong> 
+          <a href="https://www.openstreetmap.org" target="_blank" rel="noopener noreferrer">
+            openstreetmap.org
+          </a> - Mapa de código aberto
+        </li>
+        <li>
+          <strong>Here WeGo:</strong> 
+          <a href="https://wego.here.com" target="_blank" rel="noopener noreferrer">
+            wego.here.com
+          </a> - Navegação offline disponível
+        </li>
+      </ul>
+    </div>
+  </noscript>
+  
+  <!-- Version Display -->
+  <div class="app-version" role="status" aria-live="polite" aria-label="Versão do aplicativo">
+    v 0.2.0 | 2025-12-16
   </div>
+
+  <nav class="app-navigation" aria-label="Navegação principal">
+    <ul>
+      <li><a href="index.html" aria-label="Ir para página inicial">Página Inicial</a></li>
+      <li><a href="address-converter.html" aria-label="Ir para conversor de endereços">Conversor de Endereços</a></li>
+      <li><a href="loc-em-movimento.html" class="current-page" aria-current="page" aria-label="Localização em movimento (página atual)">Localização em Movimento</a></li>
+    </ul>
+  </nav>
 
   <header>
     <h1>Guia de Caminho</h1>
-    <p>Tempo decorrido: <span id="chronometer" aria-live="polite"> </span>; Fila fala: <span id="tam-fila-fala"
-        aria-live="polite"> </span>; Tam cache:
-      <span id="tam-cache" aria-live="polite"> </span>
+    <p>
+      Tempo decorrido: <span id="chronometer" aria-live="polite"> </span> | 
+      Fila fala: <span id="tam-fila-fala" aria-live="polite"> </span> | 
+      <abbr title="Dados salvos localmente para acesso rápido" aria-label="Cache: dados salvos localmente">Cache</abbr>: 
+      <span id="tam-cache" aria-live="polite"> </span> itens
     </p>
   </header>
 
-  <main>
+  <main id="main-content">
+    <!-- Geolocation status banner container -->
+    <div id="geolocation-banner-container"></div>
+
     <!-- Location Highlight Cards -->
     <section class="location-highlights" aria-label="Destaques de localização">
       <div class="highlight-card" role="region" aria-labelledby="municipio-label">
@@ -66,12 +168,21 @@
   </main>
 
   <footer>
-    <label for="bottom-scroll-textarea" class="sr-only">Histórico de texto</label>
-    <textarea id="bottom-scroll-textarea" rows="4" placeholder="Digite ou cole o texto aqui..." readonly aria-label="Histórico de texto gerado"></textarea>
+    <label for="bottom-scroll-textarea" class="sr-only">Histórico de texto - somente leitura</label>
+    <textarea 
+      id="bottom-scroll-textarea" 
+      rows="4" 
+      readonly
+      aria-readonly="true"
+      aria-label="Histórico de texto gerado automaticamente durante navegação - somente leitura"
+      placeholder="O histórico de texto será exibido aqui conforme você se move. Este campo é somente leitura."
+    ></textarea>
   </footer>
 
   <script src="https://cdn.jsdelivr.net/gh/mpbarbosa/sidra.js@main/sidra.js"></script>
   <script type="module" src="https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js"></script>
+  <script src="error-recovery.js"></script>
+  <script src="geolocation-banner.js"></script>
   <script src="loc-em-movimento.js"></script>
 </body>
 

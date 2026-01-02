@@ -44,7 +44,7 @@ function getLocation() {
 			} catch (error) {
 				const addressSection = document.getElementById("addressSection");
 				addressSection.innerHTML = `
-                            <p class="error">Could not retrieve address: ${error.message}</p>
+                            <p class="error" role="alert">Could not retrieve address: ${error.message}</p>
                         `;
 			}
 		},
@@ -65,7 +65,7 @@ function getLocation() {
 					errorMessage = "An unknown error occurred.";
 					break;
 			}
-			locationResult.innerHTML = `<p class="error">Error: ${errorMessage}</p>`;
+			locationResult.innerHTML = `<p class="error" role="alert">Error: ${errorMessage}</p>`;
 			findRestaurantsBtn.disabled = true;
 			cityStatsBtn.disabled = true;
 		},
@@ -89,7 +89,7 @@ async function findNearbyRestaurants() {
 
 	restaurantsSection.style.display = "block";
 	restaurantsList.innerHTML =
-		'<p class="loading">Searching for restaurants within 500 meters...</p>';
+		'<p class="loading" role="status">Searching for restaurants within 500 meters...</p>';
 	findRestaurantsBtn.disabled = true;
 
 	try {
@@ -118,7 +118,7 @@ async function findNearbyRestaurants() {
 			});
 		}
 	} catch (error) {
-		restaurantsList.innerHTML = `<p class="error">Failed to fetch restaurants: ${error.message}</p>`;
+		restaurantsList.innerHTML = `<p class="error" role="alert">Failed to fetch restaurants: ${error.message}</p>`;
 	} finally {
 		findRestaurantsBtn.disabled = false;
 	}
@@ -135,7 +135,7 @@ async function getCityStats() {
 
 	cityStatsSection.style.display = "block";
 	cityStatsDiv.innerHTML =
-		'<p class="loading">Fetching city statistics from Wikipedia...</p>';
+		'<p class="loading" role="status">Fetching city statistics from Wikipedia...</p>';
 	cityStatsBtn.disabled = true;
 
 	try {
@@ -212,7 +212,7 @@ async function getCityStats() {
 			cityStatsDiv.innerHTML = `<p>No Wikipedia article found for ${cityName}.</p>`;
 		}
 	} catch (error) {
-		cityStatsDiv.innerHTML = `<p class="error">Failed to fetch city statistics: ${error.message}</p>`;
+		cityStatsDiv.innerHTML = `<p class="error" role="alert">Failed to fetch city statistics: ${error.message}</p>`;
 	} finally {
 		cityStatsBtn.disabled = false;
 	}

@@ -13,11 +13,17 @@ if (document.readyState === 'loading') {
 
 function init() {
   console.log("(index) Initializing application...");
+  
+  // Show permission request banner before requesting geolocation
+  showPermissionRequest('geolocation-banner-container');
+  
   const manager = initializeGeocodingManager();
   setupLocationUpdateHandlers(manager);
   setupCacheDisplayHandlers(manager);
   setupButtonHandlers();
-  manager.getSingleLocationUpdate();
+  
+  // Request location with status updates
+  requestLocationWithBanner(manager);
 }
 
 function initializeGeocodingManager() {
@@ -34,6 +40,17 @@ function initializeGeocodingManager() {
 function setupLocationUpdateHandlers(manager) {
   manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
     console.log(`(index) Location updated - currentPosition: ${currentPosition}, newAddress: ${newAddress}, enderecoPadronizado: ${enderecoPadronizado}`);
+    
+    // Show success banner when location is obtained
+    if (currentPosition) {
+      showLocationSuccess('geolocation-banner-container', 3000);
+      
+      // Enable buttons now that we have location
+      const findRestaurantsBtn = document.getElementById("findRestaurantsBtn");
+      const cityStatsBtn = document.getElementById("cityStatsBtn");
+      updateButtonStatus(findRestaurantsBtn, "restaurants-status", "", true);
+      updateButtonStatus(cityStatsBtn, "stats-status", "", true);
+    }
     
     const coordinatesText = extractCoordinatesText(currentPosition);
     renderToElement("lat-long-display", coordinatesText);
@@ -71,25 +88,53 @@ function setupButtonHandlers() {
   const findRestaurantsBtn = document.getElementById("findRestaurantsBtn");
   const cityStatsBtn = document.getElementById("cityStatsBtn");
   
-  scheduleButtonEnabling([findRestaurantsBtn, cityStatsBtn], 2000);
+  // Initially disabled with explanation
+  updateButtonStatus(findRestaurantsBtn, "restaurants-status", "Aguardando localização...");
+  updateButtonStatus(cityStatsBtn, "stats-status", "Aguardando localização...");
+  
+  // Enable buttons after location is obtained (via location update handler)
+  // No arbitrary 2-second delay
   
   findRestaurantsBtn.addEventListener('click', findNearbyRestaurants);
   cityStatsBtn.addEventListener('click', getCityStats);
+}
+
+/**
+ * Update button enabled/disabled state with status message
+ * @param {HTMLButtonElement} button - Button element
+ * @param {string} statusId - Status message element ID
+ * @param {string} message - Status message text
+ * @param {boolean} enabled - Whether button should be enabled
+ */
+function updateButtonStatus(button, statusId, message, enabled = false) {
+  const statusElement = document.getElementById(statusId);
+  
+  if (!button) return;
+  
+  if (enabled) {
+    button.disabled = false;
+    button.setAttribute("aria-disabled", "false");
+    if (statusElement) {
+      statusElement.textContent = "";
+    }
+  } else {
+    button.disabled = true;
+    button.setAttribute("aria-disabled", "true");
+    if (statusElement) {
+      statusElement.textContent = message;
+    }
+  }
 }
 
 function renderToElement(elementId, content) {
   const element = document.getElementById(elementId);
   if (element) {
     element.innerText = content;
+    // Add tooltip for potentially truncated text in highlight cards
+    if (element.classList.contains('highlight-card-value')) {
+      element.title = content;
+    }
   }
-}
-
-function scheduleButtonEnabling(buttons, delay) {
-  setTimeout(() => {
-    buttons.forEach(button => {
-      if (button) button.disabled = false;
-    });
-  }, delay);
 }
 
 function findNearbyRestaurants() {
@@ -98,6 +143,21 @@ function findNearbyRestaurants() {
 
 function getCityStats() {
   console.log("Getting city statistics...");
+}
+
+function requestLocationWithBanner(manager) {
+  try {
+    // Change banner to loading state
+    setTimeout(() => {
+      showLoadingLocation('geolocation-banner-container');
+    }, 500);
+    
+    // Request location
+    manager.getSingleLocationUpdate();
+  } catch (error) {
+    console.error("(index) Error requesting location:", error);
+    showLocationError('geolocation-banner-container', { code: 2 });
+  }
 }
 
 // ========================================

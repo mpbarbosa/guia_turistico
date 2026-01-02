@@ -1,0 +1,27 @@
+/* Skip Link for Keyboard Accessibility */
+.skip-link {
+  position: absolute;
+  top: -40px;
+  left: 0;
+  background: var(--md-sys-color-primary, #1976d2);
+  color: var(--md-sys-color-on-primary, #ffffff);
+  padding: 8px 16px;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 0 0 8px 0;
+  z-index: 9999;
+  transition: top 0.2s ease-in-out;
+  font-size: 14px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.skip-link:focus {
+  top: 0;
+  outline: 2px solid var(--md-sys-color-on-primary, #ffffff);
+  outline-offset: -2px;
+}
+
+/* Ensure skip link is always on top */
+.skip-link:focus-visible {
+  top: 0;
+}

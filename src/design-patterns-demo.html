@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design Patterns Demo - Guia Turístico</title>
+  <link rel="stylesheet" href="typography.css" />
+  <link rel="stylesheet" href="reduced-motion.css" />
+  <link rel="stylesheet" href="loading-states.css" />
+  <link rel="stylesheet" href="design-patterns.css" />
+  <style>
+    :root {
+      --md-sys-color-primary: #1976d2;
+      --md-sys-color-on-primary: #ffffff;
+      --md-sys-color-secondary: #4caf50;
+      --md-sys-color-on-secondary: #ffffff;
+      --md-sys-color-surface: #ffffff;
+      --md-sys-color-on-surface: #1c1b1f;
+      --md-sys-color-surface-variant: #f9f9f9;
+      --md-sys-color-on-surface-variant: #49454f;
+      --md-sys-color-error: #ba1a1a;
+      --md-sys-elevation-level1: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+      --md-sys-elevation-level2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
+    }
+    
+    body {
+      margin: 0;
+      padding: 20px;
+      background: var(--md-sys-color-surface-variant);
+      font-family: 'Segoe UI', Arial, sans-serif;
+      padding-bottom: 100px;
+    }
+    
+    .container {
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    
+    .demo-section {
+      background: var(--md-sys-color-surface);
+      padding: 24px;
+      margin-bottom: 24px;
+      border-radius: 12px;
+      box-shadow: var(--md-sys-elevation-level1);
+    }
+    
+    .demo-controls {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 16px;
+    }
+    
+    button {
+      background: var(--md-sys-color-primary);
+      color: var(--md-sys-color-on-primary);
+      border: none;
+      padding: 12px 24px;
+      border-radius: 20px;
+      cursor: pointer;
+      transition: box-shadow 0.2s;
+      font-size: 14px;
+      font-weight: 500;
+    }
+    
+    button:hover {
+      box-shadow: var(--md-sys-elevation-level1);
+    }
+    
+    button.secondary {
+      background: var(--md-sys-color-secondary);
+      color: var(--md-sys-color-on-secondary);
+    }
+    
+    button.outline {
+      background: transparent;
+      color: var(--md-sys-color-primary);
+      border: 2px solid var(--md-sys-color-primary);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header class="demo-section">
+      <h1 class="md3-headline-large">Design Patterns Demo</h1>
+      <p class="md3-body-large">Demonstração interativa dos padrões de design implementados</p>
+    </header>
+    
+    <!-- Empty State Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">1. Empty State Pattern</h2>
+      <p class="md3-body-medium">Estado vazio atraente quando não há dados disponíveis</p>
+      
+      <div class="empty-state">
+        <div class="empty-state-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+          </svg>
+        </div>
+        <h3 class="empty-state-title">Nenhuma localização ainda</h3>
+        <p class="empty-state-description">
+          Permita o acesso à sua localização para começar a descobrir informações sobre lugares próximos
+        </p>
+        <button class="empty-state-action">Ativar Localização</button>
+      </div>
+    </section>
+    
+    <!-- Progressive Disclosure Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">2. Progressive Disclosure Pattern</h2>
+      <p class="md3-body-medium">Ocultar detalhes técnicos atrás de seções expansíveis</p>
+      
+      <div class="disclosure-section" id="disclosure-1" aria-expanded="false">
+        <div class="disclosure-header">
+          <h3 class="disclosure-title">Informações Técnicas</h3>
+          <span class="disclosure-icon">▼</span>
+        </div>
+        <div class="disclosure-content">
+          <p><strong>Cache:</strong> 15 itens</p>
+          <p><strong>Precisão GPS:</strong> ±10 metros</p>
+          <p><strong>Última atualização:</strong> 2 minutos atrás</p>
+          <p><strong>Coordenadas:</strong> -23.5505, -46.6333</p>
+        </div>
+      </div>
+      
+      <div class="disclosure-section" id="disclosure-2" aria-expanded="false" style="margin-top: 16px;">
+        <div class="disclosure-header">
+          <h3 class="disclosure-title">Configurações Avançadas</h3>
+          <span class="disclosure-icon">▼</span>
+        </div>
+        <div class="disclosure-content">
+          <p>Conteúdo de configurações avançadas aqui...</p>
+          <button>Limpar Cache</button>
+          <button class="secondary" style="margin-left: 8px;">Redefinir Configurações</button>
+        </div>
+      </div>
+    </section>
+    
+    <!-- Snackbar Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">3. Snackbar/Toast Notifications</h2>
+      <p class="md3-body-medium">Notificações não intrusivas com fila automática</p>
+      
+      <div class="demo-controls">
+        <button onclick="showSuccessSnackbar()">Success</button>
+        <button onclick="showErrorSnackbar()">Error</button>
+        <button onclick="showWarningSnackbar()">Warning</button>
+        <button onclick="showInfoSnackbar()">Info</button>
+        <button onclick="showActionSnackbar()" class="outline">With Action</button>
+        <button onclick="showMultipleSnackbars()" class="secondary">Queue Multiple</button>
+      </div>
+    </section>
+    
+    <!-- FAB Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">4. FAB (Floating Action Button)</h2>
+      <p class="md3-body-medium">Botão de ação principal flutuante (veja no canto inferior direito)</p>
+      
+      <div class="demo-controls">
+        <button onclick="toggleFab()">Toggle FAB</button>
+        <button onclick="toggleExtendedFab()" class="secondary">Toggle Extended FAB</button>
+      </div>
+    </section>
+    
+    <!-- Bottom Sheet Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">5. Bottom Sheet (Mobile) / Modal (Desktop)</h2>
+      <p class="md3-body-medium">Painel deslizante para opções adicionais</p>
+      
+      <button onclick="openBottomSheet()">Abrir Bottom Sheet</button>
+    </section>
+    
+    <!-- Micro-interactions Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">6. Micro-interactions</h2>
+      <p class="md3-body-medium">Animações sutis para mudanças de estado</p>
+      
+      <div class="demo-controls">
+        <button class="micro-press">Press Me</button>
+        <button onclick="showMicroSuccess()" class="secondary">Show Success</button>
+        <button onclick="triggerReveal()" class="outline">Trigger Reveal</button>
+        <button class="micro-pulse">Pulsing Button</button>
+      </div>
+      
+      <div id="reveal-container" style="margin-top: 24px;"></div>
+      <div id="success-container" style="margin-top: 16px;"></div>
+    </section>
+    
+    <!-- Retry Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">7. Retry Pattern with Exponential Backoff</h2>
+      <p class="md3-body-medium">Lógica inteligente de tentativas com contador visível</p>
+      
+      <div class="demo-controls">
+        <button onclick="simulateRetry(true)">Simulate Success</button>
+        <button onclick="simulateRetry(false)" class="secondary">Simulate Failure</button>
+      </div>
+      
+      <div id="retry-status" style="margin-top: 16px;"></div>
+    </section>
+    
+    <!-- Optimistic UI Pattern -->
+    <section class="demo-section">
+      <h2 class="md3-headline-medium">8. Optimistic UI</h2>
+      <p class="md3-body-medium">Feedback imediato antes da confirmação do servidor</p>
+      
+      <div style="display: flex; align-items: center; gap: 16px; margin-top: 16px;">
+        <span id="like-count" class="md3-title-large">42</span>
+        <button onclick="optimisticLike()" class="secondary">❤️ Curtir</button>
+      </div>
+    </section>
+  </div>
+  
+  <!-- FAB (initially hidden) -->
+  <button class="fab" id="main-fab" style="display: none;" onclick="fabAction()">
+    <svg class="fab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+    </svg>
+  </button>
+  
+  <!-- Extended FAB (initially hidden) -->
+  <button class="fab fab-extended" id="extended-fab" style="display: none;" onclick="fabAction()">
+    <svg class="fab-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" fill="currentColor"/>
+    </svg>
+    <span class="fab-label">Minha Localização</span>
+  </button>
+  
+  <!-- Bottom Sheet -->
+  <div class="bottom-sheet-overlay"></div>
+  <div class="bottom-sheet" id="demo-bottom-sheet" aria-hidden="true">
+    <div class="bottom-sheet-handle"></div>
+    <h3 class="bottom-sheet-title">Opções</h3>
+    <div class="bottom-sheet-content">
+      <p class="md3-body-large">Selecione uma opção abaixo:</p>
+      <div style="display: flex; flex-direction: column; gap: 12px; margin-top: 16px;">
+        <button onclick="bottomSheetOption(1)">Opção 1</button>
+        <button onclick="bottomSheetOption(2)" class="secondary">Opção 2</button>
+        <button onclick="closeBottomSheet()" class="outline">Cancelar</button>
+      </div>
+    </div>
+  </div>
+  
+  <script src="design-patterns.js"></script>
+  <script>
+    // Snackbar demos
+    function showSuccessSnackbar() {
+      window.snackbar.show('Operação concluída com sucesso!', { type: 'success' });
+    }
+    
+    function showErrorSnackbar() {
+      window.snackbar.show('Erro ao processar requisição', { type: 'error' });
+    }
+    
+    function showWarningSnackbar() {
+      window.snackbar.show('Atenção: Verifique sua conexão', { type: 'warning' });
+    }
+    
+    function showInfoSnackbar() {
+      window.snackbar.show('Nova atualização disponível', { type: 'info' });
+    }
+    
+    function showActionSnackbar() {
+      window.snackbar.show('Item excluído', {
+        actionText: 'Desfazer',
+        onAction: () => {
+          window.snackbar.show('Ação desfeita!', { type: 'success', duration: 2000 });
+        }
+      });
+    }
+    
+    function showMultipleSnackbars() {
+      window.snackbar.show('Primeira notificação', { type: 'info', duration: 2000 });
+      window.snackbar.show('Segunda notificação', { type: 'warning', duration: 2000 });
+      window.snackbar.show('Terceira notificação', { type: 'success', duration: 2000 });
+    }
+    
+    // FAB demos
+    let fabVisible = false;
+    let extendedFabVisible = false;
+    
+    function toggleFab() {
+      fabVisible = !fabVisible;
+      document.getElementById('main-fab').style.display = fabVisible ? 'flex' : 'none';
+      if (fabVisible) {
+        document.getElementById('extended-fab').style.display = 'none';
+        extendedFabVisible = false;
+      }
+    }
+    
+    function toggleExtendedFab() {
+      extendedFabVisible = !extendedFabVisible;
+      document.getElementById('extended-fab').style.display = extendedFabVisible ? 'flex' : 'none';
+      if (extendedFabVisible) {
+        document.getElementById('main-fab').style.display = 'none';
+        fabVisible = false;
+      }
+    }
+    
+    function fabAction() {
+      window.snackbar.show('FAB clicado! Obtendo localização...', { type: 'info' });
+    }
+    
+    // Bottom sheet demos
+    let bottomSheet;
+    
+    function openBottomSheet() {
+      if (!bottomSheet) {
+        bottomSheet = new BottomSheet('demo-bottom-sheet');
+      }
+      bottomSheet.open();
+    }
+    
+    function closeBottomSheet() {
+      if (bottomSheet) {
+        bottomSheet.close();
+      }
+    }
+    
+    function bottomSheetOption(num) {
+      window.snackbar.show(`Opção ${num} selecionada`, { type: 'success' });
+      closeBottomSheet();
+    }
+    
+    // Micro-interactions demos
+    function showMicroSuccess() {
+      const container = document.getElementById('success-container');
+      const successEl = document.createElement('div');
+      successEl.className = 'micro-success';
+      container.innerHTML = '';
+      container.appendChild(successEl);
+      
+      setTimeout(() => {
+        window.snackbar.show('Ação completada!', { type: 'success', duration: 2000 });
+      }, 400);
+    }
+    
+    function triggerReveal() {
+      const container = document.getElementById('reveal-container');
+      container.innerHTML = '';
+      
+      for (let i = 1; i <= 5; i++) {
+        const card = document.createElement('div');
+        card.className = 'micro-reveal';
+        card.style.padding = '16px';
+        card.style.background = '#f0f0f0';
+        card.style.borderRadius = '8px';
+        card.style.marginBottom = '8px';
+        card.textContent = `Item ${i}`;
+        container.appendChild(card);
+      }
+    }
+    
+    // Retry pattern demo
+    let attemptCount = 0;
+    
+    async function simulateRetry(shouldSucceed) {
+      const statusDiv = document.getElementById('retry-status');
+      statusDiv.innerHTML = '<p class="loading-text">Processando...</p>';
+      
+      try {
+        await window.retryManager.execute(
+          'demo-operation',
+          async () => {
+            attemptCount++;
+            
+            if (!shouldSucceed && attemptCount < 3) {
+              throw new Error('Simulação de falha');
+            }
+            
+            return 'Sucesso!';
+          },
+          {
+            maxAttempts: 3,
+            initialDelay: 1500,
+            onRetry: (attempt, delay) => {
+              statusDiv.innerHTML = `<p>Tentativa ${attempt}/3... Aguardando ${Math.round(delay/1000)}s</p>`;
+            }
+          }
+        );
+        
+        statusDiv.innerHTML = '<p style="color: green;">✓ Operação bem-sucedida!</p>';
+        attemptCount = 0;
+      } catch (error) {
+        statusDiv.innerHTML = `<p style="color: red;">✗ ${error.message}</p>`;
+        attemptCount = 0;
+      }
+    }
+    
+    // Optimistic UI demo
+    let actualLikes = 42;
+    
+    async function optimisticLike() {
+      const likeCount = document.getElementById('like-count');
+      const oldCount = actualLikes;
+      
+      await window.optimisticUI.update(
+        'like-button',
+        // Optimistic update (immediate)
+        () => {
+          actualLikes++;
+          likeCount.textContent = actualLikes;
+          likeCount.style.color = '#4caf50';
+          likeCount.style.transform = 'scale(1.2)';
+          setTimeout(() => {
+            likeCount.style.transform = 'scale(1)';
+          }, 200);
+        },
+        // Actual update (simulated API call)
+        async () => {
+          await new Promise(resolve => setTimeout(resolve, 1500));
+          // Simulate 20% chance of failure
+          if (Math.random() < 0.2) {
+            throw new Error('Falha na rede');
+          }
+          return actualLikes;
+        },
+        // Rollback on error
+        () => {
+          actualLikes = oldCount;
+          likeCount.textContent = actualLikes;
+          likeCount.style.color = '#ba1a1a';
+          window.snackbar.show('Erro ao curtir. Tente novamente.', { type: 'error' });
+        }
+      );
+      
+      likeCount.style.color = '';
+      window.snackbar.show('Curtida registrada!', { type: 'success', duration: 2000 });
+    }
+  </script>
+</body>
+</html>

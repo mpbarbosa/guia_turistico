@@ -10,9 +10,15 @@
 // ========================================
 
 async function init() {
+  // Show permission request banner immediately
+  showPermissionRequest('geolocation-banner-container');
+  
   const initialized = await waitForDependencies();
   if (!initialized) {
     console.error("Failed to load required classes after multiple retries.");
+    showGeolocationBanner('geolocation-banner-container', 
+      createBannerHTML('error', '✕', 'Erro de Carregamento', 
+        'Falha ao carregar dependências necessárias.', false));
     return;
   }
 
@@ -25,6 +31,8 @@ async function init() {
   setupSpeechQueueMonitoring(manager);
   setupCacheMonitoring();
   
+  // Show loading banner before starting tracking
+  showLoadingLocation('geolocation-banner-container');
   manager.startTracking();
 }
 
@@ -71,7 +79,15 @@ function createGeocodingParams() {
 }
 
 function setupLocationUpdateHandlers(manager) {
+  let firstUpdate = true;
+  
   manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
+    // Show success banner on first location update
+    if (firstUpdate && currentPosition) {
+      showLocationSuccess('geolocation-banner-container', 3000);
+      firstUpdate = false;
+    }
+    
     updateCoordinatesDisplay(currentPosition);
     updateBairroDisplay(newAddress);
     updateMunicipioDisplays(enderecoPadronizado);
@@ -157,6 +173,10 @@ function renderToElement(elementId, content) {
   const element = document.getElementById(elementId);
   if (element) {
     element.innerText = content;
+    // Add tooltip for potentially truncated text in highlight cards
+    if (element.classList.contains('highlight-card-value')) {
+      element.title = content;
+    }
   }
 }
 

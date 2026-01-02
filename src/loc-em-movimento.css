@@ -12,15 +12,6 @@
   --md-sys-elevation-level2: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15);
 }
 
-/* Reduced motion support */
-@media (prefers-reduced-motion: reduce) {
-  * {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
-  }
-}
-
 /* Mobile-first base styles */
 body {
   margin: 0;
@@ -45,6 +36,51 @@ h2 {
   margin-top: 1rem;
   padding-top: 1rem;
   border-top: 1px dashed #ccc;
+}
+
+/* Error styling - WCAG 2.1 AA compliant */
+.error {
+  color: var(--md-sys-color-error);
+  font-weight: bold;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.error::before {
+  content: "⚠";
+  font-size: 1.2em;
+  flex-shrink: 0;
+  /* Visual indicator for users who can't distinguish colors */
+}
+
+/* Screen reader announcement */
+.error[role="alert"] {
+  /* ARIA role ensures screen readers announce as error */
+}
+
+/* Loading state - WCAG 2.1 AA compliant */
+.loading {
+  color: var(--md-sys-color-on-surface-variant, #666);
+  font-style: italic;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.loading::before {
+  content: "⏳";
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.5; }
+}
+
+/* Ensure loading states are announced by screen readers */
+.loading[role="status"] {
+  /* role="status" creates implicit aria-live="polite" */
 }
 
 #guia-version {
@@ -136,6 +172,13 @@ h2 {
   margin: 1rem 0;
 }
 
+/* Responsive grid for tablets and desktop */
+@media (min-width: 600px) {
+  .location-highlights {
+    grid-template-columns: 2fr 1fr; /* Município takes more space */
+  }
+}
+
 .highlight-card {
   padding: 1rem;
   background: linear-gradient(135deg, var(--md-sys-color-primary) 0%, #1565c0 100%);
@@ -182,7 +225,10 @@ h2 {
   font-size: 1.5rem;
   font-weight: 600;
   line-height: 1.2;
-  word-break: break-word;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  max-width: 100%;
 }
 
 /* Município value - larger and bolder */
@@ -293,13 +339,29 @@ input[type="range"] {
   margin: 1%;
   resize: vertical;
   overflow-y: scroll;
-  border: none;
-  border-top: 1px solid #ccc;
-  background: #fff;
+  border: 1px solid var(--md-sys-color-outline, #79747e);
+  border-top: 2px solid var(--md-sys-color-outline, #79747e);
+  background-color: var(--md-sys-color-surface-variant, #f5f5f5);
+  color: var(--md-sys-color-on-surface-variant, #49454f);
   font-size: 1rem;
   padding: 8px;
   border-radius: 0 0 8px 8px;
   box-sizing: border-box;
+  cursor: not-allowed;
+  opacity: 0.9;
+  transition: background-color 0.2s, border-color 0.2s;
+}
+
+#bottom-scroll-textarea:focus {
+  outline: 2px solid var(--md-sys-color-outline, #79747e);
+  outline-offset: 2px;
+  border-color: var(--md-sys-color-outline, #79747e);
+  background-color: var(--md-sys-color-surface-variant, #eeeeee);
+}
+
+#bottom-scroll-textarea::placeholder {
+  color: var(--md-sys-color-on-surface-variant, #666);
+  font-style: italic;
 }
 
 div[style*="position:fixed"][style*="bottom:0"] {

@@ -1,0 +1,344 @@
+/* Performance Optimizations CSS */
+
+/*
+ * Critical CSS optimizations for improved performance:
+ * - Hardware acceleration
+ * - Contain layout thrashing
+ * - Optimize reflows/repaints
+ * - Lazy loading support
+ */
+
+/* ============================================
+   HARDWARE ACCELERATION
+   ============================================ */
+
+/* Force GPU acceleration for frequently animated elements */
+.fab,
+.snackbar,
+.bottom-sheet,
+.skeleton,
+button.loading::after,
+.spinner,
+.micro-reveal {
+  will-change: transform;
+  transform: translateZ(0);
+  backface-visibility: hidden;
+  perspective: 1000px;
+}
+
+/* Remove will-change after animation completes */
+.fab:not(:hover):not(:focus),
+.snackbar:not(.snackbar-enter):not(.snackbar-exit) {
+  will-change: auto;
+}
+
+/* ============================================
+   LAYOUT CONTAINMENT
+   ============================================ */
+
+/* Contain layout calculations to prevent reflows */
+.card,
+.highlight-card,
+.empty-state,
+.disclosure-section,
+.snackbar,
+.bottom-sheet {
+  contain: layout style;
+}
+
+/* Contain paint for isolated components */
+.skeleton,
+.loading-overlay,
+.progress-bar {
+  contain: paint;
+}
+
+/* Full containment for independent sections */
+.location-highlights,
+.button-container,
+nav {
+  contain: layout style paint;
+}
+
+/* ============================================
+   CRITICAL RENDERING PATH
+   ============================================ */
+
+/* Prioritize above-the-fold content */
+.above-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 500px;
+}
+
+/* Defer below-the-fold content rendering */
+.below-fold {
+  content-visibility: auto;
+  contain-intrinsic-size: auto 300px;
+}
+
+/* ============================================
+   IMAGE OPTIMIZATION
+   ============================================ */
+
+/* Native lazy loading */
+img {
+  loading: lazy;
+  decoding: async;
+}
+
+/* Critical images (above fold) */
+img.critical {
+  loading: eager;
+  decoding: sync;
+}
+
+/* Aspect ratio to prevent layout shift */
+img[width][height] {
+  aspect-ratio: attr(width) / attr(height);
+  height: auto;
+}
+
+/* Placeholder while loading */
+img:not([src]) {
+  background: var(--md-sys-color-surface-variant, #f0f0f0);
+  display: inline-block;
+}
+
+/* ============================================
+   FONT OPTIMIZATION
+   ============================================ */
+
+/* Prevent FOIT (Flash of Invisible Text) */
+@font-face {
+  font-display: swap; /* Show fallback immediately */
+}
+
+body {
+  font-display: swap;
+}
+
+/* System font stack for instant rendering */
+body {
+  font-family: 
+    -apple-system, 
+    BlinkMacSystemFont, 
+    'Segoe UI', 
+    Roboto, 
+    Oxygen-Sans, 
+    Ubuntu, 
+    Cantarell, 
+    'Helvetica Neue', 
+    sans-serif;
+}
+
+/* ============================================
+   REDUCE PAINT COMPLEXITY
+   ============================================ */
+
+/* Avoid expensive CSS properties */
+.optimized-shadow {
+  /* Use transform instead of box-shadow animation */
+  box-shadow: var(--md-sys-elevation-level1);
+  transition: transform 0.2s;
+}
+
+.optimized-shadow:hover {
+  transform: translateY(-2px);
+  /* Shadow stays same, only transform changes */
+}
+
+/* Avoid filter on large elements */
+.blur-effect {
+  /* Use backdrop-filter only on small elements */
+  contain: paint;
+}
+
+/* ============================================
+   SCROLL PERFORMANCE
+   ============================================ */
+
+/* Smooth scroll with GPU acceleration */
+* {
+  scroll-behavior: smooth;
+  -webkit-overflow-scrolling: touch;
+}
+
+/* Reduce scroll jank */
+body {
+  overflow-anchor: auto; /* Scroll anchoring */
+}
+
+/* Contain scroll to element */
+.scroll-container {
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  contain: size layout style paint;
+}
+
+/* ============================================
+   ANIMATION PERFORMANCE
+   ============================================ */
+
+/* Only animate transform and opacity (GPU accelerated) */
+@keyframes optimized-fade {
+  from { 
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to { 
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Avoid animating these properties (CPU intensive) */
+/* Don't animate: width, height, top, left, margin, padding */
+
+/* ============================================
+   INTERSECTION OBSERVER LAZY LOAD
+   ============================================ */
+
+/* Elements to lazy load */
+[data-lazy-load] {
+  opacity: 0;
+  transition: opacity 0.3s;
+}
+
+[data-lazy-load].loaded {
+  opacity: 1;
+}
+
+/* Skeleton placeholders during load */
+[data-lazy-load]:not(.loaded) {
+  background: linear-gradient(
+    90deg,
+    #f0f0f0 25%,
+    #e0e0e0 50%,
+    #f0f0f0 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-loading 1.5s infinite;
+}
+
+/* ============================================
+   RESOURCE HINTS (applied via HTML)
+   ============================================ */
+
+/* These go in HTML <head>:
+<link rel="preconnect" href="https://cdn.jsdelivr.net">
+<link rel="dns-prefetch" href="https://nominatim.openstreetmap.org">
+<link rel="preload" as="style" href="critical.css">
+<link rel="preload" as="script" href="main.js">
+*/
+
+/* ============================================
+   CRITICAL CSS INLINING
+   ============================================ */
+
+/* Above-the-fold styles should be inlined in HTML */
+/* Everything else loaded asynchronously */
+
+/* ============================================
+   REDUCE SPECIFICITY
+   ============================================ */
+
+/* Low specificity = faster selector matching */
+/* Good: .button */
+/* Bad: body div.container ul li a.button */
+
+/* Single class selectors are fastest */
+.btn { /* Fast */ }
+div > ul > li > a { /* Slow */ }
+
+/* ============================================
+   BATCH DOM UPDATES
+   ============================================ */
+
+/* Use CSS classes instead of inline styles */
+.hidden { display: none; }
+.visible { display: block; }
+
+/* Better than: element.style.display = 'none'; */
+
+/* ============================================
+   PRINT OPTIMIZATION
+   ============================================ */
+
+@media print {
+  /* Remove expensive effects for print */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    filter: none !important;
+    transform: none !important;
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  /* Force black text on white */
+  * {
+    color: #000 !important;
+    background: #fff !important;
+  }
+}
+
+/* ============================================
+   REDUCED DATA MODE
+   ============================================ */
+
+/* Respect data saver preference */
+@media (prefers-reduced-data: reduce) {
+  /* Disable non-essential animations */
+  * {
+    animation: none !important;
+  }
+  
+  /* Reduce image quality */
+  img {
+    image-rendering: -webkit-optimize-contrast;
+  }
+  
+  /* Disable background images */
+  * {
+    background-image: none !important;
+  }
+}
+
+/* ============================================
+   PERFORMANCE MONITORING
+   ============================================ */
+
+/* Mark performance-critical elements */
+[data-perf-critical] {
+  /* These will be monitored by performance.mark() in JS */
+}
+
+/* ============================================
+   PREFETCH NEXT PAGE
+   ============================================ */
+
+/* Prefetch linked pages on hover (via JS) */
+a[data-prefetch]:hover {
+  /* JS will trigger prefetch */
+}
+
+/* ============================================
+   DEFER NON-CRITICAL CSS
+   ============================================ */
+
+/* Load non-critical CSS asynchronously:
+<link rel="preload" as="style" href="non-critical.css" 
+      onload="this.rel='stylesheet'">
+*/
+
+/* ============================================
+   CACHE OPTIMIZATION
+   ============================================ */
+
+/* Long cache times for versioned assets:
+Cache-Control: public, max-age=31536000, immutable
+*/
+
+/* Short cache for HTML:
+Cache-Control: public, max-age=3600, must-revalidate
+*/

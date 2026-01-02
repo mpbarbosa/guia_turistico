@@ -1,0 +1,540 @@
+/* Design Patterns CSS - Modern UI Patterns */
+
+/* 
+ * Implementation of common design patterns:
+ * - Empty States
+ * - Progressive Disclosure
+ * - FAB (Floating Action Button)
+ * - Snackbar/Toast Notifications
+ * - Bottom Sheet (Mobile)
+ * - Micro-interactions
+ */
+
+/* ============================================
+   EMPTY STATE PATTERN
+   ============================================ */
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 24px;
+  text-align: center;
+  min-height: 300px;
+  background: var(--md-sys-color-surface-variant, #f9f9f9);
+  border-radius: 12px;
+  margin: 24px 0;
+}
+
+.empty-state-icon {
+  width: 120px;
+  height: 120px;
+  margin-bottom: 24px;
+  opacity: 0.6;
+}
+
+.empty-state-icon svg {
+  width: 100%;
+  height: 100%;
+  fill: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.empty-state-title {
+  font-size: var(--md-sys-typescale-headline-small-font-size, 24px);
+  font-weight: var(--md-sys-typescale-headline-small-font-weight, 400);
+  line-height: var(--md-sys-typescale-headline-small-line-height, 32px);
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+  margin: 0 0 12px 0;
+}
+
+.empty-state-description {
+  font-size: var(--md-sys-typescale-body-large-font-size, 16px);
+  line-height: var(--md-sys-typescale-body-large-line-height, 24px);
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+  margin: 0 0 24px 0;
+  max-width: 400px;
+}
+
+.empty-state-action {
+  min-width: 120px;
+}
+
+/* ============================================
+   PROGRESSIVE DISCLOSURE PATTERN
+   ============================================ */
+
+.disclosure-section {
+  border: 1px solid rgba(0, 0, 0, 0.12);
+  border-radius: 8px;
+  margin: 16px 0;
+  overflow: hidden;
+  background: var(--md-sys-color-surface, #ffffff);
+}
+
+.disclosure-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 16px;
+  cursor: pointer;
+  user-select: none;
+  background: var(--md-sys-color-surface, #ffffff);
+  transition: background 0.2s;
+}
+
+.disclosure-header:hover {
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.disclosure-header:active {
+  background: rgba(0, 0, 0, 0.08);
+}
+
+.disclosure-title {
+  font-size: var(--md-sys-typescale-title-medium-font-size, 16px);
+  font-weight: var(--md-sys-typescale-title-medium-font-weight, 500);
+  margin: 0;
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+}
+
+.disclosure-icon {
+  transition: transform 0.2s ease;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.disclosure-section[aria-expanded="true"] .disclosure-icon {
+  transform: rotate(180deg);
+}
+
+.disclosure-content {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease, padding 0.3s ease;
+  padding: 0 16px;
+}
+
+.disclosure-section[aria-expanded="true"] .disclosure-content {
+  max-height: 1000px;
+  padding: 0 16px 16px 16px;
+}
+
+/* ============================================
+   FAB (FLOATING ACTION BUTTON) PATTERN
+   ============================================ */
+
+.fab {
+  position: fixed;
+  bottom: 24px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  border-radius: 16px;
+  background: var(--md-sys-color-primary, #1976d2);
+  color: var(--md-sys-color-on-primary, #ffffff);
+  border: none;
+  box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15), 0 1px 3px 0 rgba(0, 0, 0, 0.3);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: box-shadow 0.2s, transform 0.2s;
+  z-index: 1000;
+}
+
+.fab:hover {
+  box-shadow: 0 6px 10px 4px rgba(0, 0, 0, 0.15), 0 2px 3px 0 rgba(0, 0, 0, 0.3);
+  transform: scale(1.05);
+}
+
+.fab:active {
+  transform: scale(0.95);
+}
+
+.fab-icon {
+  width: 24px;
+  height: 24px;
+}
+
+/* Extended FAB with text */
+.fab-extended {
+  width: auto;
+  padding: 0 20px;
+  gap: 12px;
+  border-radius: 16px;
+}
+
+.fab-label {
+  font-size: var(--md-sys-typescale-label-large-font-size, 14px);
+  font-weight: var(--md-sys-typescale-label-large-font-weight, 500);
+}
+
+/* Small FAB */
+.fab-small {
+  width: 40px;
+  height: 40px;
+  border-radius: 12px;
+}
+
+.fab-small .fab-icon {
+  width: 20px;
+  height: 20px;
+}
+
+/* ============================================
+   SNACKBAR/TOAST PATTERN
+   ============================================ */
+
+.snackbar-container {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 2000;
+  pointer-events: none;
+}
+
+.snackbar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  min-width: 300px;
+  max-width: 560px;
+  padding: 14px 16px;
+  background: var(--md-sys-color-on-surface, #1c1b1f);
+  color: var(--md-sys-color-surface, #ffffff);
+  border-radius: 4px;
+  box-shadow: 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+  margin-bottom: 8px;
+  pointer-events: auto;
+  animation: snackbar-enter 0.2s ease;
+}
+
+@keyframes snackbar-enter {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.snackbar.snackbar-exit {
+  animation: snackbar-exit 0.2s ease forwards;
+}
+
+@keyframes snackbar-exit {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+}
+
+.snackbar-message {
+  flex: 1;
+  font-size: var(--md-sys-typescale-body-medium-font-size, 14px);
+  line-height: var(--md-sys-typescale-body-medium-line-height, 20px);
+}
+
+.snackbar-action {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-primary, #1976d2);
+  font-size: var(--md-sys-typescale-label-large-font-size, 14px);
+  font-weight: var(--md-sys-typescale-label-large-font-weight, 500);
+  padding: 8px 12px;
+  cursor: pointer;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.snackbar-action:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+.snackbar-close {
+  background: none;
+  border: none;
+  color: var(--md-sys-color-surface, #ffffff);
+  padding: 4px;
+  cursor: pointer;
+  border-radius: 50%;
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.2s;
+}
+
+.snackbar-close:hover {
+  background: rgba(255, 255, 255, 0.08);
+}
+
+/* Snackbar variants */
+.snackbar-success {
+  background: #2e7d32;
+}
+
+.snackbar-error {
+  background: var(--md-sys-color-error, #ba1a1a);
+}
+
+.snackbar-warning {
+  background: #f57c00;
+}
+
+.snackbar-info {
+  background: #0288d1;
+}
+
+/* Mobile adjustments */
+@media (max-width: 599px) {
+  .snackbar-container {
+    left: 16px;
+    right: 16px;
+    bottom: 16px;
+    transform: none;
+  }
+  
+  .snackbar {
+    min-width: 0;
+    width: 100%;
+  }
+}
+
+/* ============================================
+   BOTTOM SHEET PATTERN (MOBILE)
+   ============================================ */
+
+.bottom-sheet-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 1500;
+  opacity: 0;
+  transition: opacity 0.3s;
+  pointer-events: none;
+}
+
+.bottom-sheet-overlay.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.bottom-sheet {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: var(--md-sys-color-surface, #ffffff);
+  border-radius: 28px 28px 0 0;
+  padding: 24px;
+  z-index: 1501;
+  transform: translateY(100%);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  max-height: 80vh;
+  overflow-y: auto;
+}
+
+.bottom-sheet.active {
+  transform: translateY(0);
+}
+
+.bottom-sheet-handle {
+  width: 32px;
+  height: 4px;
+  background: rgba(0, 0, 0, 0.12);
+  border-radius: 2px;
+  margin: 0 auto 16px;
+  cursor: grab;
+}
+
+.bottom-sheet-title {
+  font-size: var(--md-sys-typescale-title-large-font-size, 22px);
+  font-weight: var(--md-sys-typescale-title-large-font-weight, 500);
+  margin: 0 0 16px 0;
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+}
+
+.bottom-sheet-content {
+  margin-bottom: 16px;
+}
+
+/* Desktop: Show as modal dialog */
+@media (min-width: 600px) {
+  .bottom-sheet {
+    left: 50%;
+    bottom: auto;
+    top: 50%;
+    transform: translate(-50%, -50%) scale(0.9);
+    opacity: 0;
+    border-radius: 28px;
+    max-width: 560px;
+    max-height: 90vh;
+  }
+  
+  .bottom-sheet.active {
+    transform: translate(-50%, -50%) scale(1);
+    opacity: 1;
+  }
+}
+
+/* ============================================
+   MICRO-INTERACTIONS
+   ============================================ */
+
+/* Button press feedback */
+.micro-press {
+  transition: transform 0.1s ease;
+}
+
+.micro-press:active {
+  transform: scale(0.96);
+}
+
+/* Card reveal animation */
+.micro-reveal {
+  opacity: 0;
+  transform: translateY(20px);
+  animation: reveal 0.4s ease forwards;
+}
+
+@keyframes reveal {
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* Stagger reveals for multiple items */
+.micro-reveal:nth-child(1) { animation-delay: 0s; }
+.micro-reveal:nth-child(2) { animation-delay: 0.1s; }
+.micro-reveal:nth-child(3) { animation-delay: 0.15s; }
+.micro-reveal:nth-child(4) { animation-delay: 0.2s; }
+.micro-reveal:nth-child(5) { animation-delay: 0.25s; }
+
+/* Success checkmark animation */
+.micro-success {
+  display: inline-block;
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--md-sys-color-secondary, #4caf50);
+  position: relative;
+  animation: success-pop 0.4s ease;
+}
+
+@keyframes success-pop {
+  0% { transform: scale(0); }
+  50% { transform: scale(1.2); }
+  100% { transform: scale(1); }
+}
+
+.micro-success::after {
+  content: "";
+  position: absolute;
+  left: 8px;
+  top: 4px;
+  width: 6px;
+  height: 12px;
+  border: solid white;
+  border-width: 0 2px 2px 0;
+  transform: rotate(45deg);
+}
+
+/* Shimmer effect for loading */
+.micro-shimmer {
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.3) 50%,
+    rgba(255, 255, 255, 0) 100%
+  );
+  background-size: 200% 100%;
+  animation: shimmer 1.5s infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+/* Pulse effect for attention */
+.micro-pulse {
+  animation: pulse-attention 2s ease-in-out infinite;
+}
+
+@keyframes pulse-attention {
+  0%, 100% { 
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% { 
+    transform: scale(1.05);
+    opacity: 0.8;
+  }
+}
+
+/* ============================================
+   RETRY PATTERN
+   ============================================ */
+
+.retry-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+  padding: 24px;
+  text-align: center;
+}
+
+.retry-message {
+  font-size: var(--md-sys-typescale-body-large-font-size, 16px);
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.retry-counter {
+  font-size: var(--md-sys-typescale-label-medium-font-size, 12px);
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+.retry-button {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* ============================================
+   REDUCED MOTION OVERRIDES
+   ============================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .snackbar,
+  .micro-reveal,
+  .micro-success,
+  .bottom-sheet,
+  .bottom-sheet-overlay {
+    animation: none !important;
+    transition: none !important;
+  }
+  
+  .bottom-sheet.active {
+    transform: translateY(0);
+  }
+  
+  @media (min-width: 600px) {
+    .bottom-sheet.active {
+      transform: translate(-50%, -50%);
+    }
+  }
+}

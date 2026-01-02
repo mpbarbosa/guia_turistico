@@ -4,6 +4,16 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Conversor de Coordenadas para Endereço</title>
+    <link rel="stylesheet" href="skip-link.css" />
+    <link rel="stylesheet" href="typography.css" />
+    <link rel="stylesheet" href="reduced-motion.css" />
+    <link rel="stylesheet" href="loading-states.css" />
+    <link rel="stylesheet" href="touch-device-fixes.css" />
+    <link rel="stylesheet" href="navigation.css" />
+    <link rel="stylesheet" href="geolocation-banner.css" />
+    <link rel="stylesheet" href="version-display.css" />
+    <link rel="stylesheet" href="tooltip.css" />
+    <link rel="stylesheet" href="noscript.css" />
     <style>
       /* Material Design 3 Color System */
       :root {
@@ -123,6 +133,42 @@
       .error {
         color: var(--md-sys-color-error);
         font-weight: bold;
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+      
+      .error::before {
+        content: "⚠";
+        font-size: 1.2em;
+        flex-shrink: 0;
+        /* Visual indicator for users who can't distinguish colors */
+      }
+      
+      /* Inline error messages for form validation */
+      .error-message {
+        color: var(--md-sys-color-error);
+        font-size: 0.875rem;
+        margin-top: 4px;
+        display: flex;
+        align-items: center;
+        gap: 4px;
+      }
+      
+      .error-message::before {
+        content: "⚠";
+        font-size: 1em;
+      }
+      
+      /* Invalid input styling */
+      input:invalid {
+        border-color: var(--md-sys-color-error);
+        outline-color: var(--md-sys-color-error);
+      }
+      
+      input[aria-invalid="true"] {
+        border-color: var(--md-sys-color-error);
+        border-width: 2px;
       }
       
       /* Material Design 3 Highlight Cards for Municipio and Bairro */
@@ -132,6 +178,13 @@
         grid-template-columns: 1fr;
         gap: 1rem;
         margin: 1.5rem 0;
+      }
+      
+      /* Responsive grid for tablets and desktop */
+      @media (min-width: 600px) {
+        .location-highlights {
+          grid-template-columns: 2fr 1fr; /* Município takes more space */
+        }
       }
 
       .highlight-card {
@@ -180,7 +233,10 @@
         font-size: 1.5rem;
         font-weight: 600;
         line-height: 1.2;
-        word-break: break-word;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        max-width: 100%;
       }
 
       /* Município value - larger and bolder */
@@ -221,9 +277,28 @@
         border-width: 0;
       }
       .loading {
-        color: #7f8c8d;
+        color: var(--md-sys-color-on-surface-variant, #7f8c8d);
         font-style: italic;
+        display: flex;
+        align-items: center;
+        gap: 8px;
       }
+      
+      .loading::before {
+        content: "⏳";
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+      
+      @keyframes pulse {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0.5; }
+      }
+      
+      /* Ensure loading states are announced by screen readers */
+      .loading[role="status"] {
+        /* role="status" creates implicit aria-live="polite" */
+      }
+      
       .map-link {
         margin-top: 10px;
       }
@@ -234,11 +309,105 @@
       }
     </style>
   </head>
-  <body onload="init()">
-    <main class="container">
+  <body>
+    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    
+    <!-- No JavaScript Fallback -->
+    <noscript>
+      <div class="noscript-banner" role="alert">
+        <h2>JavaScript Desabilitado</h2>
+        <p><strong>O Conversor de Coordenadas requer JavaScript para funcionar.</strong></p>
+        <p>Esta ferramenta usa APIs de geocodificação que necessitam JavaScript ativo.</p>
+      </div>
+      
+      <div class="noscript-instructions">
+        <h3>Como Habilitar JavaScript</h3>
+        
+        <div class="browser-help">
+          <h4>Google Chrome / Microsoft Edge</h4>
+          <ol>
+            <li>Clique no menu (três pontos) no canto superior direito</li>
+            <li>Selecione <strong>Configurações</strong></li>
+            <li>Vá para <strong>Privacidade e segurança</strong> → <strong>Configurações do site</strong></li>
+            <li>Clique em <strong>JavaScript</strong></li>
+            <li>Selecione <strong>Permitir que os sites usem JavaScript</strong></li>
+            <li>Recarregue esta página</li>
+          </ol>
+        </div>
+        
+        <div class="browser-help">
+          <h4>Mozilla Firefox</h4>
+          <ol>
+            <li>Digite <code>about:config</code> na barra de endereços</li>
+            <li>Clique em <strong>Aceitar o Risco e Continuar</strong></li>
+            <li>Pesquise por <code>javascript.enabled</code></li>
+            <li>Altere o valor para <strong>true</strong></li>
+            <li>Recarregue esta página</li>
+          </ol>
+        </div>
+        
+        <div class="browser-help">
+          <h4>Safari (macOS)</h4>
+          <ol>
+            <li>Abra <strong>Safari</strong> → <strong>Preferências</strong></li>
+            <li>Vá para a aba <strong>Segurança</strong></li>
+            <li>Marque a opção <strong>Ativar JavaScript</strong></li>
+            <li>Recarregue esta página</li>
+          </ol>
+        </div>
+      </div>
+      
+      <div class="noscript-alternatives">
+        <h4>Serviços de Geocodificação Online</h4>
+        <ul>
+          <li>
+            <strong>Nominatim (OpenStreetMap):</strong> 
+            <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">
+              nominatim.openstreetmap.org
+            </a> - Converta coordenadas para endereços gratuitamente
+          </li>
+          <li>
+            <strong>Google Maps:</strong> 
+            <a href="https://www.google.com/maps" target="_blank" rel="noopener noreferrer">
+              maps.google.com
+            </a> - Cole suas coordenadas na barra de busca
+          </li>
+          <li>
+            <strong>GPS Coordinates:</strong> 
+            <a href="https://www.gps-coordinates.net" target="_blank" rel="noopener noreferrer">
+              gps-coordinates.net
+            </a> - Conversor de coordenadas online
+          </li>
+          <li>
+            <strong>LatLong.net:</strong> 
+            <a href="https://www.latlong.net" target="_blank" rel="noopener noreferrer">
+              latlong.net
+            </a> - Encontre coordenadas e endereços
+          </li>
+        </ul>
+      </div>
+    </noscript>
+    
+    <!-- Version Display -->
+    <div class="app-version" role="status" aria-live="polite" aria-label="Versão do aplicativo">
+      v 0.2.0 | 2025-12-16
+    </div>
+    
+    <nav class="app-navigation" aria-label="Navegação principal">
+      <ul>
+        <li><a href="index.html" aria-label="Ir para página inicial">Página Inicial</a></li>
+        <li><a href="address-converter.html" class="current-page" aria-current="page" aria-label="Conversor de endereços (página atual)">Conversor de Endereços</a></li>
+        <li><a href="loc-em-movimento.html" aria-label="Ir para localização em movimento">Localização em Movimento</a></li>
+      </ul>
+    </nav>
+
+    <main id="main-content" class="container">
       <header>
         <h1>Conversor de Latitude/Longitude para Endereço</h1>
-        <p>Tam cache: <span id="tam-cache" aria-live="polite">0</span></p>
+        <p>
+          <abbr title="Dados salvos localmente para acesso rápido" aria-label="Cache: dados salvos localmente">Cache</abbr>: 
+          <span id="tam-cache" aria-live="polite">0</span> itens
+        </p>
       </header>
 
       <!-- Location Highlight Cards -->
@@ -253,29 +422,43 @@
         </div>
       </section>
 
-      <form onsubmit="return false;">
+      <form novalidate>
         <div class="input-group">
           <label for="latitude">Latitude:</label>
           <input
-            type="text"
+            type="number"
             id="latitude"
+            name="latitude"
+            required
+            step="any"
+            min="-90"
+            max="90"
             placeholder="Digite a latitude (ex: -23.5505)"
-            aria-describedby="latitude-example"
+            aria-describedby="latitude-example latitude-error"
             aria-required="true"
+            aria-invalid="false"
           />
-          <div id="latitude-example" class="example">Exemplo: -23.5505 (São Paulo)</div>
+          <div id="latitude-example" class="example">Exemplo: -23.5505 (São Paulo). Válido: -90 a 90</div>
+          <div id="latitude-error" class="error-message" role="alert" aria-live="polite" hidden></div>
         </div>
 
         <div class="input-group">
           <label for="longitude">Longitude:</label>
           <input
-            type="text"
+            type="number"
             id="longitude"
+            name="longitude"
+            required
+            step="any"
+            min="-180"
+            max="180"
             placeholder="Digite a longitude (ex: -46.6333)"
-            aria-describedby="longitude-example"
+            aria-describedby="longitude-example longitude-error"
             aria-required="true"
+            aria-invalid="false"
           />
-          <div id="longitude-example" class="example">Exemplo: -46.6333 (São Paulo)</div>
+          <div id="longitude-example" class="example">Exemplo: -46.6333 (São Paulo). Válido: -180 a 180</div>
+          <div id="longitude-error" class="error-message" role="alert" aria-live="polite" hidden></div>
         </div>
 
         <button id="fetchButton" type="submit" aria-label="Obter endereço a partir das coordenadas">Obter Endereço</button>
@@ -288,97 +471,9 @@
       </section>
     </main>
 
-    <script>
-      let addressCache = null;
-      
-      function init() {
-        console.log("Initializing application...");
-        const fetchButton = document.getElementById("fetchButton");
-        const latitudeInput = document.getElementById("latitude");
-        const longitudeInput = document.getElementById("longitude");
-        const resultsDiv = document.getElementById("results");
-
-        fetchButton.addEventListener("click", fetchAddress);
-
-        // Also allow pressing Enter in either input field
-        latitudeInput.addEventListener("keypress", function (e) {
-          if (e.key === "Enter") fetchAddress();
-        });
-
-        longitudeInput.addEventListener("keypress", function (e) {
-          if (e.key === "Enter") fetchAddress();
-        });
-      }
-
-      function fetchAddress() {
-        console.log("Fetching address...");
-        const latitude = document.getElementById("latitude").value.trim();
-        const longitude = document.getElementById("longitude").value.trim();
-        const resultsDiv = document.getElementById("results");
-
-        if (!latitude || !longitude) {
-          showError("Please enter both latitude and longitude.");
-          return;
-        }
-
-        // Validate latitude and longitude
-        if (
-          isNaN(latitude) ||
-          isNaN(longitude) ||
-          latitude < -90 ||
-          latitude > 90 ||
-          longitude < -180 ||
-          longitude > 180
-        ) {
-          showError("Invalid latitude or longitude values.");
-          return;
-        }
-
-        resultsDiv.innerHTML = '<p class="loading">Loading...</p>';
-
-        var reverseGeocoder = new ReverseGeocoder(latitude, longitude);
-        var htmlDisplayer = new HTMLAddressDisplayer(resultsDiv);
-        reverseGeocoder.subscribe(htmlDisplayer);
-
-        // Subscribe to address cache size changes if not already subscribed
-        if (!addressCache && reverseGeocoder.addressCache) {
-          addressCache = reverseGeocoder.addressCache;
-          if (addressCache.subscribeFunction) {
-            addressCache.subscribeFunction( cache => {
-              document.getElementById("tam-cache").innerHTML = `${cache.size || cache.length || 0}`;
-            });
-          }
-        }
-
-        reverseGeocoder.reverseGeocode().then((data) => {
-          console.log("Address fetched:", data);
-          reverseGeocoder.notifyObservers();
-          
-          // Update highlight cards
-          if (data) {
-            // Update Bairro highlight card
-            const bairroValue = document.getElementById("bairro-value");
-            if (bairroValue) {
-              const bairro = data.suburb || data.neighbourhood || data.quarter || data.residential || data.address?.suburb || data.address?.neighbourhood || data.address?.quarter || data.address?.residential;
-              bairroValue.innerText = bairro || "Não disponível";
-            }
-            
-            // Update Municipio highlight card
-            const municipioValue = document.getElementById("municipio-value");
-            if (municipioValue) {
-              const city = data.city || data.town || data.village || data.address?.city || data.address?.town || data.address?.village;
-              const state = data.state || data.address?.state || "";
-              municipioValue.innerText = city ? (state ? `${city}, ${state}` : city) : "Não disponível";
-            }
-          }
-        });
-      }
-
-      function showError(message) {
-        results.innerHTML = `<p class="error">${message}</p>`;
-      }
-    </script>
+    <!-- External JavaScript - Separation of Concerns -->
     <script type="module" src="https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js"></script>
     <script src="andarilho.js"></script>
+    <script src="address-converter.js"></script>
   </body>
 </html>

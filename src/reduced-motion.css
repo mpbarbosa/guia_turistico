@@ -1,0 +1,110 @@
+/* Comprehensive Reduced Motion Support */
+
+/* 
+ * Respects user's prefers-reduced-motion setting
+ * WCAG 2.1 Success Criterion 2.3.3 (Level AAA)
+ */
+
+@media (prefers-reduced-motion: reduce) {
+  /* Remove all animations and transitions */
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+  
+  /* Disable auto-playing videos and GIFs */
+  video,
+  img[src$=".gif"] {
+    animation-play-state: paused !important;
+  }
+  
+  /* Keep essential functional transitions */
+  /* Focus indicators should still be visible instantly */
+  *:focus,
+  *:focus-visible {
+    transition: outline 0ms, outline-offset 0ms !important;
+  }
+  
+  /* Collapsible elements can still show/hide but instantly */
+  [aria-expanded],
+  details {
+    transition: none !important;
+  }
+  
+  /* Tooltips and dropdowns appear instantly */
+  [role="tooltip"],
+  [role="menu"],
+  [role="listbox"] {
+    transition: opacity 0ms, transform 0ms !important;
+  }
+  
+  /* Loading indicators use static fallbacks (defined in loading-states.css) */
+}
+
+/* Respect reduced transparency preference (if supported) */
+@media (prefers-reduced-transparency: reduce) {
+  * {
+    opacity: 1 !important;
+    backdrop-filter: none !important;
+  }
+}
+
+/* Respect contrast preference */
+@media (prefers-contrast: more) {
+  :root {
+    --md-sys-elevation-level1: 0 2px 4px 0 rgba(0, 0, 0, 0.5);
+    --md-sys-elevation-level2: 0 4px 8px 0 rgba(0, 0, 0, 0.5);
+  }
+  
+  /* Increase border contrast */
+  button,
+  input,
+  select,
+  textarea {
+    border-width: 2px !important;
+  }
+  
+  /* Stronger focus indicators */
+  *:focus-visible {
+    outline-width: 3px !important;
+  }
+}
+
+/* Motion-safe utilities (use these classes for essential animations) */
+.motion-safe-fade {
+  transition: opacity 0.2s ease;
+}
+
+.motion-safe-slide {
+  transition: transform 0.2s ease;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .motion-safe-fade,
+  .motion-safe-slide {
+    transition: none !important;
+  }
+}
+
+/* Alternative indicators for users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  /* Use color/icon changes instead of animation for loading states */
+  [aria-busy="true"]::before {
+    content: "⏳ ";
+  }
+  
+  /* Show progress with color instead of animation */
+  .progress-indicator {
+    background: linear-gradient(
+      to right,
+      var(--md-sys-color-primary, #1976d2) 0%,
+      var(--md-sys-color-primary, #1976d2) var(--progress, 0%),
+      rgba(0, 0, 0, 0.1) var(--progress, 0%),
+      rgba(0, 0, 0, 0.1) 100%
+    );
+  }
+}

@@ -1,0 +1,141 @@
+/* Touch Device Hover State Fixes */
+
+/* 
+ * This file ensures hover states only apply on devices with hover capability
+ * Prevents "sticky" hover states on touch devices (iOS, Android)
+ * 
+ * Apply these overrides by including this file after your main stylesheets
+ */
+
+/* Button hover states - only for hover-capable devices */
+@media (hover: hover) and (pointer: fine) {
+  button:hover:not(:disabled) {
+    /* Hover styles already defined, this ensures they only apply on hover-capable devices */
+  }
+  
+  a:hover {
+    /* Link hover styles */
+  }
+  
+  .highlight-card:hover {
+    /* Card hover elevation */
+  }
+  
+  #standardized-address:hover {
+    /* Address section hover */
+  }
+  
+  #reference-place:hover {
+    /* Reference place hover */
+  }
+}
+
+/* Touch-friendly active states for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  /* Use :active instead of :hover on touch devices */
+  button:active:not(:disabled) {
+    transform: scale(0.98);
+    opacity: 0.9;
+  }
+  
+  a:active {
+    opacity: 0.7;
+  }
+  
+  .highlight-card:active {
+    transform: translateY(0);
+    box-shadow: var(--md-sys-elevation-level1);
+  }
+}
+
+/* Ensure focus states work on all devices */
+button:focus-visible,
+a:focus-visible,
+.highlight-card:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+}
+
+/* Remove sticky hover states on touch */
+@media (hover: none) {
+  *:hover {
+    /* Reset any hover states that might stick on touch devices */
+    /* Specific overrides in main CSS will take precedence */
+  }
+}
+
+/* Tooltip hover - only show on hover-capable devices */
+@media (hover: hover) and (pointer: fine) {
+  [title]:hover::after,
+  .tooltip:hover::after {
+    /* Tooltips only make sense on hover-capable devices */
+  }
+}
+
+/* Card elevation changes */
+@media (hover: hover) and (pointer: fine) {
+  .md3-card:hover {
+    box-shadow: var(--md-sys-elevation-level2);
+    transform: translateY(-2px);
+    transition: box-shadow 0.2s, transform 0.2s;
+  }
+}
+
+/* Navigation link hover */
+@media (hover: hover) and (pointer: fine) {
+  nav a:hover {
+    background: rgba(0, 0, 0, 0.05);
+  }
+}
+
+/* Input focus for all devices (not hover-dependent) */
+input:focus,
+textarea:focus,
+select:focus {
+  outline: 2px solid var(--md-sys-color-primary);
+  outline-offset: 2px;
+  border-color: var(--md-sys-color-primary);
+}
+
+/* Touch target size enforcement for touch devices */
+@media (hover: none) and (pointer: coarse) {
+  button,
+  a,
+  input[type="button"],
+  input[type="submit"],
+  .clickable {
+    min-height: 48px;
+    min-width: 48px;
+    padding: 12px;
+  }
+}
+
+/* Prevent text selection on buttons for touch devices */
+@media (hover: none) {
+  button,
+  .button {
+    -webkit-tap-highlight-color: transparent;
+    user-select: none;
+  }
+}
+
+/* Active state feedback for touch */
+@media (hover: none) {
+  button:active,
+  a:active,
+  .clickable:active {
+    background: rgba(0, 0, 0, 0.1);
+    transition: background 0s;
+  }
+}
+
+/* Consistent focus visible across all devices */
+:focus-visible {
+  outline: 2px solid var(--md-sys-color-primary, #1976d2);
+  outline-offset: 2px;
+}
+
+/* Remove default focus outline (replaced by :focus-visible) */
+:focus:not(:focus-visible) {
+  outline: none;
+}

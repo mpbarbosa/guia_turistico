@@ -1,0 +1,92 @@
+/**
+ * Version Display Component Styles
+ * Consistent version numbering across all pages
+ * 
+ * Follows Material Design 3 principles with proper z-index
+ * management and responsive behavior.
+ */
+
+/* Version display badge */
+.app-version {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: var(--md-sys-color-surface, #ffffff);
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+  padding: 8px 12px;
+  border-radius: 16px;
+  box-shadow: var(--md-sys-elevation-level2, 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 2px 6px 2px rgba(0, 0, 0, 0.15));
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 900; /* Below modals (1000), above content */
+  text-align: center;
+  max-width: calc(100vw - 24px); /* Account for positioning */
+  word-break: break-word;
+  transition: opacity 0.2s, transform 0.2s;
+  user-select: none;
+  pointer-events: none; /* Don't interfere with clicks */
+}
+
+/* Prevent version from covering interactive elements */
+.app-version:hover {
+  opacity: 0.7;
+}
+
+/* Mobile adjustments */
+@media (max-width: 599px) {
+  .app-version {
+    top: 8px;
+    right: 8px;
+    font-size: 0.7rem;
+    padding: 6px 10px;
+    max-width: calc(100vw - 16px);
+  }
+}
+
+/* Small screens - ensure no overlap with navigation */
+@media (max-width: 400px) {
+  .app-version {
+    position: static;
+    display: inline-block;
+    margin: 8px 8px 0 auto;
+    float: right;
+    clear: both;
+  }
+}
+
+/* Print - hide version badge */
+@media print {
+  .app-version {
+    display: none;
+  }
+}
+
+/* Legacy class support (for backward compatibility) */
+#guia-version,
+.versioning-numbering {
+  /* Redirect to .app-version styles */
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  background: var(--md-sys-color-surface, #ffffff);
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+  padding: 8px 12px;
+  border-radius: 16px;
+  box-shadow: var(--md-sys-elevation-level2);
+  font-size: 0.75rem;
+  font-weight: 600;
+  z-index: 900;
+  text-align: center;
+  max-width: calc(100vw - 24px);
+  word-break: break-word;
+  user-select: none;
+  pointer-events: none;
+}
+
+/* Accessibility: Screen reader announcement */
+.app-version[role="status"],
+#guia-version[role="status"],
+.versioning-numbering[role="status"] {
+  /* role="status" creates implicit aria-live="polite" */
+  /* Version updates announced but not intrusive */
+}
