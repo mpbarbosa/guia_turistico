@@ -1,9 +1,56 @@
-// Store current coordinates and address globally
+/**
+ * @fileoverview Andarilho (Legacy) - Core geolocation and location-based features
+ * Contains impure functions for DOM manipulation, geolocation, and API integration.
+ * 
+ * This is a legacy file that contains the original implementation.
+ * New code should use the SPA architecture in /views/ directory.
+ * 
+ * @requires navigator.geolocation - Browser Geolocation API
+ * @requires OpenStreetMap Nominatim API - Reverse geocoding
+ * @requires Overpass API - Nearby places search
+ * @requires Wikipedia API - City statistics and information
+ */
+
+/**
+ * Current geographic coordinates
+ * @type {Object|null}
+ * @property {number} latitude - Latitude coordinate
+ * @property {number} longitude - Longitude coordinate
+ */
 let currentCoords = null;
+
+/**
+ * Current address information from reverse geocoding
+ * @type {Object|null}
+ * @property {Object} address - OSM address components
+ */
 let currentAddress = null;
+
+/**
+ * Find restaurants button element
+ * @type {HTMLButtonElement|null}
+ */
 const findRestaurantsBtn = document.getElementById("findRestaurantsBtn");
+
+/**
+ * City statistics button element
+ * @type {HTMLButtonElement|null}
+ */
 const cityStatsBtn = document.getElementById("cityStatsBtn");
 
+/**
+ * Get user's current location using browser geolocation API
+ * Updates UI with location information and enables location-based features
+ * 
+ * @async
+ * @function
+ * @returns {Promise<void>}
+ * @throws {GeolocationPositionError} If geolocation fails or is denied
+ * 
+ * @example
+ * // Called on page load or button click
+ * getLocation();
+ */
 function getLocation() {
 	const locationResult = document.getElementById("locationResult");
 	checkGeolocation(locationResult);
@@ -78,6 +125,19 @@ function getLocation() {
 	);
 }
 
+/**
+ * Find nearby restaurants using Overpass API
+ * Searches for restaurants within 500 meters of current location
+ * 
+ * @async
+ * @function
+ * @returns {Promise<void>}
+ * @throws {Error} If API request fails or current location is unavailable
+ * 
+ * @example
+ * // Called when user clicks "Find Restaurants" button
+ * await findNearbyRestaurants();
+ */
 async function findNearbyRestaurants() {
 	if (!currentCoords) {
 		alert("Please get your location first");
@@ -124,6 +184,19 @@ async function findNearbyRestaurants() {
 	}
 }
 
+/**
+ * Get city statistics from Wikipedia
+ * Fetches and displays population, area, and other city information
+ * 
+ * @async
+ * @function
+ * @returns {Promise<void>}
+ * @throws {Error} If Wikipedia API fails or city information unavailable
+ * 
+ * @example
+ * // Called when user clicks "Get City Stats" button
+ * await getCityStats();
+ */
 async function getCityStats() {
 	if (!currentAddress || !currentAddress.address) {
 		alert("City information not available");
@@ -219,6 +292,22 @@ async function getCityStats() {
 }
 
 // Function to get nearby restaurants using Overpass API
+/**
+ * Query Overpass API for nearby restaurants
+ * Uses OpenStreetMap data to find restaurants within specified radius
+ * 
+ * @async
+ * @function
+ * @param {number} lat - Latitude coordinate
+ * @param {number} lon - Longitude coordinate
+ * @param {number} radius - Search radius in meters
+ * @returns {Promise<Array<Object>>} Array of restaurant objects with tags and distance
+ * @throws {Error} If Overpass API request fails or returns invalid data
+ * 
+ * @example
+ * const restaurants = await getNearbyRestaurants(-23.5505, -46.6333, 500);
+ * console.log(`Found ${restaurants.length} restaurants`);
+ */
 async function getNearbyRestaurants(lat, lon, radius) {
 	// Overpass QL query to find restaurants within radius
 	const query = `
@@ -270,6 +359,22 @@ async function getNearbyRestaurants(lat, lon, radius) {
 }
 
 // Search Wikipedia for a term
+/**
+ * Search Wikipedia for articles matching search term
+ * Uses Wikipedia's opensearch API endpoint
+ * 
+ * @async
+ * @function
+ * @param {string} searchTerm - Search query (e.g., "São Paulo, Brazil")
+ * @returns {Promise<Object>} Wikipedia search results with page IDs and titles
+ * @throws {Error} If Wikipedia API request fails
+ * 
+ * @example
+ * const results = await searchWikipedia("São Paulo, São Paulo Brazil");
+ * if (results.query.search.length > 0) {
+ *   const pageId = results.query.search[0].pageid;
+ * }
+ */
 async function searchWikipedia(searchTerm) {
 	const url = `https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&format=json&origin=*`;
 
@@ -288,6 +393,20 @@ async function searchWikipedia(searchTerm) {
 }
 
 // Get Wikipedia page content
+/**
+ * Get Wikipedia page content by page ID
+ * Fetches full page data including infobox and content
+ * 
+ * @async
+ * @function
+ * @param {number|string} pageId - Wikipedia page ID
+ * @returns {Promise<Object>} Page content with title, HTML, and metadata
+ * @throws {Error} If Wikipedia API request fails or page not found
+ * 
+ * @example
+ * const pageData = await getWikipediaPage(12345);
+ * console.log(pageData.parse.title); // "São Paulo"
+ */
 async function getWikipediaPage(pageId) {
 	const url = `https://en.wikipedia.org/w/api.php?action=query&prop=extracts&pageids=${pageId}&explaintext=true&format=json&origin=*`;
 
@@ -306,6 +425,22 @@ async function getWikipediaPage(pageId) {
 }
 
 // Extract city statistics from Wikipedia text
+/**
+ * Extract city statistics from Wikipedia page data
+ * Parses HTML to find population, area, and other statistics from infobox
+ * 
+ * @function
+ * @param {Object} wikiData - Wikipedia page data from getWikipediaPage()
+ * @returns {Object} Extracted statistics
+ * @returns {string|null} return.population - City population
+ * @returns {string|null} return.area - City area
+ * @returns {Array<Object>} return.otherStats - Additional statistics
+ * 
+ * @example
+ * const stats = extractCityStats(wikiPageData);
+ * console.log(stats.population); // "12,325,232"
+ * console.log(stats.area); // "1,521 km²"
+ */
 function extractCityStats(wikiData) {
 	const result = {
 		population: null,

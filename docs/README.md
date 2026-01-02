@@ -4,6 +4,15 @@ Esta pasta contém toda a documentação técnica e arquitetural do projeto Guia
 
 ## Estrutura da Documentação
 
+### 🆕 Migração SPA (`spa_migration/`) ✨ NEW
+Documentação completa da arquitetura Single Page Application:
+
+- **[README](spa_migration/README.md)** - Índice e visão geral da migração SPA
+- **[SPA Migration Phase 1](spa_migration/SPA_MIGRATION_PHASE1.md)** - Guia completo da migração
+- **[Quick Start](spa_migration/QUICK_START.md)** - Guia rápido para desenvolvedores
+- **[Architecture Diagrams](spa_migration/ARCHITECTURE_DIAGRAM.md)** - Diagramas visuais da arquitetura
+- **[Phase 1 Summary](spa_migration/PHASE1_SUMMARY.md)** - Sumário de implementação
+
 ### 📋 Documentação UML (`uml/`)
 Documentação arquitetural completa com diagramas UML:
 
@@ -50,10 +59,14 @@ O **Guia Turístico** é uma aplicação web HTML5 que fornece informações bas
 
 ### Tecnologias Utilizadas
 
-- **Frontend**: HTML5, CSS3, JavaScript ES6+
+- **Frontend**: 
+  - **SPA (Single Page Application)** com hash-based routing ✨ NEW
+  - HTML5, CSS3, JavaScript ES6+ (módulos)
+  - Mobile-first responsive design
 - **Padrões Arquiteturais**: 
   - Separação HTML/CSS/JS (arquivos separados)
   - Funções puras vs. impuras (transparência referencial)
+  - View-based modular architecture ✨ NEW
   - Alta coesão e baixo acoplamento
 - **APIs**: Geolocation, Web Speech, IBGE/SIDRA, Wikipedia, Overpass
 - **Bibliotecas Customizadas**: 
@@ -65,16 +78,22 @@ O **Guia Turístico** é uma aplicação web HTML5 que fornece informações bas
 
 ## Como Usar Esta Documentação
 
-### Para Desenvolvedores
+### Para Desenvolvedores da SPA ✨ NEW
+1. **Comece com [SPA Quick Start](spa_migration/QUICK_START.md)** para começar a desenvolver
+2. **Consulte [Architecture Diagrams](spa_migration/ARCHITECTURE_DIAGRAM.md)** para entender o fluxo
+3. **Leia [SPA Migration Phase 1](spa_migration/SPA_MIGRATION_PHASE1.md)** para contexto completo
+
+### Para Desenvolvedores (Geral)
 1. **Comece com os [Casos de Uso](uml/use-case-diagrams/main-use-cases.md)** para entender os requisitos
 2. **Estude a [Arquitetura de Componentes](uml/component-diagrams/system-architecture.md)** para visão geral do sistema
 3. **Analise os [Diagramas de Classe](uml/class-diagrams/core-classes.md)** para implementação
 4. **Acompanhe os [Fluxos de Sequência](uml/sequence-diagrams/location-tracking-flow.md)** para integração
 
 ### Para Arquitetos e Gestores
-1. **[Visão Geral da Arquitetura](uml/component-diagrams/system-architecture.md#1-visão-geral-da-arquitetura)**
-2. **[Casos de Uso de Negócio](uml/use-case-diagrams/main-use-cases.md#casos-de-uso-principais)**
-3. **[Padrões Arquiteturais](uml/component-diagrams/system-architecture.md#5-padrões-arquiteturais-implementados)**
+1. **[Visão Geral da Arquitetura SPA](spa_migration/ARCHITECTURE_DIAGRAM.md)** ✨ NEW
+2. **[Visão Geral da Arquitetura](uml/component-diagrams/system-architecture.md#1-visão-geral-da-arquitetura)**
+3. **[Casos de Uso de Negócio](uml/use-case-diagrams/main-use-cases.md#casos-de-uso-principais)**
+4. **[Padrões Arquiteturais](uml/component-diagrams/system-architecture.md#5-padrões-arquiteturais-implementados)**
 
 ### Para Testadores
 1. **[Fluxos de Teste](uml/sequence-diagrams/location-tracking-flow.md)** - Cenários de teste baseados em sequências

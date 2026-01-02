@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Guia Turístico - Sua Localização</title>
+    <title>Guia Turístico - Aplicativo Web</title>
     
     <!-- Resource Hints for Performance -->
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin>
@@ -11,7 +11,7 @@
     <link rel="dns-prefetch" href="https://servicodados.ibge.gov.br">
     <link rel="dns-prefetch" href="https://pt.wikipedia.org">
     
-    <!-- Critical CSS -->
+    <!-- Critical CSS - Common across all views -->
     <link rel="stylesheet" href="skip-link.css" />
     <link rel="stylesheet" href="typography.css" />
     <link rel="stylesheet" href="reduced-motion.css" />
@@ -25,10 +25,115 @@
     <link rel="stylesheet" href="version-display.css" />
     <link rel="stylesheet" href="tooltip.css" />
     <link rel="stylesheet" href="noscript.css" />
-    <link rel="stylesheet" href="index.css" />
+    <link rel="stylesheet" href="transitions.css" />
+    
+    <!-- App Shell Styles -->
+    <style>
+      /* App shell loading states */
+      .route-loading {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        min-height: 300px;
+        padding: 2rem;
+        text-align: center;
+      }
+
+      .loading-spinner {
+        font-size: 3rem;
+        margin-bottom: 1rem;
+        animation: pulse 1.5s ease-in-out infinite;
+      }
+
+      @keyframes pulse {
+        0%, 100% { opacity: 1; transform: scale(1); }
+        50% { opacity: 0.5; transform: scale(1.1); }
+      }
+
+      /* App shell error states */
+      .route-error {
+        padding: 2rem;
+        max-width: 600px;
+        margin: 2rem auto;
+        text-align: center;
+      }
+
+      .route-error h2 {
+        color: var(--md-sys-color-error, #ba1a1a);
+        margin-bottom: 1rem;
+      }
+
+      .route-error details {
+        text-align: left;
+        margin: 1.5rem 0;
+        padding: 1rem;
+        background: #f9f9f9;
+        border-radius: 8px;
+      }
+
+      .route-error pre {
+        white-space: pre-wrap;
+        word-wrap: break-word;
+        font-size: 0.875rem;
+        color: #666;
+      }
+
+      .route-error button {
+        margin: 0.5rem;
+      }
+
+      /* Material Design 3 button styles */
+      .md3-button-filled {
+        min-width: 48px;
+        min-height: 48px;
+        background-color: var(--md-sys-color-primary, #1976d2);
+        color: var(--md-sys-color-on-primary, #ffffff);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background 0.2s, box-shadow 0.2s;
+      }
+
+      .md3-button-filled:hover {
+        background-color: #1565c0;
+        box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+      }
+
+      .md3-button-outlined {
+        min-width: 48px;
+        min-height: 48px;
+        background-color: transparent;
+        color: var(--md-sys-color-primary, #1976d2);
+        border: 1px solid var(--md-sys-color-primary, #1976d2);
+        padding: 12px 24px;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 16px;
+        font-weight: 500;
+        transition: background 0.2s;
+      }
+
+      .md3-button-outlined:hover {
+        background-color: rgba(25, 118, 210, 0.08);
+      }
+
+      /* App content container */
+      #app-content {
+        min-height: 400px;
+      }
+
+      /* Ensure proper spacing */
+      main {
+        margin-bottom: 2rem;
+      }
+    </style>
   </head>
   <body>
-    <a href="#main-content" class="skip-link">Pular para o conteúdo principal</a>
+    <a href="#app-content" class="skip-link">Pular para o conteúdo principal</a>
     
     <!-- No JavaScript Fallback -->
     <noscript>
@@ -96,113 +201,39 @@
               cidades.ibge.gov.br
             </a> - Estatísticas oficiais dos municípios brasileiros
           </li>
-          <li>
-            <strong>Nominatim (OSM):</strong> 
-            <a href="https://nominatim.openstreetmap.org" target="_blank" rel="noopener noreferrer">
-              Conversor de coordenadas
-            </a> - Converta coordenadas para endereços
-          </li>
         </ul>
       </div>
     </noscript>
+    
     <!-- Version Display -->
     <div class="app-version" role="status" aria-live="polite" aria-label="Versão do aplicativo">
-      v 0.2.0 | 2025-12-16
+      v 0.5.0 | 2026-01-02
     </div>
     
-    <header>
-      <h1>Guia Turístico</h1>
-      <p>Descubra sua localização e encontre restaurantes e estatísticas da cidade próximos.</p>
-      <p>
-        <abbr title="Dados salvos localmente para acesso rápido" aria-label="Cache: dados salvos localmente">Cache</abbr>: 
-        <span id="tam-cache" aria-live="polite">0</span> itens
-      </p>
-    </header>
-
+    <!-- App Navigation -->
     <nav class="app-navigation" aria-label="Navegação principal">
       <ul>
-        <li><a href="index.html" class="current-page" aria-current="page" aria-label="Página inicial (página atual)">Página Inicial</a></li>
-        <li><a href="address-converter.html" aria-label="Ir para conversor de endereços">Conversor de Endereços</a></li>
-        <li><a href="loc-em-movimento.html" aria-label="Ir para localização em movimento">Localização em Movimento</a></li>
+        <li><a href="#/" aria-label="Ir para página inicial">Página Inicial</a></li>
+        <li><a href="#/converter" aria-label="Ir para conversor de endereços">Conversor de Endereços</a></li>
+        <li><a href="#/tracking" aria-label="Ir para localização em movimento">Localização em Movimento</a></li>
       </ul>
     </nav>
 
-    <nav aria-label="Ações da página">
-      <div class="button-container">
-        <button 
-          id="findRestaurantsBtn" 
-          disabled 
-          aria-disabled="true"
-          aria-describedby="restaurants-status"
-          aria-label="Encontrar restaurantes próximos"
-        >
-          <span class="button-text">Encontrar Restaurantes Próximos</span>
-          <span class="button-loading" aria-hidden="true" hidden>⏳</span>
-        </button>
-        <span id="restaurants-status" class="button-status" role="status" aria-live="polite">
-          Aguardando localização...
-        </span>
+    <!-- Main App Content (dynamically loaded by router) -->
+    <main id="app-content" role="main">
+      <!-- View content will be injected here by route-manager -->
+      <div class="route-loading" role="status" aria-live="polite">
+        <div class="loading-spinner" aria-hidden="true">⏳</div>
+        <p>Inicializando aplicativo...</p>
       </div>
-      
-      <div class="button-container">
-        <button 
-          id="cityStatsBtn" 
-          disabled 
-          aria-disabled="true"
-          aria-describedby="stats-status"
-          aria-label="Obter estatísticas da cidade"
-        >
-          <span class="button-text">Obter Estatísticas da Cidade</span>
-          <span class="button-loading" aria-hidden="true" hidden>⏳</span>
-        </button>
-        <span id="stats-status" class="button-status" role="status" aria-live="polite">
-          Aguardando localização...
-        </span>
-      </div>
-    </nav>
-    
-    <main id="main-content">
-      <!-- Geolocation status banner container -->
-      <div id="geolocation-banner-container"></div>
-
-      <!-- Location Highlight Cards -->
-      <section class="location-highlights" aria-label="Destaques de localização">
-        <div class="highlight-card" role="region" aria-labelledby="municipio-label">
-          <div id="municipio-label" class="highlight-card-label">Município</div>
-          <div id="municipio-value" class="highlight-card-value" aria-live="polite">—</div>
-        </div>
-        <div class="highlight-card" role="region" aria-labelledby="bairro-label">
-          <div id="bairro-label" class="highlight-card-label">Bairro</div>
-          <div id="bairro-value" class="highlight-card-value" aria-live="polite">—</div>
-        </div>
-      </section>
-
-      <section id="coordinates" aria-labelledby="coordinates-heading">
-        <h2 id="coordinates-heading" class="sr-only">Coordenadas</h2>
-        <p><strong>Coordenadas:</strong> <span id="lat-long-display" aria-live="polite">Aguardando localização...</span></p>
-      </section>
-
-      <section id="reference-place" aria-labelledby="reference-place-heading">
-        <h2 id="reference-place-heading" class="sr-only">Local de Referência</h2>
-        <p><strong>Local de referência:</strong> <span id="reference-place-display" aria-live="polite">Aguardando localização...</span></p>
-      </section>
-
-      <section id="standardized-address" aria-labelledby="address-heading">
-        <h2 id="address-heading" class="sr-only">Endereço Padronizado</h2>
-        <p><strong>Endereço padronizado:</strong> <span id="endereco-padronizado-display" aria-live="polite">Aguardando localização...</span></p>
-      </section>
-
-      <section class="section" id="dadosSidra" aria-labelledby="location-info-heading">
-        <h2 id="location-info-heading">Informações da Localização</h2>
-      </section>
-      
-      <section id="locationResult" aria-live="polite" aria-label="Resultado da localização">
-        <p>As informações da sua localização aparecerão aqui.</p>
-      </section>
     </main>
+
+    <!-- External Libraries -->
     <script src="https://cdn.jsdelivr.net/gh/mpbarbosa/sidra.js@main/sidra.js"></script>
     <script src="error-recovery.js"></script>
     <script src="geolocation-banner.js"></script>
-    <script type="module" src="index.js"></script>
+    
+    <!-- App Entry Point -->
+    <script type="module" src="app.js"></script>
   </body>
 </html>

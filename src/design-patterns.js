@@ -7,6 +7,14 @@
    SNACKBAR QUEUE PATTERN
    ============================================ */
 
+/**
+ * Snackbar Queue - Material Design snackbar notification system
+ * Manages queue of notifications with auto-dismiss and actions
+ * @class
+ * @example
+ * const snackbar = new SnackbarQueue();
+ * snackbar.show('Operation successful', { type: 'success', duration: 3000 });
+ */
 class SnackbarQueue {
   constructor() {
     this.queue = [];
@@ -15,6 +23,10 @@ class SnackbarQueue {
     this.init();
   }
 
+  /**
+   * Initialize snackbar container
+   * @private
+   */
   init() {
     // Create container if it doesn't exist
     if (!document.querySelector('.snackbar-container')) {
@@ -51,6 +63,10 @@ class SnackbarQueue {
     }
   }
 
+  /**
+   * Show next snackbar in queue
+   * @private
+   */
   showNext() {
     if (this.queue.length === 0) {
       this.currentSnackbar = null;
@@ -98,6 +114,11 @@ class SnackbarQueue {
     }
   }
 
+  /**
+   * Hide and remove snackbar with animation
+   * @private
+   * @param {HTMLElement} snackbar - Snackbar element to hide
+   */
   hide(snackbar) {
     snackbar.classList.add('snackbar-exit');
     setTimeout(() => {
@@ -116,7 +137,19 @@ window.snackbar = new SnackbarQueue();
    BOTTOM SHEET PATTERN
    ============================================ */
 
+/**
+ * Bottom Sheet - Material Design bottom sheet component
+ * Modal sheet that slides up from bottom of screen
+ * @class
+ * @example
+ * const sheet = new BottomSheet('mySheet');
+ * sheet.open();
+ */
 class BottomSheet {
+  /**
+   * Create bottom sheet instance
+   * @param {string} elementId - ID of bottom sheet element
+   */
   constructor(elementId) {
     this.sheet = document.getElementById(elementId);
     this.overlay = null;
@@ -124,6 +157,10 @@ class BottomSheet {
     this.init();
   }
 
+  /**
+   * Initialize bottom sheet event listeners
+   * @private
+   */
   init() {
     if (!this.sheet) return;
 
@@ -173,6 +210,10 @@ class BottomSheet {
     });
   }
 
+  /**
+   * Open bottom sheet
+   * @returns {void}
+   */
   open() {
     this.isOpen = true;
     this.overlay.classList.add('active');
@@ -187,6 +228,10 @@ class BottomSheet {
     }
   }
 
+  /**
+   * Close bottom sheet
+   * @returns {void}
+   */
   close() {
     this.isOpen = false;
     this.overlay.classList.remove('active');
@@ -196,6 +241,10 @@ class BottomSheet {
     this.sheet.style.transform = '';
   }
 
+  /**
+   * Toggle bottom sheet open/closed
+   * @returns {void}
+   */
   toggle() {
     if (this.isOpen) {
       this.close();
@@ -209,13 +258,29 @@ class BottomSheet {
    PROGRESSIVE DISCLOSURE PATTERN
    ============================================ */
 
+/**
+ * Disclosure Section - Progressive disclosure pattern
+ * Expandable/collapsible content section
+ * @class
+ * @example
+ * const disclosure = new DisclosureSection('advancedOptions');
+ * disclosure.expand();
+ */
 class DisclosureSection {
+  /**
+   * Create disclosure section instance
+   * @param {string} elementId - ID of disclosure section element
+   */
   constructor(elementId) {
     this.section = document.getElementById(elementId);
     this.isExpanded = false;
     this.init();
   }
 
+  /**
+   * Initialize disclosure section
+   * @private
+   */
   init() {
     if (!this.section) return;
 
@@ -242,17 +307,29 @@ class DisclosureSection {
     });
   }
 
+  /**
+   * Toggle expanded/collapsed state
+   * @returns {void}
+   */
   toggle() {
     this.isExpanded = !this.isExpanded;
     this.section.setAttribute('aria-expanded', this.isExpanded.toString());
   }
 
+  /**
+   * Expand section
+   * @returns {void}
+   */
   expand() {
     if (!this.isExpanded) {
       this.toggle();
     }
   }
 
+  /**
+   * Collapse section
+   * @returns {void}
+   */
   collapse() {
     if (this.isExpanded) {
       this.toggle();
@@ -264,16 +341,30 @@ class DisclosureSection {
    RETRY PATTERN WITH EXPONENTIAL BACKOFF
    ============================================ */
 
+/**
+ * Retry Manager - Executes operations with exponential backoff
+ * Automatically retries failed operations with increasing delays
+ * @class
+ * @example
+ * const retry = new RetryManager();
+ * await retry.execute('api-call', () => fetchData(), { maxAttempts: 3 });
+ */
 class RetryManager {
   constructor() {
     this.attempts = {};
   }
 
   /**
-   * Execute a function with retry logic
+   * Execute a function with retry logic and exponential backoff
    * @param {string} key - Unique identifier for this operation
    * @param {Function} fn - Async function to execute
-   * @param {Object} options - Configuration
+   * @param {Object} [options={}] - Configuration options
+   * @param {number} [options.maxAttempts=3] - Maximum retry attempts
+   * @param {number} [options.initialDelay=1000] - Initial delay in ms
+   * @param {number} [options.maxDelay=10000] - Maximum delay in ms
+   * @param {Function} [options.onRetry] - Callback on retry
+   * @returns {Promise<any>} Result of successful execution
+   * @throws {Error} If all retry attempts fail
    */
   async execute(key, fn, options = {}) {
     const config = {
@@ -324,10 +415,19 @@ class RetryManager {
     }
   }
 
+  /**
+   * Reset retry counter for specific operation
+   * @param {string} key - Operation identifier
+   * @returns {void}
+   */
   reset(key) {
     this.attempts[key] = 0;
   }
 
+  /**
+   * Reset all retry counters
+   * @returns {void}
+   */
   resetAll() {
     this.attempts = {};
   }
@@ -340,6 +440,19 @@ window.retryManager = new RetryManager();
    OPTIMISTIC UI HELPER
    ============================================ */
 
+/**
+ * Optimistic UI Helper - Apply UI updates before async operations complete
+ * Automatically rolls back on error
+ * @class
+ * @example
+ * const optimistic = new OptimisticUI();
+ * await optimistic.update(
+ *   'like-button',
+ *   () => button.classList.add('liked'),
+ *   () => api.likePost(postId),
+ *   () => button.classList.remove('liked')
+ * );
+ */
 class OptimisticUI {
   constructor() {
     this.pendingUpdates = new Map();
@@ -347,10 +460,12 @@ class OptimisticUI {
 
   /**
    * Apply optimistic update with automatic rollback on error
-   * @param {string} key - Unique identifier
+   * @param {string} key - Unique identifier for update
    * @param {Function} optimisticUpdate - Function to update UI immediately
    * @param {Function} actualUpdate - Async function to perform actual update
-   * @param {Function} rollback - Function to rollback on error
+   * @param {Function} rollback - Function to rollback UI on error
+   * @returns {Promise<any>} Result of actual update
+   * @throws {Error} If actual update fails (after rollback)
    */
   async update(key, optimisticUpdate, actualUpdate, rollback) {
     // Store rollback function
@@ -379,7 +494,8 @@ class OptimisticUI {
   }
 
   /**
-   * Rollback all pending updates
+   * Rollback all pending optimistic updates
+   * @returns {void}
    */
   rollbackAll() {
     this.pendingUpdates.forEach((rollback) => rollback());
@@ -394,6 +510,14 @@ window.optimisticUI = new OptimisticUI();
    UTILITY: Initialize all patterns on page
    ============================================ */
 
+/**
+ * Initialize all design patterns on the page
+ * Auto-discovers and initializes disclosure sections and bottom sheets
+ * @returns {void}
+ * @example
+ * // Called automatically on DOMContentLoaded
+ * initializeDesignPatterns();
+ */
 function initializeDesignPatterns() {
   // Initialize disclosure sections
   document.querySelectorAll('.disclosure-section').forEach((section) => {

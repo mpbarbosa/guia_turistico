@@ -8,10 +8,22 @@
    ============================================ */
 
 /**
- * Debounce function calls to reduce frequency
+ * Debounce function calls to reduce frequency of execution
+ * Useful for optimizing events that fire rapidly (scroll, resize, input)
  * @param {Function} func - Function to debounce
- * @param {number} wait - Wait time in milliseconds
- * @param {boolean} immediate - Execute on leading edge
+ * @param {number} wait - Wait time in milliseconds before executing
+ * @param {boolean} [immediate=false] - Execute on leading edge instead of trailing
+ * @returns {Function} Debounced function
+ * @throws {TypeError} If func is not a function
+ * @example
+ * // Debounce search API calls on input
+ * const debouncedSearch = debounce(searchAPI, 300);
+ * searchInput.addEventListener('input', debouncedSearch);
+ * 
+ * @example
+ * // Immediate execution on first call
+ * const debouncedResize = debounce(handleResize, 150, true);
+ * window.addEventListener('resize', debouncedResize);
  */
 function debounce(func, wait, immediate = false) {
   let timeout;
@@ -29,9 +41,14 @@ function debounce(func, wait, immediate = false) {
 }
 
 /**
- * Throttle function calls to maximum frequency
+ * Throttle function calls to maximum frequency (rate limiting)
+ * Ensures function is called at most once per specified time period
  * @param {Function} func - Function to throttle
- * @param {number} limit - Minimum time between calls (ms)
+ * @param {number} limit - Minimum time between calls in milliseconds
+ * @returns {Function} Throttled function
+ * @example
+ * const throttledScroll = throttle(handleScroll, 200);
+ * window.addEventListener('scroll', throttledScroll);
  */
 function throttle(func, limit) {
   let inThrottle;
@@ -49,7 +66,21 @@ function throttle(func, limit) {
    LAZY LOADING WITH INTERSECTION OBSERVER
    ============================================ */
 
+/**
+ * Lazy Loader - Uses IntersectionObserver for efficient lazy loading
+ * Automatically loads images/iframes when they enter viewport
+ * @class
+ * @example
+ * const loader = new LazyLoader({ rootMargin: '100px' });
+ * <img data-lazy-load data-lazy-src="image.jpg" alt="Description">
+ */
 class LazyLoader {
+  /**
+   * Create a lazy loader instance
+   * @param {Object} [options={}] - Configuration options
+   * @param {string} [options.rootMargin='50px'] - Margin around viewport for preloading
+   * @param {number} [options.threshold=0.01] - Percentage of element visible to trigger
+   */
   constructor(options = {}) {
     this.options = {
       rootMargin: options.rootMargin || '50px',
@@ -60,6 +91,10 @@ class LazyLoader {
     this.init();
   }
 
+  /**
+   * Initialize lazy loading observer
+   * @private
+   */
   init() {
     if ('IntersectionObserver' in window) {
       this.observer = new IntersectionObserver(
@@ -73,11 +108,20 @@ class LazyLoader {
     }
   }
 
+  /**
+   * Observe all elements with data-lazy-load attribute
+   * @private
+   */
   observeElements() {
     const elements = document.querySelectorAll('[data-lazy-load]');
     elements.forEach(el => this.observer.observe(el));
   }
 
+  /**
+   * Handle intersection observer callback
+   * @private
+   * @param {IntersectionObserverEntry[]} entries - Observer entries
+   */
   handleIntersection(entries) {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -87,6 +131,11 @@ class LazyLoader {
     });
   }
 
+  /**
+   * Load a single lazy element (image, iframe, etc.)
+   * @private
+   * @param {HTMLElement} element - Element to load
+   */
   loadElement(element) {
     const src = element.dataset.lazySrc;
     const srcset = element.dataset.lazySrcset;
@@ -106,6 +155,10 @@ class LazyLoader {
     delete element.dataset.lazySrcset;
   }
 
+  /**
+   * Load all lazy elements immediately (fallback for old browsers)
+   * @private
+   */
   loadAll() {
     const elements = document.querySelectorAll('[data-lazy-load]');
     elements.forEach(el => this.loadElement(el));
@@ -119,6 +172,16 @@ window.lazyLoader = new LazyLoader();
    ADAPTIVE GEOLOCATION POLLING
    ============================================ */
 
+/**
+ * Adaptive Geolocation - Adjusts polling frequency based on movement
+ * Saves battery by reducing updates when stationary
+ * @class
+ * @example
+ * const geo = new AdaptiveGeolocation();
+ * geo.startWatching((position) => {
+ *   console.log('Current position:', position);
+ * });
+ */
 class AdaptiveGeolocation {
   constructor() {
     this.watchId = null;
@@ -132,7 +195,12 @@ class AdaptiveGeolocation {
   }
 
   /**
-   * Calculate distance between two coordinates (Haversine formula)
+   * Calculate distance between two coordinates using Haversine formula
+   * @param {number} lat1 - Latitude of first point
+   * @param {number} lon1 - Longitude of first point
+   * @param {number} lat2 - Latitude of second point
+   * @param {number} lon2 - Longitude of second point
+   * @returns {number} Distance in meters
    */
   calculateDistance(lat1, lon1, lat2, lon2) {
     const R = 6371e3; // Earth radius in meters
@@ -150,7 +218,10 @@ class AdaptiveGeolocation {
   }
 
   /**
-   * Adapt polling frequency based on movement
+   * Adapt polling frequency based on user movement
+   * Increases frequency when moving, decreases when stationary
+   * @private
+   * @param {GeolocationPosition} position - Current position
    */
   adaptFrequency(position) {
     if (!this.lastPosition) {
@@ -196,6 +267,16 @@ class AdaptiveGeolocation {
 
   /**
    * Start adaptive geolocation tracking
+   * Automatically adjusts polling frequency based on movement speed
+   * @param {Function} callback - Success callback receiving GeolocationPosition
+   * @param {Function} errorCallback - Error callback receiving GeolocationPositionError
+   * @returns {void}
+   * @example
+   * const geo = new AdaptiveGeolocation();
+   * geo.start(
+   *   (position) => console.log('Position:', position),
+   *   (error) => console.error('Error:', error)
+   * );
    */
   start(callback, errorCallback) {
     if (!navigator.geolocation) {
@@ -235,7 +316,9 @@ class AdaptiveGeolocation {
   }
 
   /**
-   * Stop tracking
+   * Stop geolocation tracking
+   * Clears the watch interval and resets state
+   * @returns {void}
    */
   stop() {
     if (this.watchId) {
@@ -252,6 +335,14 @@ window.adaptiveGeolocation = new AdaptiveGeolocation();
    REQUEST BATCHING & CACHING
    ============================================ */
 
+/**
+ * Request Batcher - Deduplicates and caches API requests
+ * Batches multiple identical requests and provides caching
+ * @class
+ * @example
+ * const batcher = new RequestBatcher();
+ * const data = await batcher.fetch('https://api.example.com/data');
+ */
 class RequestBatcher {
   constructor() {
     this.cache = new Map();
@@ -260,7 +351,15 @@ class RequestBatcher {
   }
 
   /**
-   * Batch multiple requests to same endpoint
+   * Fetch data with batching and caching
+   * Deduplicates simultaneous requests and caches responses
+   * @param {string} url - API endpoint URL
+   * @param {Object} [options={}] - Fetch options
+   * @returns {Promise<any>} Response data
+   * @throws {Error} If fetch fails after retries
+   * @example
+   * const batcher = new RequestBatcher();
+   * const data = await batcher.fetch('/api/location', { method: 'GET' });
    */
   async fetch(url, options = {}) {
     const cacheKey = this.getCacheKey(url, options);
@@ -302,14 +401,29 @@ class RequestBatcher {
     return promise;
   }
 
+  /**
+   * Generate cache key from URL and options
+   * @private
+   * @param {string} url - Request URL
+   * @param {Object} options - Fetch options
+   * @returns {string} Cache key
+   */
   getCacheKey(url, options) {
     return `${url}_${JSON.stringify(options)}`;
   }
 
+  /**
+   * Clear all cached data
+   * @returns {void}
+   */
   clearCache() {
     this.cache.clear();
   }
 
+  /**
+   * Remove expired cache entries
+   * @returns {void}
+   */
   clearOldCache() {
     const now = Date.now();
     for (const [key, value] of this.cache.entries()) {
@@ -333,7 +447,12 @@ setInterval(() => {
    ============================================ */
 
 /**
- * Preconnect to domain for faster requests
+ * Preconnect to domain for faster subsequent requests
+ * Establishes early connection (DNS, TCP, TLS) to speed up future requests
+ * @param {string} url - Domain URL to preconnect
+ * @returns {void}
+ * @example
+ * preconnect('https://api.example.com');
  */
 function preconnect(url) {
   const link = document.createElement('link');
@@ -344,7 +463,12 @@ function preconnect(url) {
 }
 
 /**
- * DNS prefetch for faster resolution
+ * DNS prefetch for faster domain name resolution
+ * Resolves domain name before resource is needed
+ * @param {string} url - Domain URL for DNS prefetch
+ * @returns {void}
+ * @example
+ * dnsPrefetch('https://cdn.example.com');
  */
 function dnsPrefetch(url) {
   const link = document.createElement('link');
@@ -354,7 +478,12 @@ function dnsPrefetch(url) {
 }
 
 /**
- * Prefetch page for navigation
+ * Prefetch page for instant navigation
+ * Downloads page resources in advance for faster navigation
+ * @param {string} url - Page URL to prefetch
+ * @returns {void}
+ * @example
+ * prefetchPage('/about');
  */
 function prefetchPage(url) {
   const link = document.createElement('link');
@@ -368,18 +497,41 @@ function prefetchPage(url) {
    PERFORMANCE MONITORING
    ============================================ */
 
+/**
+ * Performance Monitor - Tracks and reports performance metrics
+ * Uses Performance API to measure timing and resource usage
+ * @class
+ * @example
+ * const monitor = new PerformanceMonitor();
+ * monitor.mark('start-load');
+ * // ... do work
+ * monitor.mark('end-load');
+ * monitor.measure('page-load', 'start-load', 'end-load');
+ */
 class PerformanceMonitor {
   constructor() {
     this.marks = new Map();
     this.measures = [];
   }
 
+  /**
+   * Create performance mark at current time
+   * @param {string} name - Mark identifier
+   * @returns {PerformanceMark} Performance mark object
+   */
   mark(name) {
     const mark = performance.mark(name);
     this.marks.set(name, mark);
     return mark;
   }
 
+  /**
+   * Measure time between two marks
+   * @param {string} name - Measure identifier
+   * @param {string} startMark - Start mark name
+   * @param {string} endMark - End mark name
+   * @returns {PerformanceMeasure|undefined} Performance measure object
+   */
   measure(name, startMark, endMark) {
     try {
       const measure = performance.measure(name, startMark, endMark);
@@ -391,6 +543,10 @@ class PerformanceMonitor {
     }
   }
 
+  /**
+   * Get performance metrics from Performance API
+   * @returns {Object|null} Performance metrics including navigation and paint timing
+   */
   getMetrics() {
     if (!performance.getEntriesByType) return null;
 
@@ -411,6 +567,11 @@ class PerformanceMonitor {
     };
   }
 
+  /**
+   * Log performance metrics to console
+   * Displays metrics in table format
+   * @returns {void}
+   */
   logMetrics() {
     const metrics = this.getMetrics();
     console.table(metrics);
@@ -425,7 +586,16 @@ window.performanceMonitor = new PerformanceMonitor();
    ============================================ */
 
 /**
- * Run non-critical tasks during idle time
+ * Run non-critical tasks during browser idle time
+ * Uses requestIdleCallback when available, falls back to setTimeout
+ * @param {Function} callback - Function to run during idle time
+ * @param {Object} [options={}] - Options for requestIdleCallback
+ * @param {number} [options.timeout] - Maximum time to wait before executing
+ * @returns {void}
+ * @example
+ * runWhenIdle(() => {
+ *   console.log('Running during idle time');
+ * }, { timeout: 2000 });
  */
 function runWhenIdle(callback, options = {}) {
   if ('requestIdleCallback' in window) {
@@ -440,6 +610,19 @@ function runWhenIdle(callback, options = {}) {
    BATCH DOM UPDATES
    ============================================ */
 
+/**
+ * DOM Batcher - Prevents layout thrashing by batching DOM operations
+ * Separates reads and writes using requestAnimationFrame
+ * @class
+ * @example
+ * const batcher = new DOMBatcher();
+ * batcher.read(() => {
+ *   const height = element.offsetHeight; // DOM read
+ *   batcher.write(() => {
+ *     element.style.height = height * 2 + 'px'; // DOM write
+ *   });
+ * });
+ */
 class DOMBatcher {
   constructor() {
     this.readQueue = [];
@@ -448,7 +631,10 @@ class DOMBatcher {
   }
 
   /**
-   * Schedule a DOM read (avoid layout thrashing)
+   * Schedule a DOM read operation
+   * Prevents layout thrashing by batching reads before writes
+   * @param {Function} callback - Function performing DOM reads
+   * @returns {void}
    */
   read(callback) {
     this.readQueue.push(callback);
@@ -456,13 +642,21 @@ class DOMBatcher {
   }
 
   /**
-   * Schedule a DOM write (avoid layout thrashing)
+   * Schedule a DOM write operation
+   * Batches writes after all reads complete
+   * @param {Function} callback - Function performing DOM writes
+   * @returns {void}
    */
   write(callback) {
     this.writeQueue.push(callback);
     this.schedule();
   }
 
+  /**
+   * Schedule execution of queued operations
+   * @private
+   * @returns {void}
+   */
   schedule() {
     if (this.scheduled) return;
     this.scheduled = true;

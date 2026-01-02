@@ -1,14 +1,36 @@
 /**
- * loc-em-movimento.js
- * JavaScript behavior for Location in Movement page
+ * @fileoverview Location Tracking (Legacy) - JavaScript for loc-em-movimento.html
+ * Provides real-time location tracking with text-to-speech feedback
  * 
- * Separated from HTML following HTML/CSS/JS separation principles
+ * This is a legacy file that contains DOM manipulation and WebGeocodingManager integration.
+ * Separated from HTML following HTML/CSS/JS separation principles.
+ * New implementations should use the SPA version in /views/tracking.js
+ * 
+ * Features:
+ * - Continuous location tracking with GeolocationAPI
+ * - Text-to-speech announcements for location changes
+ * - IBGE/SIDRA data integration for city statistics
+ * - Real-time UI updates (coordinates, neighborhood, municipality)
+ * - Chronometer for elapsed time tracking
+ * - Speech queue monitoring
+ * 
+ * @module legacy/loc-em-movimento
+ * @requires WebGeocodingManager - From guia_js library
+ * @requires PositionManager - From guia_js library
+ * @requires AddressCache - From guia_js library
  */
 
 // ========================================
 // IMPURE FUNCTIONS (Side Effects Layer)
 // ========================================
 
+/**
+ * Initialize location tracking page
+ * Sets up all event handlers, managers, and starts tracking
+ * @async
+ * @function
+ * @returns {Promise<void>}
+ */
 async function init() {
   // Show permission request banner immediately
   showPermissionRequest('geolocation-banner-container');
@@ -36,6 +58,13 @@ async function init() {
   manager.startTracking();
 }
 
+/**
+ * Wait for external dependencies to load
+ * Retries up to 50 times with 100ms delay between attempts
+ * @async
+ * @function
+ * @returns {Promise<boolean>} True if dependencies loaded, false if timeout
+ */
 async function waitForDependencies() {
   const maxRetries = 50;
   const retryDelay = 100;
@@ -49,27 +78,53 @@ async function waitForDependencies() {
   return retries < maxRetries;
 }
 
+/**
+ * Check if all required dependencies are loaded
+ * @function
+ * @returns {boolean} True if WebGeocodingManager, PositionManager, and AddressCache are defined
+ */
 function areDependenciesLoaded() {
   return typeof WebGeocodingManager !== 'undefined' && 
          typeof PositionManager !== 'undefined' && 
          typeof AddressCache !== 'undefined';
 }
 
+/**
+ * Setup event handler for insert position button
+ * @function
+ * @returns {void}
+ */
 function setupInsertPositionButton() {
   const insertPositionButton = document.getElementById("insertPositionButton");
   insertPositionButton.addEventListener("click", insertPosition);
 }
 
+/**
+ * Setup event handler for text input field
+ * @function
+ * @returns {void}
+ */
 function setupTextInputHandler() {
   const textInput = document.getElementById("text-input");
   textInput.addEventListener("change", updateTextInput);
 }
 
+/**
+ * Initialize WebGeocodingManager with DOM elements
+ * @async
+ * @function
+ * @returns {Promise<WebGeocodingManager>} Initialized manager instance
+ */
 async function initializeGeocodingManager() {
   const params = createGeocodingParams();
   return await WebGeocodingManager.createAsync(document, params);
 }
 
+/**
+ * Create parameters object for WebGeocodingManager
+ * @function
+ * @returns {Object} Parameters with DOM element references
+ */
 function createGeocodingParams() {
   return {
     "locationResult": document.getElementById("locationResult"),
@@ -78,6 +133,12 @@ function createGeocodingParams() {
   };
 }
 
+/**
+ * Setup location update handlers for continuous tracking
+ * @function
+ * @param {WebGeocodingManager} manager - Manager instance
+ * @returns {void}
+ */
 function setupLocationUpdateHandlers(manager) {
   let firstUpdate = true;
   

@@ -121,6 +121,23 @@ function fetchAddress() {
   const longitude = parseFloat(document.getElementById("longitude").value.trim());
   const resultsDiv = document.getElementById("results");
 
+  // Validate coordinates
+  if (isNaN(latitude) || isNaN(longitude)) {
+    showError("Coordenadas inválidas. Por favor, insira números válidos.");
+    return;
+  }
+
+  if (latitude < -90 || latitude > 90) {
+    showError("Latitude deve estar entre -90 e 90.");
+    return;
+  }
+
+  if (longitude < -180 || longitude > 180) {
+    showError("Longitude deve estar entre -180 e 180.");
+    return;
+  }
+
+  console.log(`(address-converter) Valid coordinates: ${latitude}, ${longitude}`);
   resultsDiv.innerHTML = '<p class="loading" role="status">Carregando...</p>';
 
   var reverseGeocoder = new ReverseGeocoder(latitude, longitude);
@@ -166,8 +183,90 @@ function fetchAddress() {
       }
     }
   }).catch((error) => {
+    console.error("(address-converter) ReverseGeocoder error:", error);
+    console.log("(address-converter) Falling back to direct Nominatim API...");
+    
+    // Fallback to direct Nominatim API call
+    fetchAddressDirectly(latitude, longitude, resultsDiv);
+  });
+}
+
+/**
+ * Fallback: Fetch address directly from Nominatim API
+ * @param {number} latitude - Latitude coordinate
+ * @param {number} longitude - Longitude coordinate
+ * @param {HTMLElement} resultsDiv - Results container
+ */
+function fetchAddressDirectly(latitude, longitude, resultsDiv) {
+  resultsDiv.innerHTML = '<p class="loading" role="status">Tentando método alternativo...</p>';
+  
+  fetch(
+    `https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&addressdetails=1`,
+    {
+      headers: {
+        'User-Agent': 'GuiaTuristico/0.5.0'
+      }
+    }
+  )
+  .then(response => {
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+    return response.json();
+  })
+  .then(data => {
+    if (data.error) {
+      throw new Error(data.error);
+    }
+    
+    console.log("(address-converter) Nominatim data:", data);
+    
+    // Update highlight cards
+    const municipioValue = document.getElementById("municipio-value");
+    const bairroValue = document.getElementById("bairro-value");
+    
+    if (municipioValue) {
+      const city = data.address?.city || data.address?.town || data.address?.village || '—';
+      municipioValue.textContent = city;
+    }
+    
+    if (bairroValue) {
+      const suburb = data.address?.suburb || data.address?.neighbourhood || '—';
+      bairroValue.textContent = suburb;
+    }
+    
+    // Display full results
+    resultsDiv.innerHTML = `
+      <h3>Endereço Encontrado</h3>
+      <p><strong>Endereço completo:</strong> ${data.display_name}</p>
+      ${formatAddressFields(data.address)}
+      <p class="map-link">
+        <a href="https://www.openstreetmap.org/?mlat=${latitude}&mlon=${longitude}&zoom=16" 
+           target="_blank" 
+           rel="noopener noreferrer"
+           aria-label="Ver localização no OpenStreetMap">
+          Ver no OpenStreetMap ↗
+        </a>
+      </p>
+    `;
+  })
+  .catch((error) => {
     console.error("(address-converter) Error fetching address:", error);
-    showError("Erro ao buscar endereço. Tente novamente.");
+    
+    let errorMessage = "Erro ao buscar endereço. ";
+    
+    // Provide more specific error messages
+    if (error.message.includes("Invalid coordinates")) {
+      errorMessage += "As coordenadas fornecidas são inválidas. Verifique os valores e tente novamente.";
+    } else if (error.message.includes("Network") || error.message.includes("Failed to fetch")) {
+      errorMessage += "Erro de conexão. Verifique sua internet e tente novamente.";
+    } else if (error.message.includes("timeout")) {
+      errorMessage += "O servidor demorou muito para responder. Tente novamente.";
+    } else {
+      errorMessage += error.message || "Tente novamente em alguns instantes.";
+    }
+    
+    showError(errorMessage);
   });
 }
 
