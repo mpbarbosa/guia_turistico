@@ -147,3 +147,16 @@ window.__router = router;
 window.__routeManager = routeManager;
 
 console.log("(app) SPA initialization complete");
+
+// Ensure initial route is loaded
+// If the page has already loaded, manually trigger route handling
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  console.log("(app) Page already loaded, triggering initial route...");
+  // Use setTimeout to ensure all synchronous code completes first
+  setTimeout(() => {
+    // If no hash in URL, navigate to home
+    if (!window.location.hash || window.location.hash === '#') {
+      router.navigate('/', true);
+    }
+  }, 0);
+}
