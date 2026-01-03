@@ -431,18 +431,37 @@ export default {
           (error) => {
             console.error("(home-view) Geolocation error:", error);
             getLocationBtn.disabled = false;
-            getLocationBtn.textContent = "📍 Obter Localização Atual";
+            getLocationBtn.textContent = "📍 Tentar Novamente";
             
-            window.showLocationError?.('geolocation-banner-container', error.message);
+            // Better error messages
+            let errorMessage = "Erro ao obter localização";
+            switch(error.code) {
+              case error.PERMISSION_DENIED:
+                errorMessage = "Permissão de localização negada. Habilite nas configurações do navegador.";
+                break;
+              case error.POSITION_UNAVAILABLE:
+                errorMessage = "Localização indisponível. Verifique se o GPS está ativado.";
+                break;
+              case error.TIMEOUT:
+                errorMessage = "Tempo esgotado ao buscar localização. Tente novamente ou use localização aproximada.";
+                break;
+            }
+            
+            window.showLocationError?.('geolocation-banner-container', errorMessage);
+            
+            // Show toast with option to retry or use low accuracy
+            if (window.toast) {
+              window.toast.error(errorMessage, 5000);
+            }
           },
           {
             enableHighAccuracy: true,
-            timeout: 10000,
-            maximumAge: 0
+            timeout: 30000, // Increased from 10s to 30s
+            maximumAge: 60000 // Accept cached positions up to 1 minute old
           }
         );
       } else {
-        alert("Geolocalização não é suportada neste navegador.");
+        window.toast?.error("Geolocalização não é suportada neste navegador.", 5000);
       }
     });
   },
