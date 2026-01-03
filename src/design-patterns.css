@@ -8,7 +8,132 @@
  * - Snackbar/Toast Notifications
  * - Bottom Sheet (Mobile)
  * - Micro-interactions
+ * - Toggle Switches (Material Design 3)
  */
+
+/* ============================================
+   TOGGLE SWITCH PATTERN (Material Design 3)
+   ============================================ */
+
+.tracking-mode-section {
+  margin: 24px 0;
+  padding: 16px;
+  background: var(--md-sys-color-surface-variant, #f9f9f9);
+  border-radius: 12px;
+}
+
+.tracking-mode-toggle {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+}
+
+.tracking-mode-toggle input[type="checkbox"] {
+  /* Hide default checkbox */
+  position: absolute;
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.tracking-mode-toggle label {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  cursor: pointer;
+  flex: 1;
+  position: relative;
+  padding-left: 64px;
+  min-height: 32px;
+}
+
+/* Toggle switch visual */
+.tracking-mode-toggle label::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 52px;
+  height: 32px;
+  background: var(--md-sys-color-surface-variant, #e7e0ec);
+  border: 2px solid var(--md-sys-color-outline, #79747e);
+  border-radius: 16px;
+  transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+}
+
+/* Toggle thumb */
+.tracking-mode-toggle label::after {
+  content: '';
+  position: absolute;
+  left: 4px;
+  top: 4px;
+  width: 24px;
+  height: 24px;
+  background: var(--md-sys-color-outline, #79747e);
+  border-radius: 50%;
+  transition: all 0.2s cubic-bezier(0.2, 0.0, 0, 1.0);
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.3), 0 4px 8px 3px rgba(0, 0, 0, 0.15);
+}
+
+/* Checked state */
+.tracking-mode-toggle input[type="checkbox"]:checked + label::before {
+  background: var(--md-sys-color-primary, #1976d2);
+  border-color: var(--md-sys-color-primary, #1976d2);
+}
+
+.tracking-mode-toggle input[type="checkbox"]:checked + label::after {
+  left: 24px;
+  background: var(--md-sys-color-on-primary, #ffffff);
+}
+
+/* Focus state */
+.tracking-mode-toggle input[type="checkbox"]:focus-visible + label::before {
+  outline: 2px solid var(--md-sys-color-primary, #1976d2);
+  outline-offset: 2px;
+}
+
+/* Hover state */
+.tracking-mode-toggle label:hover::before {
+  box-shadow: 0 1px 2px 0 rgba(0, 0, 0, 0.3), 0 1px 3px 1px rgba(0, 0, 0, 0.15);
+}
+
+/* Disabled state */
+.tracking-mode-toggle input[type="checkbox"]:disabled + label {
+  opacity: 0.38;
+  cursor: not-allowed;
+}
+
+.tracking-mode-toggle label strong {
+  font-size: 16px;
+  font-weight: 500;
+  color: var(--md-sys-color-on-surface, #1c1b1f);
+}
+
+.toggle-description {
+  font-size: 14px;
+  line-height: 20px;
+  color: var(--md-sys-color-on-surface-variant, #49454f);
+}
+
+/* Responsive adjustments */
+@media (max-width: 599px) {
+  .tracking-mode-section {
+    margin: 16px 0;
+    padding: 12px;
+  }
+  
+  .tracking-mode-toggle label {
+    padding-left: 60px;
+  }
+  
+  .tracking-mode-toggle label strong {
+    font-size: 14px;
+  }
+  
+  .toggle-description {
+    font-size: 12px;
+  }
+}
 
 /* ============================================
    EMPTY STATE PATTERN

@@ -15,7 +15,7 @@
  * @type {string}
  * @constant
  */
-const CACHE_NAME = 'guia-turistico-v0.5.0';
+const CACHE_NAME = 'guia-turistico-v0.7.0';
 
 /**
  * URL for offline fallback page
@@ -61,8 +61,7 @@ const PRECACHE_ASSETS = [
  */
 const RUNTIME_CACHE_URLS = [
   '/views/home.js',
-  '/views/converter.js',
-  '/views/tracking.js'
+  '/views/converter.js'
 ];
 
 /**

@@ -1,8 +1,11 @@
 /**
- * Unit Test Suite for src/loc-em-movimento.js
+ * Unit Test Suite for src/views/home.js - Tracking Features
  * 
  * Tests focus on pure functions (Business Logic Layer)
  * which are referentially transparent and easily testable.
+ * 
+ * Note: This file tests the tracking features that were merged from
+ * the separate loc-em-movimento view into the home view.
  * 
  * @jest-environment jsdom
  */

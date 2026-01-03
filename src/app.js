@@ -23,7 +23,6 @@ import toast from './toast.js';
 // Import views
 import homeView from './views/home.js';
 import converterView from './views/converter.js';
-import trackingView from './views/tracking.js';
 
 console.log("(app) Initializing Guia Turístico SPA...");
 
@@ -41,11 +40,6 @@ router
     console.log("(app) Navigating to converter");
     await routeManager.loadView(converterView);
     updateActiveNavLink('/converter');
-  })
-  .register('/tracking', async () => {
-    console.log("(app) Navigating to tracking");
-    await routeManager.loadView(trackingView);
-    updateActiveNavLink('/tracking');
   })
   .setDefault('/')
   .notFound((path) => {
