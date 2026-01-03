@@ -152,13 +152,6 @@ export default {
       <section id="locationResult" aria-live="polite" aria-label="Resultado da localização">
         <p>As informações da sua localização aparecerão aqui.</p>
       </section>
-
-      <!-- Tracking Mode Controls (visible only in continuous mode) -->
-      <div id="tracking-controls" style="display: none;">
-        <button id="insertPositionButton" class="md3-button-outlined" aria-label="Inserir posição de teste">
-          Inserir posição de teste
-        </button>
-      </div>
     `;
   },
   
@@ -178,7 +171,6 @@ export default {
     this._setupButtonHandlers();
     this._setupGetLocationButton();
     this._setupTrackingModeToggle();
-    this._setupTrackingControls();
   },
   
   cleanup() {
@@ -459,13 +451,11 @@ export default {
       
       // Show/hide tracking-specific UI
       const trackingTimer = document.getElementById("tracking-timer-container");
-      const trackingControls = document.getElementById("tracking-controls");
       const getLocationBtnContainer = document.getElementById("get-location-button-container");
       
       if (this.continuousMode) {
         // Start continuous tracking
         if (trackingTimer) trackingTimer.style.display = 'inline';
-        if (trackingControls) trackingControls.style.display = 'block';
         if (getLocationBtnContainer) getLocationBtnContainer.style.display = 'none';
         
         // Start tracking
@@ -478,7 +468,6 @@ export default {
       } else {
         // Stop continuous tracking
         if (trackingTimer) trackingTimer.style.display = 'none';
-        if (trackingControls) trackingControls.style.display = 'none';
         if (getLocationBtnContainer) getLocationBtnContainer.style.display = 'block';
         
         // Stop tracking
@@ -501,28 +490,6 @@ export default {
         window.toast?.info('Rastreamento contínuo desativado', 2000);
       }
     });
-  },
-  
-  _setupTrackingControls() {
-    // Insert position button (for testing)
-    const insertButton = document.getElementById("insertPositionButton");
-    if (insertButton) {
-      insertButton.addEventListener("click", () => {
-        const position = { 
-          "coords": { 
-            "latitude": -23.55052, 
-            "longitude": -46.633308, 
-            "accuracy": 1 
-          }, 
-          "timestamp": Date.now() 
-        };
-        PositionManager.getInstance(position);
-        const latLongDisplay = document.getElementById("lat-long-display");
-        if (latLongDisplay) {
-          latLongDisplay.innerText = `${position.coords.latitude}, ${position.coords.longitude}`;
-        }
-      });
-    }
   },
   
   _setupSpeechQueueMonitoring() {
