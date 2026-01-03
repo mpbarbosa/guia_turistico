@@ -11,6 +11,9 @@
  * @module views/tracking
  */
 
+// Import from CDN
+import { WebGeocodingManager, PositionManager, AddressCache } from 'https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js';
+
 /**
  * Tracking view configuration object
  * @type {Object}
@@ -26,6 +29,10 @@ export default {
   styles: [
     'loc-em-movimento.css'
   ],
+  
+  // Internal state
+  manager: null,
+  firstUpdate: true,
   
   /**
    * Render tracking view HTML
@@ -102,44 +109,218 @@ export default {
   async mount(container) {
     console.log("(tracking-view) Mounting tracking view...");
     
-    // Load guia.js module
-    const { WebGeocodingManager } = await import('https://cdn.jsdelivr.net/gh/mpbarbosa/guia_js@0.6.0-alpha/src/guia.js');
+    // Show permission request banner
+    if (window.showPermissionRequest) {
+      window.showPermissionRequest('geolocation-banner-container');
+    }
     
-    // Import loc-em-movimento.js logic
-    // Since loc-em-movimento.js has inline initialization, we'll need to replicate it here
-    // or refactor it to be module-based
+    // Initialize geocoding manager
+    this.manager = await this._initializeGeocodingManager();
     
-    // For now, dynamically load the script from legacy directory
-    await this._loadScript('../legacy/loc-em-movimento.js');
+    // Setup handlers
+    this._setupLocationUpdateHandlers();
+    this._setupSpeechQueueMonitoring();
+    this._setupCacheMonitoring();
+    this._setupInsertPositionButton();
+    this._setupTextInputHandler();
+    
+    // Show loading banner before starting tracking
+    if (window.showLoadingLocation) {
+      window.showLoadingLocation('geolocation-banner-container');
+    }
+    
+    // Start tracking
+    this.manager.startTracking();
     
     console.log("(tracking-view) Tracking view mounted");
   },
   
   cleanup() {
     console.log("(tracking-view) Cleaning up tracking view...");
-    // Stop any ongoing tracking
-    if (window.guiaManager && window.guiaManager.watchId) {
-      navigator.geolocation.clearWatch(window.guiaManager.watchId);
-    }
     
-    // Clear any intervals
-    if (window.chronometerInterval) {
-      clearInterval(window.chronometerInterval);
+    // Stop tracking
+    if (this.manager && this.manager.watchId) {
+      navigator.geolocation.clearWatch(this.manager.watchId);
     }
     
     // Stop speech synthesis
     if (window.speechSynthesis) {
       window.speechSynthesis.cancel();
     }
+    
+    // Clear state
+    this.manager = null;
+    this.firstUpdate = true;
   },
   
-  async _loadScript(src) {
-    return new Promise((resolve, reject) => {
-      const script = document.createElement('script');
-      script.src = src;
-      script.onload = resolve;
-      script.onerror = reject;
-      document.head.appendChild(script);
+  // Helper methods (impure functions)
+  async _initializeGeocodingManager() {
+    const params = {
+      locationResult: "locationResult",
+      enderecoPadronizadoDisplay: "endereco-padronizado-display",
+      referencePlaceDisplay: "reference-place-display",
+      elementIds: {
+        chronometer: "chronometer",
+        findRestaurantsBtn: "find-restaurants-btn",
+        cityStatsBtn: "city-stats-btn",
+        timestampDisplay: "tsPosCapture",
+        speechSynthesis: {
+          languageSelectId: "language",
+          voiceSelectId: "voice-select",
+          textInputId: "text-input",
+          speakBtnId: "speak-btn",
+          pauseBtnId: "pause-btn",
+          resumeBtnId: "resume-btn",
+          stopBtnId: "stop-btn",
+          rateInputId: "rate",
+          rateValueId: "rate-value",
+          pitchInputId: "pitch",
+          pitchValueId: "pitch-value",
+        }
+      }
+    };
+    
+    return await WebGeocodingManager.createAsync(document, params);
+  },
+  
+  _setupLocationUpdateHandlers() {
+    this.manager.subscribeFunction((currentPosition, newAddress, enderecoPadronizado) => {
+      // Show success banner on first location update
+      if (this.firstUpdate && currentPosition && window.showLocationSuccess) {
+        window.showLocationSuccess('geolocation-banner-container', 3000);
+        this.firstUpdate = false;
+      }
+      
+      this._updateCoordinatesDisplay(currentPosition);
+      this._updateBairroDisplay(newAddress);
+      this._updateMunicipioDisplays(enderecoPadronizado);
+      this._updateSidraData(enderecoPadronizado);
     });
+  },
+  
+  _updateCoordinatesDisplay(currentPosition) {
+    if (!currentPosition || !currentPosition.coords) return;
+    
+    const coordsText = `Latitude: ${currentPosition.coords.latitude}, Longitude: ${currentPosition.coords.longitude}`;
+    this._renderToElement("lat-long-display", coordsText);
+  },
+  
+  _updateBairroDisplay(newAddress) {
+    if (!newAddress) return;
+    
+    const bairro = newAddress.suburb 
+      || newAddress.neighbourhood 
+      || newAddress.quarter 
+      || newAddress.residential 
+      || newAddress.address?.suburb 
+      || newAddress.address?.neighbourhood 
+      || newAddress.address?.quarter 
+      || newAddress.address?.residential;
+    
+    this._renderToElement("bairro-value", bairro || "Não disponível");
+  },
+  
+  _updateMunicipioDisplays(enderecoPadronizado) {
+    if (!enderecoPadronizado) return;
+    
+    const enderecoCompleto = enderecoPadronizado.enderecoCompleto() || '';
+    this._renderToElement("endereco-padronizado-display", enderecoCompleto);
+    
+    const municipio = enderecoPadronizado.municipio || "Não disponível";
+    const siglaUf = enderecoPadronizado.siglaUF;
+    const municipioText = siglaUf ? `${municipio}, ${siglaUf}` : municipio;
+    this._renderToElement("municipio-value", municipioText);
+  },
+  
+  _updateSidraData(enderecoPadronizado) {
+    if (!enderecoPadronizado || typeof window.displaySidraDadosParams !== 'function') return;
+    
+    const dadosSidraDiv = document.getElementById("dadosSidra");
+    const params = {
+      "municipio": enderecoPadronizado.municipio,
+      "siglaUf": enderecoPadronizado.siglaUF
+    };
+    window.displaySidraDadosParams(dadosSidraDiv, "PopEst", params);
+  },
+  
+  _setupSpeechQueueMonitoring() {
+    if (!this.manager.htmlSpeechSynthesisDisplayer) return;
+    if (!this.manager.htmlSpeechSynthesisDisplayer.speechManager) return;
+    
+    const speechQueue = this.manager.htmlSpeechSynthesisDisplayer.speechManager.speechQueue;
+    if (!speechQueue) return;
+    
+    if (typeof speechQueue.subscribeFunction === 'function') {
+      speechQueue.subscribeFunction(queue => {
+        const size = this._calculateQueueSize(queue);
+        this._renderToElement("tam-fila-fala", size.toString());
+      });
+    } else {
+      // Fallback polling
+      setInterval(() => {
+        const queueLength = speechQueue.length || (Array.isArray(speechQueue.queue) ? speechQueue.queue.length : 0);
+        this._renderToElement("tam-fila-fala", queueLength.toString());
+      }, 500);
+    }
+  },
+  
+  _setupCacheMonitoring() {
+    if (!AddressCache || typeof AddressCache.subscribeFunction !== 'function') return;
+    
+    AddressCache.subscribeFunction(eventData => {
+      const cacheSize = eventData?.cacheSize || eventData?.cache?.length || 0;
+      this._renderToElement("tam-cache", cacheSize.toString());
+    });
+  },
+  
+  _setupInsertPositionButton() {
+    const button = document.getElementById("insertPositionButton");
+    if (!button) return;
+    
+    button.addEventListener("click", () => {
+      const position = { 
+        "coords": { 
+          "latitude": -23.55052, 
+          "longitude": -46.633308, 
+          "accuracy": 1 
+        }, 
+        "timestamp": Date.now() 
+      };
+      PositionManager.getInstance(position);
+      const latLongDisplay = document.getElementById("lat-long-display");
+      if (latLongDisplay) {
+        latLongDisplay.innerText = `Latitude: ${position.coords.latitude}, Longitude: ${position.coords.longitude}`;
+      }
+    });
+  },
+  
+  _setupTextInputHandler() {
+    const textInput = document.getElementById("text-input");
+    if (!textInput) return;
+    
+    textInput.addEventListener("change", () => {
+      const dadosSidraDiv = document.getElementById("dadosSidra");
+      if (dadosSidraDiv) {
+        textInput.value += "." + dadosSidraDiv.innerText;
+      }
+    });
+  },
+  
+  _renderToElement(elementId, content) {
+    const element = document.getElementById(elementId);
+    if (element) {
+      element.innerText = content;
+      // Add tooltip for potentially truncated text in highlight cards
+      if (element.classList.contains('highlight-card-value')) {
+        element.title = content;
+      }
+    }
+  },
+  
+  _calculateQueueSize(queue) {
+    if (!queue) return 0;
+    if (typeof queue.size === 'function') return queue.size();
+    if (Array.isArray(queue.queue)) return queue.queue.length;
+    return 0;
   }
 };
