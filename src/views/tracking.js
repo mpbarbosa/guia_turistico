@@ -155,10 +155,15 @@ export default {
   
   // Helper methods (impure functions)
   async _initializeGeocodingManager() {
+    // Get DOM elements (DisplayerFactory expects elements, not IDs)
+    const locationResult = document.getElementById("locationResult");
+    const enderecoPadronizadoDisplay = document.getElementById("endereco-padronizado-display");
+    const referencePlaceDisplay = document.getElementById("reference-place-display");
+    
     const params = {
-      locationResult: "locationResult",
-      enderecoPadronizadoDisplay: "endereco-padronizado-display",
-      referencePlaceDisplay: "reference-place-display",
+      locationResult: locationResult,
+      enderecoPadronizadoDisplay: enderecoPadronizadoDisplay,
+      referencePlaceDisplay: referencePlaceDisplay,
       elementIds: {
         chronometer: "chronometer",
         findRestaurantsBtn: "find-restaurants-btn",

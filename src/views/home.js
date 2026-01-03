@@ -148,7 +148,7 @@ export default {
     const locationResult = document.getElementById("locationResult");
     console.log("(home-view) Creating WebGeocodingManager...");
     const manager = new WebGeocodingManager(document, {
-      locationResult: locationResult.id,
+      locationResult: locationResult,
       elementIds: {
         chronometer: "chronometer", // Optional element, not in HTML
         findRestaurantsBtn: "findRestaurantsBtn", // Match actual HTML ID
