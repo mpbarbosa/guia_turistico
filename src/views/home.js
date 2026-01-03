@@ -66,6 +66,17 @@ export default {
             </span>
           </label>
         </div>
+        
+        <!-- Get Location Button (visible only in single-position mode) -->
+        <div id="get-location-button-container" style="margin-top: 16px;">
+          <button 
+            id="getLocationBtn" 
+            class="md3-button-filled"
+            aria-label="Obter localização atual"
+          >
+            📍 Obter Localização Atual
+          </button>
+        </div>
       </section>
 
       <nav aria-label="Ações da página">
@@ -184,11 +195,9 @@ export default {
     this._setupLocationUpdateHandlers();
     this._setupCacheDisplayHandlers();
     this._setupButtonHandlers();
+    this._setupGetLocationButton();
     this._setupTrackingModeToggle();
     this._setupTrackingControls();
-    
-    // Request initial location with banner
-    this._requestLocationWithBanner();
   },
   
   cleanup() {
@@ -390,12 +399,51 @@ export default {
     }
   },
   
-  _requestLocationWithBanner() {
-    window.showPermissionRequest?.('geolocation-banner-container');
+  _setupGetLocationButton() {
+    const getLocationBtn = document.getElementById("getLocationBtn");
+    if (!getLocationBtn) return;
     
-    this.manager.requestLocation().catch(error => {
-      console.error("(home-view) Error requesting location:", error);
-      window.showLocationError?.('geolocation-banner-container', error.message);
+    getLocationBtn.addEventListener("click", () => {
+      console.log("(home-view) Get location button clicked");
+      
+      // Show permission request banner
+      window.showPermissionRequest?.('geolocation-banner-container');
+      
+      // Get current position once
+      if (navigator.geolocation) {
+        getLocationBtn.disabled = true;
+        getLocationBtn.textContent = "⏳ Obtendo localização...";
+        
+        navigator.geolocation.getCurrentPosition(
+          (position) => {
+            console.log("(home-view) Location obtained:", position);
+            
+            // Trigger location update through manager
+            if (this.manager && this.manager.positionManager) {
+              this.manager.positionManager.updatePosition(position);
+            }
+            
+            getLocationBtn.disabled = false;
+            getLocationBtn.textContent = "📍 Obter Localização Atual";
+            
+            window.showLocationSuccess?.('geolocation-banner-container', 3000);
+          },
+          (error) => {
+            console.error("(home-view) Geolocation error:", error);
+            getLocationBtn.disabled = false;
+            getLocationBtn.textContent = "📍 Obter Localização Atual";
+            
+            window.showLocationError?.('geolocation-banner-container', error.message);
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 0
+          }
+        );
+      } else {
+        alert("Geolocalização não é suportada neste navegador.");
+      }
     });
   },
   
@@ -412,11 +460,13 @@ export default {
       // Show/hide tracking-specific UI
       const trackingTimer = document.getElementById("tracking-timer-container");
       const trackingControls = document.getElementById("tracking-controls");
+      const getLocationBtnContainer = document.getElementById("get-location-button-container");
       
       if (this.continuousMode) {
         // Start continuous tracking
         if (trackingTimer) trackingTimer.style.display = 'inline';
         if (trackingControls) trackingControls.style.display = 'block';
+        if (getLocationBtnContainer) getLocationBtnContainer.style.display = 'none';
         
         // Start tracking
         this.manager.startTracking();
@@ -429,6 +479,7 @@ export default {
         // Stop continuous tracking
         if (trackingTimer) trackingTimer.style.display = 'none';
         if (trackingControls) trackingControls.style.display = 'none';
+        if (getLocationBtnContainer) getLocationBtnContainer.style.display = 'block';
         
         // Stop tracking
         if (this.manager && this.manager.watchId) {
