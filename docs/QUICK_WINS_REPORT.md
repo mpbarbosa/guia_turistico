@@ -157,22 +157,17 @@ Button status messages:
 
 ---
 
-### 6. ✅ Update Readonly Textarea Placeholder (NEWLY COMPLETED)
+### 6. ⚠️ Update Readonly Textarea Placeholder (REMOVED IN v0.7.1)
 
-**Status:** ✨ Implemented
+**Status:** 🗑️ Element Removed
 
-**Change Made:**
+**Reason for Removal:**
+- Feature was not part of core location tracking functionality
+- No user-facing documentation for text history
+- Not actively used or tested
+- Simplified UI reduces cognitive load in continuous tracking mode
 
-**Before:**
-```html
-<textarea 
-  id="bottom-scroll-textarea" 
-  readonly
-  placeholder="Histórico de texto (somente leitura)"
-></textarea>
-```
-
-**After:**
+**Previous Implementation:**
 ```html
 <textarea 
   id="bottom-scroll-textarea" 
@@ -183,11 +178,10 @@ Button status messages:
 ></textarea>
 ```
 
-**Improvements:**
-- More descriptive placeholder text
-- Explains auto-generation
-- Clarifies read-only purpose
-- Better user expectations
+**Current Implementation:**
+- Element completely removed from home view
+- Text history functionality removed
+- Tracking controls now only contain test position insertion button
 
 **File Modified:**
 - `src/loc-em-movimento.html`

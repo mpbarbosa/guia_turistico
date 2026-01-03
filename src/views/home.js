@@ -158,17 +158,6 @@ export default {
         <button id="insertPositionButton" class="md3-button-outlined" aria-label="Inserir posição de teste">
           Inserir posição de teste
         </button>
-
-        <label for="bottom-scroll-textarea" class="sr-only">Histórico de texto - somente leitura</label>
-        <textarea 
-          id="bottom-scroll-textarea" 
-          rows="4" 
-          readonly
-          aria-readonly="true"
-          aria-label="Histórico de texto gerado automaticamente durante navegação - somente leitura"
-          placeholder="O histórico de texto será exibido aqui conforme você se move. Este campo é somente leitura."
-          style="width: 100%; margin: 8px 0; padding: 8px; border-radius: 4px; border: 1px solid #ccc; background: #f5f5f5;"
-        ></textarea>
       </div>
     `;
   },
