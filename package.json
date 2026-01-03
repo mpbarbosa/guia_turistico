@@ -13,7 +13,8 @@
     "test:unit:watch": "jest --watch",
     "test:unit:coverage": "jest --coverage",
     "test:integration": "cd tests/integration && ./run_tests.sh",
-    "test:all": "npm run test:unit && npm run test:integration"
+    "test:all": "npm run test:unit && npm run test:integration",
+    "test:docs": "node validate-docs.js"
   },
   "repository": {
     "type": "git",
