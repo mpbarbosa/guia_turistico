@@ -287,17 +287,12 @@ export default {
   async mount(container) {
     console.log("(converter-view) Mounting converter view...");
     
-    // Import address-converter.js logic dynamically
-    const module = await import('../address-converter.js');
-    
     // Initialize the converter
     const form = container.querySelector('form');
     const latitudeInput = container.querySelector('#latitude');
     const longitudeInput = container.querySelector('#longitude');
     
     if (form && latitudeInput && longitudeInput) {
-      // The address-converter.js file exports init() or we can call it directly
-      // For now, we'll replicate the initialization here
       this._initConverter(form, latitudeInput, longitudeInput);
     }
   },
