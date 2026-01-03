@@ -15,7 +15,7 @@
  * @type {string}
  * @constant
  */
-const CACHE_NAME = 'guia-turistico-v0.7.0';
+const CACHE_NAME = 'guia-turistico-v0.7.1';
 
 /**
  * URL for offline fallback page

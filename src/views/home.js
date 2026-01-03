@@ -158,14 +158,6 @@ export default {
         <button id="insertPositionButton" class="md3-button-outlined" aria-label="Inserir posição de teste">
           Inserir posição de teste
         </button>
-        
-        <label for="text-input" class="sr-only">Digite o texto para falar</label>
-        <textarea 
-          id="text-input" 
-          placeholder="Digite o texto para falar..." 
-          aria-label="Texto para síntese de voz"
-          style="width: 100%; min-height: 60px; margin: 8px 0; padding: 8px; border-radius: 4px; border: 1px solid #ccc;"
-        ></textarea>
 
         <label for="bottom-scroll-textarea" class="sr-only">Histórico de texto - somente leitura</label>
         <textarea 
@@ -539,17 +531,6 @@ export default {
         const latLongDisplay = document.getElementById("lat-long-display");
         if (latLongDisplay) {
           latLongDisplay.innerText = `${position.coords.latitude}, ${position.coords.longitude}`;
-        }
-      });
-    }
-    
-    // Text input handler
-    const textInput = document.getElementById("text-input");
-    if (textInput) {
-      textInput.addEventListener("change", () => {
-        const dadosSidraDiv = document.getElementById("dadosSidra");
-        if (dadosSidraDiv) {
-          textInput.value += "." + dadosSidraDiv.innerText;
         }
       });
     }
