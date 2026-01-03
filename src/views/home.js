@@ -148,7 +148,26 @@ export default {
     const locationResult = document.getElementById("locationResult");
     console.log("(home-view) Creating WebGeocodingManager...");
     const manager = new WebGeocodingManager(document, {
-      locationResult: locationResult.id
+      locationResult: locationResult.id,
+      elementIds: {
+        chronometer: "chronometer", // Optional element, not in HTML
+        findRestaurantsBtn: "findRestaurantsBtn", // Match actual HTML ID
+        cityStatsBtn: "cityStatsBtn", // Match actual HTML ID
+        timestampDisplay: "tsPosCapture", // Optional element, not in HTML
+        speechSynthesis: {
+          languageSelectId: "language",
+          voiceSelectId: "voice-select",
+          textInputId: "text-input",
+          speakBtnId: "speak-btn",
+          pauseBtnId: "pause-btn",
+          resumeBtnId: "resume-btn",
+          stopBtnId: "stop-btn",
+          rateInputId: "rate",
+          rateValueId: "rate-value",
+          pitchInputId: "pitch",
+          pitchValueId: "pitch-value",
+        }
+      }
     });
     return manager;
   },

@@ -109,8 +109,8 @@ export default {
     // Since loc-em-movimento.js has inline initialization, we'll need to replicate it here
     // or refactor it to be module-based
     
-    // For now, dynamically load the script
-    await this._loadScript('../loc-em-movimento.js');
+    // For now, dynamically load the script from legacy directory
+    await this._loadScript('../legacy/loc-em-movimento.js');
     
     console.log("(tracking-view) Tracking view mounted");
   },
