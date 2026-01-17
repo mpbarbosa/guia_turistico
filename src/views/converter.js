@@ -466,6 +466,11 @@ export default {
    * Update location type card (Distrito or Bairro) dynamically
    * @param {Object} data - Nominatim response data
    * @private
+   * 
+   * Note: The address parsing logic below is duplicated from address-parser.js
+   * because that module uses CommonJS (for Jest testing) and cannot be directly
+   * imported in browser ES6 modules without a bundler. The logic is kept in sync
+   * through unit tests.
    */
   _updateLocationTypeCard(data) {
     const address = data.address || data;
@@ -588,7 +593,7 @@ export default {
    */
   _formatLocationValue(value) {
     if (!value || value.trim() === '') {
-      return '—';
+      return 'Não disponível';
     }
     return value;
   }

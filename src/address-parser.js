@@ -86,14 +86,10 @@ function determineLocationType(address) {
     return { type: 'distrito', value: distrito };
   }
   
-  // If we have a neighborhood (with or without district), show neighborhood
-  // This is the common case for cities
+  // If we have a neighborhood, show it (more specific than district)
   if (bairro) {
     return { type: 'bairro', value: bairro };
   }
-  
-  // If we have a district and a neighborhood, prefer neighborhood (more specific)
-  // But this is already handled above
   
   // No location subdivision available
   return { type: 'bairro', value: null };

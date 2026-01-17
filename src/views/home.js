@@ -316,6 +316,11 @@ export default {
    * Update location type card (Distrito or Bairro) dynamically
    * @param {Object} address - Nominatim address object
    * @private
+   * 
+   * Note: The address parsing logic below is duplicated from address-parser.js
+   * because that module uses CommonJS (for Jest testing) and cannot be directly
+   * imported in browser ES6 modules without a bundler. The logic is kept in sync
+   * through unit tests.
    */
   _updateLocationTypeCard(address) {
     // Determine location type using address parser logic
