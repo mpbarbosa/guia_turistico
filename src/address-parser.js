@@ -2,6 +2,10 @@
  * @fileoverview Address Parser - Pure functions for parsing Nominatim address data
  * Handles Brazilian geopolitical divisions: municipality, district (distrito), and neighborhood (bairro)
  * 
+ * This module serves as the source of truth for address parsing logic.
+ * The same logic is duplicated in browser views (home.js, converter.js) due to
+ * CommonJS/ES6 module incompatibility without a build step.
+ * 
  * @module address-parser
  */
 
