@@ -225,9 +225,9 @@ export default {
             <div id="municipio-label" class="highlight-card-label">Município</div>
             <div id="municipio-value" class="highlight-card-value" aria-live="polite">—</div>
           </div>
-          <div class="highlight-card" role="region" aria-labelledby="bairro-label">
-            <div id="bairro-label" class="highlight-card-label">Bairro</div>
-            <div id="bairro-value" class="highlight-card-value" aria-live="polite">—</div>
+          <div id="location-type-card" class="highlight-card" role="region" aria-labelledby="location-type-label">
+            <div id="location-type-label" class="highlight-card-label">Bairro</div>
+            <div id="location-type-value" class="highlight-card-value" aria-live="polite">—</div>
           </div>
         </section>
 
@@ -394,16 +394,7 @@ export default {
       }
       
       // Update highlight cards
-      const municipioValue = document.getElementById("municipio-value");
-      const bairroValue = document.getElementById("bairro-value");
-      
-      if (municipioValue) {
-        municipioValue.textContent = data.address?.city || data.address?.town || data.address?.village || '—';
-      }
-      
-      if (bairroValue) {
-        bairroValue.textContent = data.address?.suburb || data.address?.neighbourhood || '—';
-      }
+      this._updateHighlightCards(data);
       
       // Display full results
       results.innerHTML = `
@@ -451,5 +442,163 @@ export default {
     html += '</dl>';
     
     return html;
+  },
+  
+  /**
+   * Update highlight cards with municipality and location type
+   * @param {Object} data - Nominatim response data
+   * @private
+   */
+  _updateHighlightCards(data) {
+    // Update municipality card
+    const municipioValue = document.getElementById("municipio-value");
+    if (municipioValue) {
+      municipioValue.textContent = data.address?.city || data.address?.town || data.address?.village || '—';
+    }
+    
+    // Update location type card (distrito or bairro)
+    if (data) {
+      this._updateLocationTypeCard(data);
+    }
+  },
+  
+  /**
+   * Update location type card (Distrito or Bairro) dynamically
+   * @param {Object} data - Nominatim response data
+   * @private
+   * 
+   * Note: The address parsing logic below is duplicated from address-parser.js
+   * because that module uses CommonJS (for Jest testing) and cannot be directly
+   * imported in browser ES6 modules without a bundler. The logic is kept in sync
+   * through unit tests.
+   * 
+   * TODO: Consider adding a build step (e.g., webpack, rollup) to enable proper
+   * module imports and eliminate code duplication between views and test modules.
+   * This would reduce maintenance burden and ensure consistency across all usages.
+   */
+  _updateLocationTypeCard(data) {
+    const address = data.address || data;
+    
+    // Determine location type
+    const locationType = this._determineLocationType(address);
+    
+    // Update card label
+    const label = locationType.type === 'distrito' ? 'Distrito' : 'Bairro';
+    const labelElement = document.getElementById("location-type-label");
+    if (labelElement) {
+      labelElement.textContent = label;
+    }
+    
+    // Update card value
+    const value = this._formatLocationValue(locationType.value);
+    const valueElement = document.getElementById("location-type-value");
+    if (valueElement) {
+      valueElement.textContent = value;
+    }
+    
+    // Update ARIA label for accessibility
+    const card = document.getElementById("location-type-card");
+    if (card) {
+      card.setAttribute('aria-labelledby', 'location-type-label');
+    }
+  },
+  
+  /**
+   * Determine location type from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {{type: 'distrito'|'bairro', value: string|null}} Location type and value
+   * @private
+   * @pure
+   */
+  _determineLocationType(address) {
+    const distrito = this._extractDistrito(address);
+    const bairro = this._extractBairro(address);
+    
+    // If we have a district but no neighborhood, show district
+    if (distrito && !bairro) {
+      return { type: 'distrito', value: distrito };
+    }
+    
+    // If we have a neighborhood, show it (more specific)
+    if (bairro) {
+      return { type: 'bairro', value: bairro };
+    }
+    
+    // No subdivision available
+    return { type: 'bairro', value: null };
+  },
+  
+  /**
+   * Extract district from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {string|null} District name or null
+   * @private
+   * @pure
+   */
+  _extractDistrito(address) {
+    if (!address) return null;
+    
+    // Check direct properties
+    const distrito = address.village 
+      || address.district 
+      || address.hamlet
+      || address.town;
+    
+    if (distrito) return distrito;
+    
+    // Check nested address object
+    if (address.address) {
+      return address.address.village 
+        || address.address.district 
+        || address.address.hamlet
+        || address.address.town 
+        || null;
+    }
+    
+    return null;
+  },
+  
+  /**
+   * Extract neighborhood from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {string|null} Neighborhood name or null
+   * @private
+   * @pure
+   */
+  _extractBairro(address) {
+    if (!address) return null;
+    
+    // Check direct properties
+    const bairro = address.suburb 
+      || address.neighbourhood 
+      || address.quarter 
+      || address.residential;
+    
+    if (bairro) return bairro;
+    
+    // Check nested address object
+    if (address.address) {
+      return address.address.suburb 
+        || address.address.neighbourhood 
+        || address.address.quarter 
+        || address.address.residential 
+        || null;
+    }
+    
+    return null;
+  },
+  
+  /**
+   * Format location value for display (pure function logic)
+   * @param {string|null} value - Location value
+   * @returns {string} Formatted value
+   * @private
+   * @pure
+   */
+  _formatLocationValue(value) {
+    if (!value || value.trim() === '') {
+      return 'Não disponível';
+    }
+    return value;
   }
 };
