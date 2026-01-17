@@ -124,9 +124,9 @@ export default {
           <div id="municipio-label" class="highlight-card-label">Município</div>
           <div id="municipio-value" class="highlight-card-value" aria-live="polite">—</div>
         </div>
-        <div class="highlight-card" role="region" aria-labelledby="bairro-label">
-          <div id="bairro-label" class="highlight-card-label">Bairro</div>
-          <div id="bairro-value" class="highlight-card-value" aria-live="polite">—</div>
+        <div id="location-type-card" class="highlight-card" role="region" aria-labelledby="location-type-label">
+          <div id="location-type-label" class="highlight-card-label">Bairro</div>
+          <div id="location-type-value" class="highlight-card-value" aria-live="polite">—</div>
         </div>
       </section>
 
@@ -288,18 +288,9 @@ export default {
       }
     }
     
-    // Update reference place (bairro)
+    // Update location type card (Distrito or Bairro) based on address
     if (newAddress) {
-      const bairro = newAddress.suburb 
-        || newAddress.neighbourhood 
-        || newAddress.quarter 
-        || newAddress.residential 
-        || newAddress.address?.suburb 
-        || newAddress.address?.neighbourhood 
-        || newAddress.address?.quarter 
-        || newAddress.address?.residential;
-      
-      this._renderToElement("bairro-value", bairro || "Não disponível");
+      this._updateLocationTypeCard(newAddress);
     }
     
     // Update standardized address
@@ -319,6 +310,129 @@ export default {
       const municipioText = siglaUf ? `${municipio}, ${siglaUf}` : municipio;
       this._renderToElement("municipio-value", municipioText);
     }
+  },
+  
+  /**
+   * Update location type card (Distrito or Bairro) dynamically
+   * @param {Object} address - Nominatim address object
+   * @private
+   */
+  _updateLocationTypeCard(address) {
+    // Determine location type using address parser logic
+    const locationType = this._determineLocationType(address);
+    
+    // Update card label
+    const label = locationType.type === 'distrito' ? 'Distrito' : 'Bairro';
+    this._renderToElement("location-type-label", label);
+    
+    // Update card value
+    const value = this._formatLocationValue(locationType.value);
+    this._renderToElement("location-type-value", value);
+    
+    // Update ARIA label for accessibility
+    const card = document.getElementById("location-type-card");
+    if (card) {
+      card.setAttribute('aria-labelledby', 'location-type-label');
+    }
+  },
+  
+  /**
+   * Determine location type from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {{type: 'distrito'|'bairro', value: string|null}} Location type and value
+   * @private
+   * @pure
+   */
+  _determineLocationType(address) {
+    const distrito = this._extractDistrito(address);
+    const bairro = this._extractBairro(address);
+    
+    // If we have a district but no neighborhood, show district
+    if (distrito && !bairro) {
+      return { type: 'distrito', value: distrito };
+    }
+    
+    // If we have a neighborhood, show it (more specific)
+    if (bairro) {
+      return { type: 'bairro', value: bairro };
+    }
+    
+    // No subdivision available
+    return { type: 'bairro', value: null };
+  },
+  
+  /**
+   * Extract district from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {string|null} District name or null
+   * @private
+   * @pure
+   */
+  _extractDistrito(address) {
+    if (!address) return null;
+    
+    // Check direct properties
+    const distrito = address.village 
+      || address.district 
+      || address.hamlet
+      || address.town;
+    
+    if (distrito) return distrito;
+    
+    // Check nested address object
+    if (address.address) {
+      return address.address.village 
+        || address.address.district 
+        || address.address.hamlet
+        || address.address.town 
+        || null;
+    }
+    
+    return null;
+  },
+  
+  /**
+   * Extract neighborhood from address (pure function logic)
+   * @param {Object} address - Nominatim address object
+   * @returns {string|null} Neighborhood name or null
+   * @private
+   * @pure
+   */
+  _extractBairro(address) {
+    if (!address) return null;
+    
+    // Check direct properties
+    const bairro = address.suburb 
+      || address.neighbourhood 
+      || address.quarter 
+      || address.residential;
+    
+    if (bairro) return bairro;
+    
+    // Check nested address object
+    if (address.address) {
+      return address.address.suburb 
+        || address.address.neighbourhood 
+        || address.address.quarter 
+        || address.address.residential 
+        || null;
+    }
+    
+    return null;
+  },
+  
+  /**
+   * Format location value for display (pure function logic)
+   * @param {string|null} value - Location value
+   * @returns {string} Formatted value
+   * @private
+   * @pure
+   */
+  _formatLocationValue(value) {
+    if (!value || value.trim() === '') {
+      return 'Não disponível';
+    }
+    return value;
   },
   
   _updateSidraData(enderecoPadronizado) {
